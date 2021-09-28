@@ -1,0 +1,2533 @@
+{
+	"info": {
+		"_postman_id": "9f49df53-9514-4b18-8473-aa23980e50a4",
+		"name": "UUDEX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Dataset",
+			"item": [
+				{
+					"name": "datasets/by_subject",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/datasets?subject_uuid=c6d882de-4fb2-47f9-82fc-4e20944c98c2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"datasets"
+							],
+							"query": [
+								{
+									"key": "subject_uuid",
+									"value": "c6d882de-4fb2-47f9-82fc-4e20944c98c2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "datasets",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/datasets/e4254ee3-caa7-4cd6-bf7f-0f42eacd4b14",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"datasets",
+								"e4254ee3-caa7-4cd6-bf7f-0f42eacd4b14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "datasets/publish_message=True",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"dataset_name\": \"PJM22\",\r\n        \"description\": \"PJM Dataset22\",\r\n        \"properties\": null,\r\n        \"payload\": \"DQpDUkVBVEUgUFJPQ0VEVVJFIGRiby5Mb2FkX09jY3VwYW5jeV9JbmNyX0NvcmVfTHVkbHVtDQovKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KDQogICAgREVTQ1JJUFRJT04gT0YgUFJPQ0VEVVJFOg0KICAgIEluY3JlbWVudGFsIGxvYWQgb2YgUmVwb3J0aW5nLmRiby5PY2N1cGFuY3kgDQoNCiAgICBJbnNlcnRzIGNoYW5nZWQgb2NjdXBhbmN5IHJlY29yZHMgaW50byBSZXBvcnRpbmcuZGJvLk9jY3VwYW5jeSBmb3IgTHVkbHVtLg0KICAgIEJhc2VkIG9uIExvYWRfT2NjdXBhbmN5X0Z1bGwNCiAgIA0KDQogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KICAgIE1vZGlmaWNhdGlvbiBIaXN0b3J5Og0KICAgIERhdGUgICAgICAgIFZlciAgICAgQXV0aG9yIGFuZCBSZWFzb24NCiAgICAyMDIwLjA1LjE2ICAxLjAuMCAgIEpXZWxzaCAtIENyZWF0ZWQgICAgDQoNCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLw0KDQpBUw0KQkVHSU4gVFJZDQoNCiAgU0VUIE5PQ09VTlQgT047DQoNCiAgREVDTEFSRSBATXNnVGJsTmFtZSBOVkFSQ0hBUigxMjgpDQogICAgICAgICAsQE9jY3VwYW5jeV9JbmNyX0RhdGVUaW1lIERBVEVUSU1FDQogICAgICAgICAsQE9jY3VwYW5jeV9JbmNyX0RhdGVUaW1lX01heCBEQVRFVElNRTsNCg0KICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgLS1QYXJhbXMgZm9yIEFwcGxpY2F0aW9uX0xvZw0KICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gICANCiAgREVDTEFSRSBAQXBwTmFtZSBWQVJDSEFSKDY0KQ0KICAgICAgICAgLEBGaWxlVHlwZSBJTlRFR0VSDQogICAgICAgICAsQEFwcFZlcnNpb24gVkFSQ0hBUig1MCkNCiAgICAgICAgICxAT2JqTmFtZSBWQVJDSEFSKDEyOCkNCiAgICAgICAgICxAUm93Q3QgQklHSU5UID0gMA0KICAgICAgICAgLEBUaGlzU3RhdHVzIFZBUkNIQVIoNTApDQogICAgICAgICAsQER1cmF0aW9uIElOVEVHRVINCiAgICAgICAgICxARHVyYXRpb25TZWNvbmRzIElOVEVHRVINCiAgICAgICAgICxARHVyYXRpb25TdHJpbmcgVkFSQ0hBUigzMikNCiAgICAgICAgICxATG9nTWVzc2FnZSBWQVJDSEFSKDQwMDApDQogICAgICAgICAsQGN1cnJMb2FkRHRMb2NhbCBEQVRFVElNRTINCiAgICAgICAgICxAU3RhcnRUaW1lIERBVEVUSU1FID0gR0VUREFURSgpOw0KDQoNCg0KICBTRVQgQE1zZ1RibE5hbWUgPSAnUmVwb3J0aW5nLmRiby5PY2N1cGFuY3koTHVkbHVtKSc7DQogIFNFVCBAQXBwTmFtZSA9ICdEQUMgUmVwb3J0aW5nJzsNCiAgU0VUIEBGaWxlVHlwZSA9IE5VTEw7DQogIFNFVCBAT2JqTmFtZSA9IENPQUxFU0NFKE9CSkVDVF9OQU1FKEBAUFJPQ0lEKSwgJ1NFTEVDVCAnKTsNCg0KICBTRVQgQER1cmF0aW9uID0gMDsNCiAgU0VUIEBEdXJhdGlvblNlY29uZHMgPSAwOw0KDQogIFNFVCBATG9nTWVzc2FnZSA9ICdTdGFydGluZyBEQUMgUmVwb3J0aW5nIChJbmNyZW1lbnRhbCknOw0KICBTRVQgQFRoaXNTdGF0dXMgPSAnU3RhcnRpbmcnOw0KICBTRVQgQFJvd0N0ID0gMA0KDQogIEVYRUNVVEUgUlBNX0NvbnRyb2xfTmV3LmRiby5JbnNlcnRfQXBwX0xvZyBAQXBwbGljYXRpb24gPSBAQXBwTmFtZQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQEFwcGxpY2F0aW9uX1ZlcnNpb24gPSBAQXBwVmVyc2lvbg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQEZpbGVfSUQgPSBOVUxMDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxARmlsZV9UeXBlID0gQEZpbGVUeXBlDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAU3RvcmVkX1Byb2NlZHVyZSA9IEBPYmpOYW1lDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAVGFibGVfTmFtZSA9IEBNc2dUYmxOYW1lDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAUmVjb3JkX0N0ID0gQFJvd0N0DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAU3RhdHVzID0gQFRoaXNTdGF0dXMNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBNZXNzYWdlID0gQExvZ01lc3NhZ2UNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBEdXJhdGlvbl9TZWNvbmRzID0gQER1cmF0aW9uU2Vjb25kczsNCg0KDQoNCg0KDQogIFNFTEVDVCBAT2NjdXBhbmN5X0luY3JfRGF0ZVRpbWUgPSBPY2N1cGFuY3lfTHVkbHVtX0luY3INCiAgRlJPTSB0ZW1wLkxvYWRfRGF0ZTsNCg0KICAtLSBoYW5kbGUgY29uZGl0aW9uIHdoZXJlIHRoaXMgaXMgdGhlIGZpcnN0IHJ1biBhbmQgT2NjdXBhbmN5X0luY3IgaXMgbm90IHBvcHVsYXRlZA0KICBJRiBAT2NjdXBhbmN5X0luY3JfRGF0ZVRpbWUgSVMgTlVMTCANCiAgQkVHSU4gIA0KICAJICBTRUxFQ1QgQE9jY3VwYW5jeV9JbmNyX0RhdGVUaW1lID0gTUFYKFNvdXJjZV9Mb2FkX0RhdGV0aW1lX0xvY2FsKQ0KICAgICAgRlJPTSBkYm8uT2NjdXBhbmN5DQogICAgICBXSEVSRSBSUE1fVmVuZG9yX0NvZGUgPSAnTHVkbHVtJzsNCiAgRU5EOw0KDQogIFNFTEVDVCBAT2NjdXBhbmN5X0luY3JfRGF0ZVRpbWVfTWF4ID0gTUFYKExvYWRfRGF0ZSkNCiAgRlJPTSBsdWRsdW0uLk9jY3VwYW5jeTsNCg0KICBTRVQgQGN1cnJMb2FkRHRMb2NhbCA9IEdFVERBVEUoKTsNCiAgDQogIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBMdWRsdW0gZGF0YSAgICANCiAgSU5TRVJUIElOVE8gW2Rib10uW09jY3VwYW5jeV0gKFtPY2N1cGFuY3lfSURdDQogICwgW0NvbW1vbl9SUE1fSURdDQogICwgW1ZlaGljbGVfSURdDQogICwgW09jY3VwYW5jeV9TdGFydF9EYXRldGltZV9VVENdDQogICwgW0ZpbGVfSURdDQogICwgW09jY3VwYW5jeV9FbmRfRGF0ZXRpbWVfVVRDXQ0KICAsIFtPY2N1cGFuY3lfRGF0ZV9VVENdDQogICwgW09jY3VwYW5jeV9Nb250aF9VVENdDQogICwgW09jY3VwYW5jeV9TdGFydF9EYXRldGltZV9Mb2NhbF0NCiAgLCBbT2NjdXBhbmN5X0RhdGVfTG9jYWxdDQogICwgW1JhZF9NZWFzdXJlbWVudF9TdGFydF9EYXRldGltZV9VVENdDQogICwgW1JhZF9NZWFzdXJlbWVudF9FbmRfRGF0ZXRpbWVfVVRDXQ0KICAsIFtEYXRhX1NvdXJjZV9JRF0NCiAgLCBbUFJJREVfTWVzc2FnZV9JRF0NCiAgLCBbU2VnbWVudF9DdF0NCiAgLCBbUmFkX01lYXN1cmVtZW50X1RvdGFsX0N0XQ0KICAsIFtSYWRfTWVhc3VyZW1lbnRfUHJlX0N0XQ0KICAsIFtSYWRfTWVhc3VyZW1lbnRfUG9zdF9DdF0NCiAgLCBbUmFkX01lYXN1cmVtZW50X09jY3VwaWVkX0N0XQ0KICAsIFtPY2N1cGFuY3lfRHVyYXRpb25fU2VjXQ0KICAsIFtTcGVlZF9NYXhfTVBIXQ0KICAsIFtTcGVlZF9NaW5fTVBIXQ0KICAsIFtGaWVsZF9OZXV0cm9uX0FsYXJtXQ0KICAsIFtGaWVsZF9HYW1tYV9BbGFybV0NCiAgLCBbRmllbGRfSXNvdG9wZV9BbGFybV0NCiAgLCBbRmllbGRfT3RoZXJfQWxhcm1dDQogICwgW0ZpZWxkX0FueV9BbGFybV0NCiAgLCBbVmVuZG9yX05ldXRyb25fQWxhcm1dDQogICwgW1ZlbmRvcl9HYW1tYV9BbGFybV0NCiAgLCBbVmVuZG9yX0VuZXJneV9XaW5kb3ddDQogICwgW1ZlbmRvcl9BbnlfQWxhcm1dDQogICwgW1NjYW5fRXJyb3JdDQogICwgW05vX1ZQU10NCiAgLCBbRmFsc2VfT2NjdXBhbmN5X0lEXQ0KICAsIFtGYWxzZV9PY2N1cGFuY3lfTmFtZV0NCiAgLCBbRmFsc2VfT2NjdXBhbmN5X0luY2x1ZGVfSW5fQ291bnRdDQogICwgW0VSTklFX1Jlc3VsdF9OYW1lXQ0KICAsIFtFUk5JRV9HYW1tYV9BbGFybV0NCiAgLCBbRVJOSUVfTWVzc2FnZV9JRF0NCiAgLCBbRVJOSUVfTWVzc2FnZV0NCiAgLCBbRVJOSUVfWWVsbG93X0xpZ2h0X01lc3NhZ2VfSURdDQogICwgW0VSTklFX1llbGxvd19MaWdodF9NZXNzYWdlXQ0KICAsIFtFUk5JRV9CeXBhc3NfRmxnXQ0KICAsIFtFUk5JRV9Tb3VyY2VfVHlwZV0NCiAgLCBbQWRqdWRpY2F0aW9uX0V4YW1fSURdDQogICwgW0FkanVkaWNhdGlvbl9TY2FuX0lEXQ0KICAsIFtDb21tb2RpdHldDQogICwgW0NvbW1lbnRzXQ0KICAsIFtSZXNvbHV0aW9uX0NvZGVdDQogICwgW1Jlc29sdXRpb25fR3JvdXBdDQogICwgW1Jlc29sdXRpb25fRGVzY3JpcHRpb25dDQogICwgW1NvdXJjZV9Mb2FkX0RhdGV0aW1lX0xvY2FsXQ0KICAsIFtMb2FkX0RhdGV0aW1lX0xvY2FsXQ0KICAsIFtSUE1fVmVuZG9yX0NvZGVdDQogICwgW0N0bF9PY2N1cGFuY3lfSURdDQogICwgW0N0bF9MdWRsdW1fQ29tbW9kaXR5XQ0KICAsIFtDdGxfTHVkbHVtX0NvbW1lbnRzXSkNCiAgICAtLXBlcmZvcm1hbmNlIGRpZmZlcmVuY2UsIHNvIHZpZXcgaXMgdXNlZA0KICAgIFNFTEVDVA0KICAgICAgQ09OVkVSVChDSEFSKDMyKSwgSEFTSEJZVEVTKCdNRDUnLCBDT05WRVJUKFZBUkNIQVIsIENvbW1vbl9SUE1fSUQpICsgQ09OVkVSVChWQVJDSEFSLCBWZWhpY2xlX0lEKSArIENPTlZFUlQoVkFSQ0hBUiwgQ09OVkVSVChEQVRFVElNRSwgVVRDX0RhdGVfVGltZSwgMjApKSArIENPTlZFUlQoVkFSQ0hBUiwgRmlsZV9JRCkpLCAyKSBPY2N1cGFuY3lfSUQNCiAgICAgLENvbW1vbl9SUE1fSUQNCiAgICAgLFZlaGljbGVfSUQNCiAgICAgLFVUQ19EYXRlX1RpbWUgT2NjdXBhbmN5X1N0YXJ0X0RhdGV0aW1lX1VUQw0KICAgICAsby5GaWxlX0lEDQogICAgICxOVUxMIE9jY3VwYW5jeV9FbmRfRGF0ZXRpbWVfVVRDDQogICAgICwgLS11c2luZyBOVUxMIGZvciBlbmQgZGF0ZQ0KICAgICAgVVRDX0RBVEUNCiAgICAgLFVUQ19Nb250aA0KICAgICAsTG9jYWxfRGF0ZV9UaW1lIE9jY3VwYW5jeV9TdGFydF9EYXRldGltZV9Mb2NhbA0KICAgICAsTG9jYWxfRGF0ZQ0KICAgICAsTlVMTCBSYWRfTWVhc3VyZW1lbnRfU3RhcnRfRGF0ZXRpbWVfVVRDDQogICAgICxOVUxMIFJhZF9NZWFzdXJlbWVudF9FbmRfRGF0ZXRpbWVfVVRDDQogICAgICxbRGF0YV9Tb3VyY2VfSURdDQogICAgICxbUFJJREVfTWVzc2FnZV9JRF0NCiAgICAgLDEgW1NlZ21lbnRfQ3RdDQogICAgICxQcmVfU2FtcGxlcyArIFBvc3RfU2FtcGxlcyArIFByb2ZpbGVfU2FtcGxlcyBbUmFkX01lYXN1cmVtZW50X1RvdGFsX0N0XQ0KICAgICAsUHJlX1NhbXBsZXMgW1JhZF9NZWFzdXJlbWVudF9QcmVfQ3RdDQogICAgICxQb3N0X1NhbXBsZXMgW1JhZF9NZWFzdXJlbWVudF9Qb3N0X0N0XQ0KICAgICAsUHJvZmlsZV9TYW1wbGVzIFtSYWRfTWVhc3VyZW1lbnRfT2NjdXBpZWRfQ3RdDQogICAgICxPY2N1cGFuY3lfRHVyYXRpb25fU2VjDQogICAgICxDT05WRVJUKERFQ0lNQUwoNCwgMiksIENBU0UNCiAgICAgICAgV0hFTiBTcGVlZCA+IDk5Ljk5IFRIRU4gOTkuOTkNCiAgICAgICAgRUxTRSBTcGVlZA0KICAgICAgRU5EKSBbU3BlZWRfTWF4X01QSF0NCiAgICAgLENPTlZFUlQoREVDSU1BTCg0LCAyKSwgQ0FTRQ0KICAgICAgICBXSEVOIFNwZWVkID4gOTkuOTkgVEhFTiA5OS45OQ0KICAgICAgICBFTFNFIFNwZWVkDQogICAgICBFTkQpIFtTcGVlZF9NaW5fTVBIXQ0KICAgICAsTmV1dHJvbl9BbGFybSBbRmllbGRfTmV1dHJvbl9BbGFybV0NCiAgICAgLEdhbW1hX0FsYXJtIFtGaWVsZF9HYW1tYV9BbGFybV0NCiAgICAgLE5VTEwgW0ZpZWxkX0lzb3RvcGVfQWxhcm1dDQogICAgICxOVUxMIFtGaWVsZF9PdGhlcl9BbGFybV0NCiAgICAgLENBU0UNCiAgICAgICAgV0hFTiBHYW1tYV9BbGFybSA9IDEgT1INCiAgICAgICAgICBOZXV0cm9uX0FsYXJtID0gMSBUSEVOIDENCiAgICAgICAgRUxTRSAwDQogICAgICBFTkQgRmllbGRfQW55X0FsYXJtDQogICAgICxOZXV0cm9uX0FsYXJtIFtWZW5kb3JfTmV1dHJvbl9BbGFybV0NCiAgICAgLEdhbW1hX0FsYXJtIFtWZW5kb3JfR2FtbWFfQWxhcm1dDQogICAgICxOVUxMIFtWZW5kb3JfRW5lcmd5X1dpbmRvd10NCiAgICAgLENBU0UNCiAgICAgICAgV0hFTiBHYW1tYV9BbGFybSA9IDEgT1INCiAgICAgICAgICBOZXV0cm9uX0FsYXJtID0gMSBUSEVOIDENCiAgICAgICAgRUxTRSAwDQogICAgICBFTkQgVmVuZG9yX0FueV9BbGFybQ0KICAgICAsTlVMTCBbU2Nhbl9FcnJvcl0NCiAgICAgLE5VTEwgW05vX1ZQU10NCiAgICAgLFtGYWxzZV9PY2N1cGFuY3lfSURdDQogICAgICxbRmFsc2VfT2NjdXBhbmN5X05hbWVdDQogICAgICxbRmFsc2VfT2NjdXBhbmN5X0luY2x1ZGVfSW5fQ291bnRdDQogICAgICxOVUxMIFtFUk5JRV9SZXN1bHRfTmFtZV0NCiAgICAgLE5VTEwgW0VSTklFX0dhbW1hX0FsYXJtXQ0KICAgICAsTlVMTCBbRVJOSUVfTWVzc2FnZV9JRF0NCiAgICAgLE5VTEwgW0VSTklFX01lc3NhZ2VdDQogICAgICxOVUxMIFtFUk5JRV9ZZWxsb3dfTGlnaHRfTWVzc2FnZV9JRF0NCiAgICAgLE5VTEwgW0VSTklFX1llbGxvd19MaWdodF9NZXNzYWdlXQ0KICAgICAsTlVMTCBbRVJOSUVfQnlwYXNzX0ZsZ10NCiAgICAgLE5VTEwgW0VSTklFX1NvdXJjZV9UeXBlXQ0KICAgICAsTlVMTCAtLSBbQWRqdWRpY2F0aW9uX0V4YW1fSURdDQogICAgICxOVUxMIC0tIFtBZGp1ZGljYXRpb25fU2Nhbl9JRF0NCiAgICAgLFtDb21tb2RpdHldDQogICAgICxMRUZUKFtDb21tZW50c10sIDIwMDApIFtDb21tZW50c10NCiAgICAgLE5VTEwtLSBbUmVzb2x1dGlvbl9Db2RlXQ0KICAgICAsTlVMTCAtLVtSZXNvbHV0aW9uX0dyb3VwXQ0KICAgICAsTlVMTCAtLVtSZXNvbHV0aW9uX0Rlc2NyaXB0aW9uXQ0KICAgICAsW1NvdXJjZV9Mb2FkX0RhdGV0aW1lX0xvY2FsXQ0KICAgICAsQGN1cnJMb2FkRHRMb2NhbCBjdXJyTG9hZER0TG9jYWwNCiAgICAgLCdMdWRsdW0nDQogICAgICxPY2N1cGFuY3lfSUQNCiAgICAgLFtDb21tb2RpdHldDQogICAgICxMRUZUKFtDb21tZW50c10sIDIwMDApIFtDb21tZW50czJdDQogICAgRlJPTSBkYm8uVldfT2NjdXBhbmN5X0luY3JfQ29yZV9MdWRsdW0gbyBXSVRIIChOT0xPQ0spDQogICAgV0hFUkUgby5Tb3VyY2VfTG9hZF9EYXRldGltZV9Mb2NhbCA+IEBPY2N1cGFuY3lfSW5jcl9EYXRlVGltZQ0KICAgIEFORCBvLlNvdXJjZV9Mb2FkX0RhdGV0aW1lX0xvY2FsIDw9IEBPY2N1cGFuY3lfSW5jcl9EYXRlVGltZV9NYXg7DQoNCg0KICBTRVQgQFJvd0N0ID0gQ09BTEVTQ0UoQEBST1dDT1VOVCwgMCk7DQoNCg0KICAtLXNhdmUgdGhlIGxhc3QgdXNlZCBkYXRlIGZvciBMdWRsdW0gaW5jcmVtZW50YWxzDQogIFVQREFURSB0ZW1wLkxvYWRfRGF0ZQ0KICAgIFNFVCBPY2N1cGFuY3lfTHVkbHVtX0luY3IgPSBAT2NjdXBhbmN5X0luY3JfRGF0ZVRpbWVfTWF4Ow0KDQoNCiAgU0VUIEBEdXJhdGlvbiA9IERBVEVESUZGKE1JTExJU0VDT05ELCBAU3RhcnRUaW1lLCBHRVREQVRFKCkpOw0KICBTRVQgQER1cmF0aW9uU3RyaW5nID0gQ0FTVChARHVyYXRpb24gQVMgVkFSQ0hBUigzMikpICsgJ21zJzsNCg0KICBTRVQgQExvZ01lc3NhZ2UgPSAnTHVkbHVtIEluY3JlbWVudGFsIE9jY3VwYW5jeSBMb2FkZWQ7IER1cmF0aW9uOiAnICsgQER1cmF0aW9uU3RyaW5nOw0KICBTRVQgQFRoaXNTdGF0dXMgPSAnQ29tcGxldGVkJzsNCg0KICAtLSBjYWxjIGluIHNlY29uZHMNCiAgU0VUIEBEdXJhdGlvbiA9IERBVEVESUZGKFNFQ09ORCwgQFN0YXJ0VGltZSwgR0VUREFURSgpKTsNCiAgU0VUIEBEdXJhdGlvblNlY29uZHMgPSBARHVyYXRpb247DQogIFNFVCBARHVyYXRpb25TdHJpbmcgPSBDQVNUKEBEdXJhdGlvbiBBUyBWQVJDSEFSKDMyKSkgKyAncyc7DQoNCiAgRVhFQ1VURSBSUE1fQ29udHJvbF9OZXcuZGJvLkluc2VydF9BcHBfTG9nIEBBcHBsaWNhdGlvbiA9IEBBcHBOYW1lDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAQXBwbGljYXRpb25fVmVyc2lvbiA9IEBBcHBWZXJzaW9uDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxARmlsZV9JRCA9IE5VTEwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBGaWxlX1R5cGUgPSBARmlsZVR5cGUNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBTdG9yZWRfUHJvY2VkdXJlID0gQE9iak5hbWUNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBUYWJsZV9OYW1lID0gQE1zZ1RibE5hbWUNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBSZWNvcmRfQ3QgPSBAUm93Q3QNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBTdGF0dXMgPSBAVGhpc1N0YXR1cw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQE1lc3NhZ2UgPSBATG9nTWVzc2FnZQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQER1cmF0aW9uX1NlY29uZHMgPSBARHVyYXRpb25TZWNvbmRzOw0KDQoNCg0KDQpFTkQgVFJZDQoNCkJFR0lOIENBVENIDQoNCiAgREVDTEFSRSBARVJST1JfTlVNQkVSIElOVA0KICAgICAgICAgLEBFUlJPUl9MSU5FIElOVA0KICAgICAgICAgLEBFUlJPUl9NRVNTQUdFIE5WQVJDSEFSKDQwMDApDQogICAgICAgICAsQEVycm9yTG9nTWVzc2FnZSBWQVJDSEFSKDQwMDApOw0KDQoNCiAgU0VMRUNUDQogICAgQEVSUk9SX05VTUJFUiA9IEVSUk9SX05VTUJFUigpDQogICAsQEVSUk9SX0xJTkUgPSBFUlJPUl9MSU5FKCkNCiAgICxARVJST1JfTUVTU0FHRSA9IEVSUk9SX01FU1NBR0UoKTsNCg0KICBTRVQgQEVycm9yTG9nTWVzc2FnZSA9ICdFcnJvcl9OdW1iZXI6ICcNCiAgKyBDQVNUKEBFUlJPUl9OVU1CRVIgQVMgVkFSQ0hBUigzMikpICsgJzsgRXJyb3JfTGluZTogJw0KICArIENBU1QoQEVSUk9SX0xJTkUgQVMgVkFSQ0hBUigzMikpICsgJzsgRXJyb3JfTWVzc2FnZTogJw0KICArIEBFUlJPUl9NRVNTQUdFOw0KICBTRVQgQFJvd0N0ID0gMDsNCiAgU0VUIEBUaGlzU3RhdHVzID0gJ0Vycm9yJzsNCg0KDQogIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgLS1Mb2cgYW55IGVycm9ycyBpbiB0aGUgQXBwbGljYXRpb25fTG9nIHRhYmxlDQogIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gICAgICAgDQogIEVYRUNVVEUgUlBNX0NvbnRyb2xfTmV3LmRiby5JbnNlcnRfQXBwX0xvZyBAQXBwbGljYXRpb24gPSBAQXBwTmFtZQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQEFwcGxpY2F0aW9uX1ZlcnNpb24gPSBAQXBwVmVyc2lvbg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAsQEZpbGVfSUQgPSBOVUxMDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxARmlsZV9UeXBlID0gQEZpbGVUeXBlDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAU3RvcmVkX1Byb2NlZHVyZSA9IEBPYmpOYW1lDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAVGFibGVfTmFtZSA9IEBNc2dUYmxOYW1lDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAUmVjb3JkX0N0ID0gQFJvd0N0DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICxAU3RhdHVzID0gQFRoaXNTdGF0dXMNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLEBNZXNzYWdlID0gQEVycm9yTG9nTWVzc2FnZTsNCg0KICAtLVJhaXNlIGVycm9yIGJhY2sgdG8gY2FsbGluZyBwcm9jDQogIFJBSVNFUlJPUiAoQEVycm9yTG9nTWVzc2FnZSwgMTYsIDEpOw0KDQpFTkQgQ0FUQ0g7DQpHTw==\",\r\n        \"payload_compression_algorithm\": \"NONE\",\r\n        \"subject_uuid\": \"c6d882de-4fb2-47f9-82fc-4e20944c98c2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/datasets?publish_message=True",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"datasets"
+							],
+							"query": [
+								{
+									"key": "publish_message",
+									"value": "True"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "datasets/publish_message=True",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dataset_name\": \"PJM33\",\r\n    \"description\": \"PJM Dataset33\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/datasets/:uuid?publish_message=True",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"datasets",
+								":uuid"
+							],
+							"query": [
+								{
+									"key": "publish_message",
+									"value": "True"
+								}
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "a1c0650b-9f97-4bd4-b901-51bd28915657"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "datasets/publish_message=True",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/datasets/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"datasets",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "1118a3f7-ef14-4612-bc94-6f85ac16ca1d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DatasetDefinition",
+			"item": [
+				{
+					"name": "dataset-definitions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/dataset-definitions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"dataset-definitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin/dataset-definitions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n            \"dataset_definition_name\": \"Tester-acl-2\",\r\n            \"description\": \"Tester-acl\",\r\n            \"schema\": \"{col1: thisorthat}\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/dataset-definitions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"dataset-definitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset-definitions",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"dataset_definition_name\": \"BAA-ZZZZZ-123\",\r\n        \"description\": \"BAA-DATA-1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/dataset-definitions/24345291-c06b-4e29-976a-528b188e3ae5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"dataset-definitions",
+								"24345291-c06b-4e29-976a-528b188e3ae5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset-definitions",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/dataset-definitions/d44785a2-5883-41ef-9ca8-8809b6d7ff13",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"dataset-definitions",
+								"d44785a2-5883-41ef-9ca8-8809b6d7ff13"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Endpoint",
+			"item": [
+				{
+					"name": "auth/endpoints/peers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints/peers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints",
+								"peers"
+							],
+							"query": [
+								{
+									"key": "base_url",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n            \"endpoint_user_name\": \"EP Jack2\",\r\n            \"certificate_dn\": \"cert5\",\r\n            \"description\": \"JB Test\",\r\n            \"active_sw\": \"N\",\r\n            \"participant_uuid\": \"feea5be2-aeb0-4456-b3f4-cefcb521f8ae\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"endpoint_uuid\": \"e7d37eb7-fcaa-477f-ad45-aa5eb776ef6b\",\r\n        \"endpoint_user_name\": \"JWelsh\",\r\n        \"certificate_dn\": \"cert1\",\r\n        \"description\": \"jwelsh\",\r\n        \"active_sw\": \"Y\",\r\n        \"uudex_administrator_sw\": \"N\",\r\n        \"participant_administrator_sw\": \"N\",\r\n        \"create_datetime\": \"2020-06-01T05:46:45.740846\",\r\n        \"participant_uuid\": \"57abf136-846f-4374-be5e-daa11a483c2b\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/endpoints/e7d37eb7-fcaa-477f-ad45-aa5eb776ef6b",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"endpoints",
+								"e7d37eb7-fcaa-477f-ad45-aa5eb776ef6b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints/4ecca6d6-f04c-4d09-b00c-e740f3b973ec",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints",
+								"4ecca6d6-f04c-4d09-b00c-e740f3b973ec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints/groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints/8487799e-237b-4c26-8d25-c50665ac909a/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints",
+								"8487799e-237b-4c26-8d25-c50665ac909a",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/endpoints/roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/endpoints/4b3b819e-94bd-4adf-b461-17ccb58ac870/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"endpoints",
+								"4b3b819e-94bd-4adf-b461-17ccb58ac870",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Participant",
+			"item": [
+				{
+					"name": "Contact",
+					"item": [
+						{
+							"name": "admin/participants/contacts",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"contact_number\": \"206-456-1089\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/admin/participants/10e74aeb-2002-404f-a2c5-464c46c24250/contacts/3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"admin",
+										"participants",
+										"10e74aeb-2002-404f-a2c5-464c46c24250",
+										"contacts",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/participants/contacts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}//v1/uudex/auth/participants/feea5be2-aeb0-4456-b3f4-cefcb521f8ae/contacts",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"",
+										"v1",
+										"uudex",
+										"auth",
+										"participants",
+										"feea5be2-aeb0-4456-b3f4-cefcb521f8ae",
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/participants/contacts",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "        {\r\n            \"contact_name\": \"Jake Picard\",\r\n            \"contact_number\": \"213-555-1212\",\r\n            \"participant_uuid\": \"feea5be2-aeb0-4456-b3f4-cefcb521f8ae\"\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/participants/feea5be2-aeb0-4456-b3f4-cefcb521f8ae/contacts",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"participants",
+										"feea5be2-aeb0-4456-b3f4-cefcb521f8ae",
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/participants/contacts",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}//v1/uudex/auth/participants/feea5be2-aeb0-4456-b3f4-cefcb521f8ae/contacts/303",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"",
+										"v1",
+										"uudex",
+										"auth",
+										"participants",
+										"feea5be2-aeb0-4456-b3f4-cefcb521f8ae",
+										"contacts",
+										"303"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "parent-participants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants/parent",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants",
+								"parent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/participants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/participants",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"participant_short_name\": \"jeff partic\",\r\n    \"participant_long_name\": \"jeff long name\",\r\n    \"description\": \"jeff partic\",\r\n    \"root_org_sw\": \"N\",\r\n    \"active_sw\": \"Y\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/participants",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"name": "Content-Type",
+								"value": "application/json",
+								"disabled": false
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"participant_short_name\": \"E-ISA2\",\n  \"root_org_sw\": \"Y\"\n}\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants/10e74aeb-2002-404f-a2c5-464c46c24250",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants",
+								"10e74aeb-2002-404f-a2c5-464c46c24250"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/participants",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants/05b4ec23-e981-4c57-8fe7-5df27bce356d",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants",
+								"05b4ec23-e981-4c57-8fe7-5df27bce356d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/participants/groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/participants/6b160834-f4b4-434d-b4a9-5de2284a9115/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"participants",
+								"6b160834-f4b4-434d-b4a9-5de2284a9115",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subject",
+			"item": [
+				{
+					"name": "ACL",
+					"item": [
+						{
+							"name": "Privilege",
+							"item": [
+								{
+									"name": "subjects/acl/privileges/grant",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "        {\r\n            \"privilege_name\": \"PUBLISH\",\r\n            \"grant_scope_name\": \"ALLOW_NONE\",\r\n            \"participant_uuid_list\": null\r\n\r\n            \r\n        }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/uudex/subjects/0e7953bd-7e7b-47b5-9ec2-2057cc29b5ad/acl/privileges",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"uudex",
+												"subjects",
+												"0e7953bd-7e7b-47b5-9ec2-2057cc29b5ad",
+												"acl",
+												"privileges"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "subjects/acl/privileges/revoke",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/uudex/subjects/0e7953bd-7e7b-47b5-9ec2-2057cc29b5ad/acl/privileges/PUBLISH",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"uudex",
+												"subjects",
+												"0e7953bd-7e7b-47b5-9ec2-2057cc29b5ad",
+												"acl",
+												"privileges",
+												"PUBLISH"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "subjects/acl",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subjects/:uuid/acl/:acl_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subjects",
+										":uuid",
+										"acl",
+										":acl_id"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "e6743307-472c-4170-bb02-11cf7f89fe22"
+										},
+										{
+											"key": "acl_id",
+											"value": "120"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Publish",
+					"item": [
+						{
+							"name": "subjects/publish",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n\t{\r\n\t\t\"message\": \"SW4gUmFiYml0IE1RLCB0aGlzIGlzIGFjY29tcGxpc2hlZCBieSBlc3RhYmxpc2hpbmcgYW4g4oCcZXhjaGFuZ2XigJ0gYW5kIGVzdGFibGlzaGluZyBhIOKAnHF1ZXVl4oCdIGZvciBlYWNoIHN1YnNjcmlwdGlvbi4gVGhlIHB1Ymxpc2ggZXhjaGFuZ2Ugd291bGQgdGhlbiBzZW5kIGEgY29weSBvZiB0aGUgcHVibGlzaGVkIG1lc3NhZ2UgdG8gZWFjaCBxdWV1ZS4gTWVzc2FnZXMgYXJlIHNlbnQgaW5kZXBlbmRlbnRseSB0byBlYWNoIHF1ZXVlLCBhbmQgdGhlcmVmb3JlIHN1YnNjcmliZXIuICA=\"\r\n\t},\r\n\t{\r\n\t\t\"message\": \"UmFiYml0IGhhcyBhIGZlYXR1cmUgY2FsbGVkIOKAnFF1ZXVlIExlbmd0aCBMaW1pdOKAnSB0aGF0IGNhbiBzcGVjaWZ5IHRoZSBudW1iZXIgb2YgbWVzc2FnZXMgaW4gdGhlIHF1ZXVlLCBvciB0aGUgbnVtYmVyIG9mIGJ5dGVzIGluIHRoZSBxdWV1ZS4gVGhpcyBvbmx5IGFwcGxpZXMgdG8gZGVsaXZlcnkgcXVldWVzLCBub3QgdGhlIHVuZGVybHlpbmcgZGF0YWJhc2U=\"\r\n\t}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subjects/aef03e7e-44cc-4617-9c74-cffd956b831e/publish",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subjects",
+										"aef03e7e-44cc-4617-9c74-cffd956b831e",
+										"publish"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "subjects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subjects/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "8fc302e4-a2d2-4749-9318-b597684cf96f"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "        {\r\n            \"description\": \"T4.3.2.1-desc\",\r\n            \"subscription_type\": \"MEASUREMENT_VALUES\",\r\n            \"fulfillment_types_available\": \"DATA_PUSH\"\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/admin/subjects/:uuid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"admin",
+										"subjects",
+										":uuid"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "1b7a9a51-c952-4845-a13c-6c868b4cfcc6"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"subject_uuid\": \"0d10995a-8f9b-4c5c-846d-faa25bbdecb3\",\n    \"subject_name\": \"Tester/TEST/T4.3.2.2\",\n    \"dataset_instance_key\": \"Tester/TEST/T4.3.2.2\",\n    \"description\": \"test subject desc\",\n    \"subscription_type\": \"MEASUREMENT_VALUES\",\n    \"fulfillment_types_available\": \"DATA_PUSH\",\n    \"full_queue_behavior\": \"PURGE_OLD\",\n    \"max_queue_size_kb\": null,\n    \"max_message_count\": 3,\n    \"priority\": null,\n    \"backing_exchange_name\": \"e_Tester/TEST/T4.3.2.2_0d10995a-8f9b-4c5c-846d-faa25bbdecb3\",\n    \"owner_participant_uuid\": \"feea5be2-aeb0-4456-b3f4-cefcb521f8ae\",\n    \"owner_participant_short_name\": \"ICCP_Demo_1\",\n    \"create_datetime\": \"2021-03-02T17:05:45.224637\",\n    \"dataset_definition\": {\n        \"dataset_definition_uuid\": \"0a488833-0173-4c38-a4c6-c5bbbb925a06\",\n        \"dataset_definition_name\": \"mc_purge_old\",\n        \"description\": \"test dataset definition\",\n        \"schema\": null,\n        \"create_datetime\": \"2021-03-02T17:05:44.763051\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "subjects-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subjects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subjects"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "        {\r\n            \"description\": \"T4.3.2.1-desc\",\r\n            \"subscription_type\": \"MEASUREMENT_VALUES\",\r\n            \"fulfillment_types_available\": \"DATA_PUSH\"\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/admin/subjects/:uuid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"admin",
+										"subjects",
+										":uuid"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "1b7a9a51-c952-4845-a13c-6c868b4cfcc6"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"subject_uuid\": \"0d10995a-8f9b-4c5c-846d-faa25bbdecb3\",\n    \"subject_name\": \"Tester/TEST/T4.3.2.2\",\n    \"dataset_instance_key\": \"Tester/TEST/T4.3.2.2\",\n    \"description\": \"test subject desc\",\n    \"subscription_type\": \"MEASUREMENT_VALUES\",\n    \"fulfillment_types_available\": \"DATA_PUSH\",\n    \"full_queue_behavior\": \"PURGE_OLD\",\n    \"max_queue_size_kb\": null,\n    \"max_message_count\": 3,\n    \"priority\": null,\n    \"backing_exchange_name\": \"e_Tester/TEST/T4.3.2.2_0d10995a-8f9b-4c5c-846d-faa25bbdecb3\",\n    \"owner_participant_uuid\": \"feea5be2-aeb0-4456-b3f4-cefcb521f8ae\",\n    \"owner_participant_short_name\": \"ICCP_Demo_1\",\n    \"create_datetime\": \"2021-03-02T17:05:45.224637\",\n    \"dataset_definition\": {\n        \"dataset_definition_uuid\": \"0a488833-0173-4c38-a4c6-c5bbbb925a06\",\n        \"dataset_definition_name\": \"mc_purge_old\",\n        \"description\": \"test dataset definition\",\n        \"schema\": null,\n        \"create_datetime\": \"2021-03-02T17:05:44.763051\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "admin/subjects",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n            \"subject_name\": \"Tester/TEST/T4.3.2.1\",\r\n            \"dataset_instance_key\": \"Tester/TEST/T4.3.2.1\",\r\n            \"description\": \"T4.3.2.1\",\r\n            \"subscription_type\": \"MEASUREMENT_VALUES\",\r\n            \"fulfillment_types_available\": \"DATA_PUSH\",\r\n            \"dataset_definition_uuid\": \"d94c71c8-468d-4492-b86c-d0b36978f187\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/subjects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin/subjects",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n            \"description\": \"T4.3.2.1-desc\",\r\n            \"subscription_type\": \"MEASUREMENT_VALUES\",\r\n            \"fulfillment_types_available\": \"DATA_PUSH\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/subjects/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "1b7a9a51-c952-4845-a13c-6c868b4cfcc6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin/subjects",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/admin/subjects/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"admin",
+								"subjects",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "e19ebe0c-7fee-4bf4-91ee-60ef40db9374"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subjects/discover",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subjects/discover",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subjects",
+								"discover"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subjects",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n            \"subject_name\": \"Tester/TEST/T4.3.2.1\",\r\n            \"dataset_instance_key\": \"Tester/TEST/T4.3.2.1\",\r\n            \"description\": \"T4.3.2.1\",\r\n            \"subscription_type\": \"MEASUREMENT_VALUES\",\r\n            \"fulfillment_types_available\": \"DATA_PUSH\",\r\n            \"dataset_definition_uuid\": \"d94c71c8-468d-4492-b86c-d0b36978f187\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subjects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SubjectPolicy",
+			"item": [
+				{
+					"name": "subject-policies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies-single",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex//subject-policies/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"",
+								"subject-policies",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "3861ab86-3ca8-4cfc-bc52-3aa73ed8c5aa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies-acl-contraints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies/6ad017fb-71ce-46c1-af91-fe724729b9b3/acl-constraints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies",
+								"6ad017fb-71ce-46c1-af91-fe724729b9b3",
+								"acl-constraints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"dataset_definition_uuid\": \"b2e4080c-7ac2-4768-8a54-b5580734d7e9\",\r\n        \"action\": \"DENY\",\r\n        \"max_queue_size_kb\": 1,\r\n        \"max_message_count\": 67,\r\n        \"max_priority\": 221,\r\n        \"full_queue_behavior\": \"BLOCK_NEW\",\r\n        \"target_participant_uuid\": \"e88c2757-3063-45d7-860e-66f2a83876d9\"\r\n}        ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies/acl-constraints",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"privilege_allowed_name\": \"BROADEST_ALLOWED_PUBLISHER_ACCESS\",\r\n        \"grant_scope_name\": \"ALLOW_ONLY\",\r\n        \"object_list\": [\r\n            {\r\n                \"object_uuid\": \"d3c56887-d874-4041-89c6-14a5811cf431\",\r\n                \"object_type\": \"g\"\r\n            },\r\n            {\r\n                \"object_uuid\": \"58c728dc-bb26-4d13-a670-348f8821057e\",\r\n                \"object_type\": \"e\"\r\n            }             \r\n        ]\r\n}        ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies/6ad017fb-71ce-46c1-af91-fe724729b9b3/acl-constraints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies",
+								"6ad017fb-71ce-46c1-af91-fe724729b9b3",
+								"acl-constraints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies/acl-constraints",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"privilege_allowed_name\": \"BROADEST_ALLOWED_PUBLISHER_ACCESS\",\r\n        \"grant_scope_name\": \"ALLOW_ONLY\",\r\n        \"object_list\": [\r\n            {\r\n                \"object_uuid\": \"d3c56887-d874-4041-89c6-14a5811cf431\",\r\n                \"object_type\": \"g\"\r\n            },\r\n            {\r\n                \"object_uuid\": \"58c728dc-bb26-4d13-a670-348f8821057e\",\r\n                \"object_type\": \"e\"\r\n            }             \r\n        ]\r\n}        ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies/6ad017fb-71ce-46c1-af91-fe724729b9b3/acl-constraints/308",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies",
+								"6ad017fb-71ce-46c1-af91-fe724729b9b3",
+								"acl-constraints",
+								"308"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subject-policies",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subject-policies/e2e2152d-6f9e-49da-abb5-ba2378584021",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subject-policies",
+								"e2e2152d-6f9e-49da-abb5-ba2378584021"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "Subject",
+					"item": [
+						{
+							"name": "subscriptions/subjects",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/subjects",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subscriptions",
+										":uuid",
+										"subjects"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "a4f23ea9-f3e5-4e3e-b894-2a138b29564a"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/subjects",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"uudex",
+												"subscriptions",
+												":uuid",
+												"subjects"
+											],
+											"variable": [
+												{
+													"key": "uuid",
+													"value": "a4f23ea9-f3e5-4e3e-b894-2a138b29564a"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "386"
+										},
+										{
+											"key": "Server",
+											"value": "Werkzeug/1.0.1 Python/3.7.8"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 09 Jul 2021 03:54:22 GMT"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"subscription_subject_id\": 2,\n        \"subject_name\": \"power_world_data\",\n        \"subject_uuid\": \"c6d882de-4fb2-47f9-82fc-4e20944c98c2\",\n        \"subscription_uuid\": \"a4f23ea9-f3e5-4e3e-b894-2a138b29564a\",\n        \"preferred_fulfillment_type\": \"DATA_PUSH\",\n        \"backing_queue_name\": \"q_BW_Smith_/pjm/generators/landsie_df4b52ca-d33d-4cbb-a321-3246dab060dc\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "subscriptions/subjects/attach",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"console.log(\"1\");\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "        {\r\n            \"preferred_fulfillment_type\": \"DATA_NOTIFY\",\r\n            \"subject_uuid\": \"777a5b0c-7bce-4036-8c00-5d98b93a8261\"\r\n        }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/subjects",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subscriptions",
+										":uuid",
+										"subjects"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "df4b52ca-d33d-4cbb-a321-3246dab060dc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "subscriptions/subjects/detach",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/subjects/:subscription_subj_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subscriptions",
+										":uuid",
+										"subjects",
+										":subscription_subj_id"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "8c72c3b9-aaaa-44d8-81fa-4a15635acbcc"
+										},
+										{
+											"key": "subscription_subj_id",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Consume",
+					"item": [
+						{
+							"name": "subscriptions/consume",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/consume",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"subscriptions",
+										":uuid",
+										"consume"
+									],
+									"variable": [
+										{
+											"key": "uuid",
+											"value": "65633dba-4713-4b35-9f00-196d3ad33052"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/consume",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"uudex",
+												"subscriptions",
+												":uuid",
+												"consume"
+											],
+											"variable": [
+												{
+													"key": "uuid",
+													"value": "65633dba-4713-4b35-9f00-196d3ad33052"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "179"
+										},
+										{
+											"key": "Server",
+											"value": "Werkzeug/1.0.1 Python/3.7.8"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 09 Jul 2021 04:01:11 GMT"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"subject_uuid\": \"9886215a-2502-4ba8-8d85-ab323800aa0c\",\n        \"subject_name\": \"Tester/TEST/T4.3.1.1\",\n        \"message_count\": 0,\n        \"messages\": []\n    }\n]"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "subscriptions/subjects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid/subjects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subscriptions",
+								":uuid",
+								"subjects"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "65633dba-4713-4b35-9f00-196d3ad33052"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscriptions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"subscription_name\": \"Post-process powerworld data\",\r\n            \"subscription_state\": \"ACTIVE\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscriptions",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"subscription_name\": \"Some test sub and stuff\",\r\n            \"subscription_state\": \"PAUSED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subscriptions",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "8c72c3b9-aaaa-44d8-81fa-4a15635acbcc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscriptions",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subscriptions/:uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subscriptions",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "a51230d1-3547-405e-b1d7-2dc1175d9afc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Liveness",
+			"item": [
+				{
+					"name": "subjects/_liveness",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/subjects?subject_name_filter=_liveness",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"subjects"
+							],
+							"query": [
+								{
+									"key": "subject_name_filter",
+									"value": "_liveness"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "auth/roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/roles",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role_name\": \"Tester1.1\",\r\n    \"description\": \"Test role 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/roles",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/roles/3f8d7f85-d1d3-4429-b2e2-3d9079da6948",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"roles",
+								"3f8d7f85-d1d3-4429-b2e2-3d9079da6948"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/roles/endpoints",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"endpoint_uuid\": \"4b3b819e-94bd-4adf-b461-17ccb58ac870\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/roles/3f8d7f85-d1d3-4429-b2e2-3d9079da6948/endpoints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"roles",
+								"3f8d7f85-d1d3-4429-b2e2-3d9079da6948",
+								"endpoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/roles/endpoints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/roles/a5c302cf-af34-4d10-a90a-c7677af57772/endpoints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"roles",
+								"a5c302cf-af34-4d10-a90a-c7677af57772",
+								"endpoints"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Group",
+			"item": [
+				{
+					"name": "Members",
+					"item": [
+						{
+							"name": "auth/groups/members",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/members",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"members"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/groups/members-endpoint",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"object_uuid\": \"20a4547f-3259-47ba-abf0-3fa1f6715721\",\r\n    \"object_type\": \"e\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/members",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"members"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/groups/members-participant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"object_uuid\": \"3a8226e5-b687-4a46-b3a6-fa0950a4742e\",\r\n    \"object_type\": \"p\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/members",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"members"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/groups/members",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/members/3a8226e5-b687-4a46-b3a6-fa0950a4742e?object_type=p",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"members",
+										"3a8226e5-b687-4a46-b3a6-fa0950a4742e"
+									],
+									"query": [
+										{
+											"key": "object_type",
+											"value": "p"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Managers",
+					"item": [
+						{
+							"name": "auth/groups/managers",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"object_uuid\": \"a50978ed-143f-4b52-9deb-8361cf01962d\",\r\n    \"object_type\": \"p\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/managers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"managers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/groups/managers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/managers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"managers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "auth/groups/managers",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/uudex/auth/groups/d3c56887-d874-4041-89c6-14a5811cf431/managers/3a8226e5-b687-4a46-b3a6-fa0950a4742e?object_type=p",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"uudex",
+										"auth",
+										"groups",
+										"d3c56887-d874-4041-89c6-14a5811cf431",
+										"managers",
+										"3a8226e5-b687-4a46-b3a6-fa0950a4742e"
+									],
+									"query": [
+										{
+											"key": "object_type",
+											"value": "p"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "auth/groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/groups",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"group_name\": \"Tester2.1\",\r\n    \"description\": \"Test group 2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/groups",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"group_name\": \"Tester1.1\",\r\n    \"description\": \"Test group 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/groups/c8dae84d-aa74-4f1e-b2e4-e2e8b6a0ce32",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"groups",
+								"c8dae84d-aa74-4f1e-b2e4-e2e8b6a0ce32"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/groups",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/groups/eaf03fd5-e405-48de-adfe-f3853e0e3c72",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"groups",
+								"eaf03fd5-e405-48de-adfe-f3853e0e3c72"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permission",
+			"item": [
+				{
+					"name": "auth/permissions-ep",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_uuid\": \"8fc302e4-a2d2-4749-9318-b597684cf96f\",\r\n    \"object_uuid\": \"9e883b79-265a-495f-82f6-a5a9c081ddfa\",\r\n    \"object_type\": \"e\",\r\n    \"privilege\": \"DISCOVER\",\r\n    \"except_modifier_override\": \"N\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permissions-ep-publish",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_uuid\": \"8fc302e4-a2d2-4749-9318-b597684cf96f\",\r\n    \"object_uuid\": \"20a4547f-3259-47ba-abf0-3fa1f6715721\",\r\n    \"object_type\": \"e\",\r\n    \"privilege\": \"PUBLISH\",\r\n    \"except_modifier_override\": \"N\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permissions-participant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_uuid\": \"8fc302e4-a2d2-4749-9318-b597684cf96f\",\r\n    \"object_uuid\": \"6b160834-f4b4-434d-b4a9-5de2284a9115\",\r\n    \"object_type\": \"p\",\r\n    \"privilege\": \"PUBLISH\",\r\n    \"except_modifier_override\": \"N\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permissions-ep-override",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_uuid\": \"8fc302e4-a2d2-4749-9318-b597684cf96f\",\r\n    \"object_uuid\": \"9e883b79-265a-495f-82f6-a5a9c081ddfa\",\r\n    \"object_type\": \"e\",\r\n    \"privilege\": \"PUBLISH\",\r\n    \"except_modifier_override\": \"Y\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permissions-grp-override",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_uuid\": \"8fc302e4-a2d2-4749-9318-b597684cf96f\",\r\n    \"object_uuid\": \"d3c56887-d874-4041-89c6-14a5811cf431\",\r\n    \"object_type\": \"g\",\r\n    \"privilege\": \"SUBSCRIBE\",\r\n    \"except_modifier_override\": \"Y\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-ep",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/9e883b79-265a-495f-82f6-a5a9c081ddfa?object_type=e",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"9e883b79-265a-495f-82f6-a5a9c081ddfa"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-grp",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/d3c56887-d874-4041-89c6-14a5811cf431?object_type=g",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"d3c56887-d874-4041-89c6-14a5811cf431"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "g"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-participant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/6b160834-f4b4-434d-b4a9-5de2284a9115?object_type=p",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"6b160834-f4b4-434d-b4a9-5de2284a9115"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "p"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-ep",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/DISCOVER/8fc302e4-a2d2-4749-9318-b597684cf96f/target/9e883b79-265a-495f-82f6-a5a9c081ddfa?object_type=e&except_modifier_override=N",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"DISCOVER",
+								"8fc302e4-a2d2-4749-9318-b597684cf96f",
+								"target",
+								"9e883b79-265a-495f-82f6-a5a9c081ddfa"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "e"
+								},
+								{
+									"key": "except_modifier_override",
+									"value": "N"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-grp-override1",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/SUBSCRIBE/8fc302e4-a2d2-4749-9318-b597684cf96f/target/d3c56887-d874-4041-89c6-14a5811cf431?object_type=g&except_modifier_override=Y",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"SUBSCRIBE",
+								"8fc302e4-a2d2-4749-9318-b597684cf96f",
+								"target",
+								"d3c56887-d874-4041-89c6-14a5811cf431"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "g"
+								},
+								{
+									"key": "except_modifier_override",
+									"value": "Y"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/permission-grp-override2",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/permissions/SUBSCRIBE/8fc302e4-a2d2-4749-9318-b597684cf96f/target/d3c56887-d874-4041-89c6-14a5811cf431?object_type=g&except_modifier_override=Y",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"permissions",
+								"SUBSCRIBE",
+								"8fc302e4-a2d2-4749-9318-b597684cf96f",
+								"target",
+								"d3c56887-d874-4041-89c6-14a5811cf431"
+							],
+							"query": [
+								{
+									"key": "object_type",
+									"value": "g"
+								},
+								{
+									"key": "except_modifier_override",
+									"value": "Y"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ObjectType",
+			"item": [
+				{
+					"name": "auth/object_type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/uudex/auth/object_type/d3c56887-d874-4041-89c6-14a5811cf431",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"uudex",
+								"auth",
+								"object_type",
+								"d3c56887-d874-4041-89c6-14a5811cf431"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
