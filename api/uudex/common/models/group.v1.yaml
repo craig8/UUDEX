@@ -1,0 +1,13 @@
+title: group.v1
+type: object
+properties:
+  igroup_uuid:
+    type: string
+    format: uuid
+  group_name:
+    type: string
+  description:
+    type: string
+required:
+  - group_name
+  - description

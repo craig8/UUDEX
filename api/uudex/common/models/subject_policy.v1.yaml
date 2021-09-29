@@ -1,0 +1,36 @@
+title: subject_policy
+type: object
+description: ''
+properties:
+  subject_policy_uuid:
+    type: string
+    format: uuid
+  action:
+    type: string
+    enum:
+      - ALLOW
+      - DENY
+      - REVIEW
+  full_queue_behavior:
+    type: string
+    enum:
+      - BLOCK_NEW
+      - PURGE_OLD
+      - NO_CONSTRAINT
+  max_queue_size_kb:
+    type: integer
+    format: int32
+  max_message_count:
+    type: integer
+    format: int32
+  max_priority:
+    type: integer
+    format: int32
+  target_participant_uuid:
+    type: string
+    format: uuid
+  dataset_definition_uuid:
+    type: string
+    format: uuid
+required:
+  - action

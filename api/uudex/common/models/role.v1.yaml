@@ -1,0 +1,13 @@
+title: roles.v1
+type: object
+properties:
+  role_uuid:
+    type: string
+    format: uuid
+  role_name:
+    type: string
+  description:
+    type: string
+required:
+  - role_name
+  - description

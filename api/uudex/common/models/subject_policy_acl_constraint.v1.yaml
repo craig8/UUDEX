@@ -1,0 +1,27 @@
+title: subject_policy_acl_constraint
+type: object
+properties:
+  subject_policy_acl_constraint_id:
+    type: integer
+  privilege_allowed_name:
+    type: string
+    enum:
+      - BROADEST_ALLOWED_PUBLISHER_ACCESS
+      - BROADEST_ALLOWED_SUBSCRIBER_ACCESS
+      - BROADEST_ALLOWED_MANAGER_ACCESS
+  grant_scope_name:
+    type: string
+    enum:
+      - ALLOW_ONLY
+      - ALLOW_EXCEPT
+      - ALLOW_ALL
+      - ALLOW_NONE
+  participant_uuid_list:
+    type: array
+    items:
+      type: string
+      format: uuid
+required:
+  - privilege_allowed_name
+  - grant_scope_name
+  - participant_uuid_list

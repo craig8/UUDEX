@@ -1,0 +1,1907 @@
+openapi: 3.0.0
+info:
+  title: UUDEXApi
+  version: '1.0'
+  description: uudex api
+  contact:
+    name: J Welsh
+    url: 'https://www.pnnl.gov/'
+    email: jeff.welsh@pnnl.gov
+servers:
+  - url: 'https://localhost/v1/uudex'
+paths:
+  /auth/endpoints/peers:
+    get:
+      summary: "Returns a collection of all peer Endpoints in the calling Endpoint's Participant (organization)"
+      tags:
+        - Endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/endpoint.v1.yaml
+      operationId: get_peer_endpoints
+      description: "Returns a collection of peer Endpoints that are part of the invoker's Participant."
+    parameters: []
+  /auth/participants/parent:
+    get:
+      summary: "Returns the calling Endpoint's parent Participant"
+      tags:
+        - Participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/participant_enriched'
+      operationId: get_parent_participant
+      description: "Returns the invoker's parent Participant"
+    parameters: []
+  /subscriptions:
+    get:
+      summary: "Returns a collection of the invoker's Subscriptions"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscription_enriched'
+      operationId: get_subscriptions
+      description: |-
+        The invoker must own the Subscription.
+
+        A UUDEX Admin will get a collection of all Subscriptions in the system.
+      tags:
+        - Subscription
+    post:
+      summary: Create a single Subscription
+      operationId: create_subscription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subscription.v1.yaml
+              examples:
+                example-1: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subscription.v1.yaml
+      description: Create a single Subscription for the invoker.
+      tags:
+        - Subscription
+    parameters: []
+  '/subscriptions/{subscription_uuid}/subjects':
+    get:
+      summary: Returns a collection of all Subjects attached to the given Subscription
+      tags:
+        - Subscription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/subscription_subject.v1.yaml
+      operationId: get_subscription_subjects
+      description: |-
+        The invoker must own the Subscription.
+
+        A UUDEX Admin may get any Subscription's Subjects.
+      parameters: []
+    post:
+      summary: Attach a single Subject to the given Subscription
+      operationId: attach_subscription_subject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subscription_subject.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subscription_subject.v1.yaml
+        description: ''
+      description: The invoker must own the Subscription.
+      tags:
+        - Subscription
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subscription_uuid
+        in: path
+        required: true
+  '/subscriptions/{subscription_uuid}':
+    patch:
+      summary: Update a single Subscription
+      operationId: update_subscription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subscription.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subscription.v1.yaml
+      description: The invoker must own the Subscription.
+      tags:
+        - Subscription
+    delete:
+      summary: Delelete a Subscription
+      operationId: delete_subscription
+      responses:
+        '204':
+          description: No Content
+      description: The invoker must own the Subscription.
+      tags:
+        - Subscription
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subscription_uuid
+        in: path
+        required: true
+    get:
+      summary: Gets a single Subscription
+      operationId: get_subscription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subscription.v1.yaml
+      tags:
+        - Subscription
+      description: |-
+        The invoker must own the Subscription.
+
+        A UUDEX Admin may get any Subscription.
+  '/subscriptions/{subscription_uuid}/subjects/{subscription_subject_id}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subscription_uuid
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: subscription_subject_id
+        in: path
+        required: true
+    delete:
+      summary: Detach a Subject from the given Subscription
+      operationId: detach_subscription_subject
+      responses:
+        '204':
+          description: No Content
+      description: The invoker must own the Subscription.
+      tags:
+        - Subscription
+  /subjects:
+    post:
+      summary: Creates a Subject if the calling participant is authorized
+      operationId: create_subject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subject.v1.yaml
+      tags:
+        - Subject
+      description: |-
+        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.
+
+        A UUDEX Admin imay create a Subject without restrictions.
+    get:
+      summary: Return a collection of Subjects
+      operationId: get_subjects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subject_enriched'
+      description: |-
+        Gets all Subjects owned by the invoker's Participant.  Invoker must have the SubjectAdmin role or the ParticipantAdmin role.
+
+        A UUDEX Admin may get all Subjects in the system.
+      tags:
+        - Subject
+  '/subjects/{subject_uuid}':
+    get:
+      summary: Get a single Subject the invoker is authorized to use
+      tags:
+        - Subject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subject_enriched'
+      operationId: get_subject
+      description: |-
+        The Subject must be owned by the invoker's Participant.  Invoker must have the SubjectAdmin role or the ParticipantAdmin role.
+
+        A UUDEX Admin may get any Subject in the system.
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subject_uuid
+        in: path
+        required: true
+    delete:
+      summary: Delete a single Subject the invoker is authorized to use
+      operationId: delete_subject
+      responses:
+        '204':
+          description: No Content
+      description: |-
+        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role AND the Subject must be owned by the invoker's Participant.
+
+        A UUDEX Admin may delete any Subject without restrictions.
+      tags:
+        - Subject
+    patch:
+      summary: Update a single Subject the invoker is authorized to use
+      operationId: update_subject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject.v1.yaml
+      description: |-
+        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role AND the Subject must be owned by the invoker's Participant.
+
+        A UUDEX Admin may update any Subject without restrictions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subject.v1.yaml
+      tags:
+        - Subject
+  /datasets:
+    parameters: []
+    get:
+      summary: 'Returns a collection of Datasets, given the passed search parameters'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/dataset_enriched'
+              examples:
+                example-1: {}
+      operationId: get_datasets
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: query
+          name: subject_uuid
+          description: Subject to search
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: search_expression
+          description: Contains a custom query expression that applies a filter based on key/value properties
+        - schema:
+            type: string
+            format: uuid
+          in: query
+          name: participant_uuid
+          description: Limit search to datasets owned by this Participant
+      description: |-
+        The invoker must have the SUBSCRIBE privilege to the Subject containing the fetched Datasets OR the Subjects containing the Datasets must be owned by the invoker's Participant.
+
+        A UUDEX Admin may get Datasets in any Subject without restrictions.
+      tags:
+        - Dataset
+    post:
+      summary: Create a single Dataset in the given Subject and optionally publish a message that contains the Dataset
+      operationId: create_dataset
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataset_enriched'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/dataset.v1.yaml
+            examples: {}
+        description: ''
+      description: |-
+        The invoker must have the PUBLISH privilege to the Subject containing the dataset OR the Subject that will contain the Dataset must be owned by the invoker's Participant.
+
+        A UUDEX Admin may create a dataset without restrictions.
+      tags:
+        - Dataset
+      parameters: []
+  '/datasets/{dataset_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: dataset_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns a single Dataset
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataset_enriched'
+      operationId: get_dataset
+      description: |-
+        The invoker must have the SUBSCRIBE privilege to the Subject containing the dataset OR the Subject containing the Dataset must be owned by the invoker's Participant.
+
+        A UUDEX Admin may get any dataset.
+      parameters: []
+      tags:
+        - Dataset
+    patch:
+      summary: Update the Dataset and optionally publish a notification message
+      operationId: update_dataset
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dataset_enriched'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/dataset.v1.yaml
+      tags:
+        - Dataset
+      parameters:
+        - schema:
+            type: boolean
+          in: query
+          name: publish_message
+          description: Whether to also publish a notice message to the parent subject
+      description: |-
+        The owner of the Subject that contains the Dataset must be the invoker's Participant OR the invoker must have been granted the MANAGE privilege to the Subject containing the Dataset.
+
+        A UUDEX Admin may update any Dataset.
+    delete:
+      summary: Delete the Dataset and optionally publish a notification message
+      operationId: delete_dataset
+      responses:
+        '204':
+          description: No Content
+      description: |-
+        The owner of the Subject containing the Dataset must be the invoker's Participant OR the invoker must have been granted the MANAGE privilege to the Subject containing the Dataset.
+
+        A UUDEX Admin may delete any Dataset.
+      tags:
+        - Dataset
+      parameters:
+        - schema:
+            type: boolean
+          in: query
+          description: Whether to also publish a notice message to the parent subject
+          name: publish_message
+  /dataset-definitions:
+    get:
+      summary: Returns a collection of all Datasets Definitions in the system
+      operationId: get_all_dataset_definitions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/dataset_definition.v1.yaml
+      description: |
+        This endpoint open to to all users on the system
+      tags:
+        - Dataset Definition
+    parameters: []
+    post:
+      summary: Create a single Dataset Definition
+      operationId: create_dataset_definition
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/dataset_definition.v1.yaml
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/dataset_definition.v1.yaml
+        description: ''
+      tags:
+        - Dataset Definition
+  /auth/endpoints:
+    post:
+      summary: Create a single Endpoint
+      operationId: auth_create_endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/endpoint.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/endpoint.v1.yaml
+      tags:
+        - Endpoint
+      description: |-
+        Create an Endpoint for the Participant that the invoker belongs to. The invoker must have the ParticipantAdmin role.
+
+        A UUDEX Administrator may create any Endpoint for any Participant.
+    get:
+      summary: Return a collection of all Endpoints in the system
+      operationId: auth_get_all_endpoints
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/endpoint.v1.yaml
+      tags:
+        - Endpoint
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+    parameters: []
+  '/auth/endpoints/{endpoint_uuid}':
+    get:
+      summary: Get a single Endpoint
+      tags:
+        - Endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/endpoint.v1.yaml
+      operationId: auth_get_endpoint
+      description: |-
+        The Endpoint must belong to the same Participant the invoker belongs to.
+
+        A UUDEX Admin may get any Endpoint.
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: endpoint_uuid
+        in: path
+        required: true
+    patch:
+      summary: Update a single Endpoint
+      operationId: auth_update_endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/endpoint.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/endpoint.v1.yaml
+      description: "The Endpoint must belong to the same Participant the invoker belongs to AND the invoker must have the ParticipantAdmin role.  \n\nA UUDEX Admin may update any Endpoint."
+      tags:
+        - Endpoint
+    delete:
+      summary: Delete an Endpoint
+      operationId: auth_delete_endpoint
+      responses:
+        '204':
+          description: No Content
+      description: "The Endpoint must belong to the same Participant the invoker belongs to AND the invoker must have the ParticipantAdmin role.  \n\nA UUDEX Admin may delete any Endpoint."
+      tags:
+        - Endpoint
+  '/auth/participants/{participant_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: participant_uuid
+        in: path
+        required: true
+    get:
+      summary: Get a single Participant
+      tags:
+        - Participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/participant.v1.yaml
+      operationId: auth_get_participant
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+    patch:
+      summary: Update a single Participant
+      operationId: auth_update_participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/participant.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/participant.v1.yaml
+        description: ''
+      tags:
+        - Participant
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+    delete:
+      summary: Delete a single Participant
+      operationId: auth_delete_participant
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Participant
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+  /auth/participants:
+    post:
+      summary: Create a single Participant
+      operationId: auth_create_participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/participant.v1.yaml
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/participant.v1.yaml
+      tags:
+        - Participant
+    get:
+      summary: Return a collection of all Participants in the system
+      operationId: auth_get_all_participants
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/participant.v1.yaml
+      tags:
+        - Participant
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+    parameters: []
+  '/auth/participants/{participant_uuid}/contacts':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: participant_uuid
+        in: path
+        required: true
+    post:
+      summary: Create a single Participant Contact
+      operationId: auth_create_participant_contact
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/contact.v1.yaml
+      description: |-
+        The invoker must be belong to the same Participant it is attempting to create a Contact for AND it must have the ParticipantAdmin role.
+
+        A UUDEX Admin may create any Contact for any Participant.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/contact.v1.yaml
+      tags:
+        - Participant
+    get:
+      summary: Return a collection of all Contacts for given Participant
+      operationId: auth_get_all_participant_contacts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/contact.v1.yaml
+      description: |-
+        The invoker must be belong to the same Participant it is attempting to get the Contacts for AND it must have the ParticipantAdmin role.
+
+        A UUDEX Admin may get the Contacts for any Participant.
+      tags:
+        - Participant
+  '/auth/participants/{participant_uuid}/contacts/{contact_id}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: participant_uuid
+        in: path
+        required: true
+      - schema:
+          type: integer
+          format: int32
+        name: contact_id
+        in: path
+        required: true
+    get:
+      summary: Get a single Contact for the Participant
+      tags:
+        - Participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/contact.v1.yaml
+      operationId: auth_get_participant_contact
+      description: |-
+        The invoker must be belong to the same Participant it is attempting to get the Contact for AND it must have the ParticipantAdmin role.
+
+        A UUDEX Admin may get any Contact for any Participant.
+    patch:
+      summary: Update a single Contact for the Participant
+      operationId: auth_update_participant_contact
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/contact.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/contact.v1.yaml
+      tags:
+        - Participant
+      description: "The invoker must be belong to the same Participant it is attempting to update the Contact for AND it must have the ParticipantAdmin role.  \n\nA UUDEX Admin may update any Contact for any Participant."
+    delete:
+      summary: Delete a single Contact for the Participant
+      operationId: auth_delete_participant_contact
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Participant
+      description: |-
+        The invoker must be belong to the same Participant it is attempting to delete the Contact for AND it must have the ParticipantAdmin role.
+
+        A UUDEX Admin may delete any Contact for any Participant.
+  /subject-policies:
+    get:
+      summary: Returns a collection of Subject Policies
+      tags:
+        - Subject Policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subject_policy_enriched'
+      operationId: get_subject_policies
+      description: |-
+        Returns a collection of all Subject Policies the invoker's Participant is attached to.
+
+        A UUDEX Admin will get all Subject Policies in the system.
+    post:
+      summary: Creates a Subject Policy and attaches it to given Participant
+      operationId: create_subject_policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject_policy.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subject_policy.v1.yaml
+        description: ''
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      tags:
+        - Subject Policy
+    parameters: []
+  '/subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subject_policy_uuid
+        in: path
+        required: true
+      - schema:
+          type: integer
+          format: int32
+        name: acl_constraint_id
+        in: path
+        required: true
+    get:
+      summary: Return a single ACL Constraint for a given Subject Policy
+      tags:
+        - Subject Policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject_policy_acl_constraint.v1.yaml
+      operationId: get_acl_constraint
+      description: |-
+        Returns the ACL Constraint for the given Subject Policy that the invoker's Participant is attached to.
+
+        A UUDEX Admin may get any given Subject Policy constraint.
+    delete:
+      summary: Delete a sincle ACL Constraint for a given Subject Policy
+      operationId: delete_acl_constraint
+      responses:
+        '204':
+          description: No Content
+      tags:
+        - Subject Policy
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+  '/subject-policies/{subject_policy_uuid}/acl-constraints':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subject_policy_uuid
+        in: path
+        required: true
+    get:
+      summary: Return all ACL Constraints for a given Subject Policy
+      tags:
+        - Subject Policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/subject_policy_acl_constraint.v1.yaml
+      operationId: get_all_acl_constraints
+      description: |-
+        Returns a collection of ACL Constraints for the given Subject Policy the invoker's Participant is attached to.
+
+        A UUDEX Admin may get a collection of ACL Constraints for any given Subject Policy.
+    post:
+      summary: Create a ACL Constraint for a given Subject Policy
+      operationId: create_acl_constraint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject_policy_acl_constraint.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subject_policy_acl_constraint.v1.yaml
+        description: ''
+      tags:
+        - Subject Policy
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+  '/subject-policies/{subject_policy_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subject_policy_uuid
+        in: path
+        required: true
+    get:
+      summary: Return a single Subject Policy
+      tags:
+        - Subject Policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subject_policy_enriched'
+      operationId: get_subject_policy
+      description: |-
+        Returns a single Subject Policy that invoker's Participant is attached to.
+
+        A UUDEX Admin may get any subject Policy.
+    delete:
+      summary: Delete a single Subject Policy
+      operationId: delete_subject_policy
+      responses:
+        '204':
+          description: No Content
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      tags:
+        - Subject Policy
+    patch:
+      summary: Update a single Subject Policy
+      operationId: update_subject_policy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/subject_policy.v1.yaml
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/subject_policy.v1.yaml
+      tags:
+        - Subject Policy
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+  '/dataset-definitions/{dataset_definition_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: dataset_definition_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns a single Dataset Definition
+      tags:
+        - Dataset Definition
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/dataset_definition.v1.yaml
+      operationId: get_dataset_definition
+      description: ''
+    patch:
+      summary: Update a single Dataset Definition
+      operationId: update_dataset_definition
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/dataset_definition.v1.yaml
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/dataset_definition.v1.yaml
+      tags:
+        - Dataset Definition
+    delete:
+      summary: Delete a single Dataset
+      operationId: delete_dataset_definition
+      responses:
+        '204':
+          description: No Content
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      tags:
+        - Dataset Definition
+  '/subjects/{subject_uuid}/publish':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subject_uuid
+        in: path
+        required: true
+    post:
+      summary: Publishes one or more messages
+      operationId: publish_message
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message_publish_resp'
+      description: |
+        Invoker must have the SUBSCRIBE privilege on the the Subject or own the Subject.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/message_publish'
+      tags:
+        - Subject
+  '/subscriptions/{subscription_uuid}/consume':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: subscription_uuid
+        in: path
+        required: true
+    get:
+      summary: Consumes the subscription and returns one or more pending messages from message broker
+      tags:
+        - Subscription
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/message_consume_resp'
+      operationId: consume_subscription
+      description: |
+        Invoker must have the SUBSCRIBE privilege on the the Subjects in the Subscription OR own the Subjects in the subscription.
+  /subjects/discover:
+    get:
+      summary: Returns a collection of Subjects the calling endpoint is authorized to view.  Optionally filter by subject name.
+      tags:
+        - Subject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subject_discovered'
+      operationId: discover_subjects
+      description: |
+        Returns a collection of Subjects the calling endpoint is authorized to view.  Authorized to view is defined as the invoker having been granted the DISCOVER privilege to the Subjects.
+      parameters: []
+  /auth/roles:
+    get:
+      summary: Return a collection of all Roles in the system
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/role.v1.yaml
+      operationId: auth_get_all_roles
+      description: This endpoint open to to all users on the system
+      tags:
+        - Role
+    post:
+      summary: Create a single Role
+      operationId: auth_create_role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/role.v1.yaml
+      description: Only a UUDEX Admin can create a role.  The invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/role.v1.yaml
+      tags:
+        - Role
+  '/auth/roles/{role_uuid}/endpoints':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: role_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns all Endpoints that have been granted the given Role
+      tags:
+        - Role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/endpoint.v1.yaml
+      operationId: auth_get_role_endpoints
+      description: |-
+        The invoker must have the either the ParticipantAdmin role or the RoleAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+    post:
+      summary: Grant role to the given Endpoint
+      operationId: auth_grant_role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoint_uuid'
+      description: |-
+        The invoker must belong to the same Participant as the Endpoint it's granting the role to AND the invoker must have the either the ParticipantAdmin role or the RoleAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/endpoint_uuid'
+      tags:
+        - Role
+  '/auth/roles/{role_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: role_uuid
+        in: path
+        required: true
+    get:
+      summary: Get a single Role
+      tags:
+        - Role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/role.v1.yaml
+      operationId: auth_get_role
+      description: ''
+    patch:
+      summary: Update a single Role
+      operationId: auth_update_role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/role.v1.yaml
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/role.v1.yaml
+      tags:
+        - Role
+    delete:
+      summary: Delete a single Role
+      operationId: auth_delete_role
+      responses:
+        '204':
+          description: No Content
+      description: The invoker must be a UUDEX Admin otherwise the call will fail.
+      tags:
+        - Role
+  /auth/groups:
+    get:
+      summary: Return a collection of all Groups the invoker has manage rights to
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/group.v1.yaml
+      operationId: auth_get_all_groups
+      description: |-
+        This call return all groups for which the invoker is a Group Manager.
+
+        A UUDEX Admin may invoke this call without restrictions.
+    post:
+      summary: Create a single Group
+      operationId: auth_create_group
+      responses:
+        '200':
+          description: OK
+      description: 'Only a UUDEX Admin may create a group, thus the invoker must be a UUDEX Admin otherwise the call will fail.'
+      tags:
+        - Group
+  '/auth/groups/{group_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: group_uuid
+        in: path
+        required: true
+    get:
+      summary: Get a single Group
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/group.v1.yaml
+      operationId: auth_get_group
+      description: |-
+        The invoker must be a Group Manager for the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+    patch:
+      summary: Update a single Group
+      operationId: auth_update_group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ../common/models/group.v1.yaml
+      description: Only a UUDEX Admin may update a group thus the invoker must be a UUDEX Admin otherwise the call will fail.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/group.v1.yaml
+      tags:
+        - Group
+    delete:
+      summary: Delete a single Group
+      operationId: auth_delete_group
+      responses:
+        '204':
+          description: No Content
+      description: Only a UUDEX Admin may delete a group.  The invoker must be a UUDEX Admin otherwise the call will fail.
+      tags:
+        - Group
+  '/auth/groups/{group_uuid}/managers':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: group_uuid
+        in: path
+        required: true
+    get:
+      summary: Return a collection of Group Managers for the given Group
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/generic_auth_object'
+              examples: {}
+      operationId: auth_get_all_group_managers
+      description: |-
+        The invoker must be a Group Manager for the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+    post:
+      summary: Adds a Group Manager to a Group
+      operationId: auth_add_group_manager
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_auth_object'
+      description: |-
+        The Group Manager can be an Endpoint, a Participant or another Group.
+
+        The invoker must be a Group Manager of the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/generic_auth_object'
+        description: ''
+      tags:
+        - Group
+  '/auth/groups/{group_uuid}/managers/{object_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: group_uuid
+        in: path
+        required: true
+      - schema:
+          type: string
+          format: uuid
+        name: object_uuid
+        in: path
+        required: true
+        description: 'Represents the Group Manager and is the UUID of either an Endpoint, a Participant or another Group.'
+    delete:
+      summary: Remove a Group Manager from a Group
+      operationId: auth_remove_group_manager
+      responses:
+        '200':
+          description: OK
+      description: |-
+        The invoker must be a Group Manager of the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - e
+              - p
+              - g
+          in: query
+          name: object_type
+          description: The object type of the object_uuid param.  Can be e or p for Endpoint or Participant
+          required: true
+      tags:
+        - Group
+  '/auth/groups/{group_uuid}/members':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: group_uuid
+        in: path
+        required: true
+    get:
+      summary: Return a collection of Group Members for the given Group
+      tags:
+        - Group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/generic_auth_object'
+      operationId: auth_get_all_group_members
+      description: |-
+        The invoker must be a Group Manager of the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+    post:
+      summary: Add a member to a group
+      operationId: auth_add_group_member
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_auth_object'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/generic_auth_object'
+      description: |-
+        The invoker must be a Group Manager of the group.  May add an endpoint or a participant to a group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      tags:
+        - Group
+  '/auth/groups/{group_uuid}/members/{object_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: group_uuid
+        in: path
+        required: true
+      - schema:
+          type: string
+          format: uuid
+        name: object_uuid
+        in: path
+        required: true
+        description: 'Represents the group member and is the UUID of either an Endpoint or a Participant.  Note, a group cannot be assigned to another group.'
+    delete:
+      summary: Remove a member from a Group
+      operationId: auth_remove_group_member
+      responses:
+        '204':
+          description: No Content
+      description: |-
+        The invoker must be a Group Manager of the group.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - e
+              - p
+          in: query
+          name: object_type
+          description: The object type of the object_uuid param.  Can be e for Endpoint or p for Participant.
+          required: true
+      tags:
+        - Group
+  '/auth/participants/{participant_uuid}/groups':
+    parameters:
+      - schema:
+          type: string
+        name: participant_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns a collection of groups the Participant is a member of
+      tags:
+        - Participant
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/generic_auth_object'
+      operationId: auth_get_all_participant_groups
+      description: |-
+        The invoker must belong to the Participant it is passing in AND it must have the ParticipantAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+  '/auth/endpoints/{endpoint_uuid}/groups':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: endpoint_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns a collection of groups the Endpoint is a member of
+      tags:
+        - Endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/generic_auth_object'
+      operationId: auth_get_all_endpoint_groups
+      description: |-
+        The Endpoint must belong to the same Participant as the invoker AND the invoker must have the ParticipantAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+  '/auth/endpoints/{endpoint_uuid}/roles':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: endpoint_uuid
+        in: path
+        required: true
+    get:
+      summary: Returns a collection of Roles the Endpoint is a member of
+      tags:
+        - Endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/generic_auth_object'
+      operationId: auth_get_all_endpoint_roles
+      description: |-
+        The Endpoint must belong to the same Participant as the invoker AND the invoker must have either the ParticipantAdmin role or the RoleAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+  /auth/permissions:
+    post:
+      summary: Creates a permission by granting a privilege on a Subject to an object
+      operationId: auth_grant_permission
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permission'
+      description: "The privilege may be either 'SUBSCRIBE', 'PUBLISH', 'MANAGE', or 'DISCOVER'\n\nThe target of the privilege grant (i.e., the object) can be either a role, a group, an endpoint or a participant.  \n\nThe invoker must have either the ParticipantAdmin role or the SubjectAdmin role.\n\nA UUDEX Admin may invoke this call without restrictions."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/permission'
+      tags:
+        - Permission
+    parameters: []
+  '/auth/permissions/{object_uuid}':
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: object_uuid
+        in: path
+        required: true
+        description: 'The UUID of either an Endpoint, a Participant, a Group , a Role or a Subject.'
+    get:
+      summary: Returns a collection of all explicit and implicit permissions granted to an object
+      tags:
+        - Permission
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/permission'
+      operationId: auth_get_permissions
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: object_type
+          description: 'The object type of the object_uuid param.  This code can be s, r, g, e or p, which represents Subject, Role, Group, Endpoint or Participant, respectively'
+          required: true
+      description: "1. For object_uuid of type Subject the invoker must have the ParticipantAdmin role or the SubjectAdmin role.\n\n2. For object_uuid of type Group the invoker must be a Group Manager for the group.\n\n3. For object_uuid of type Role the invoker must have the RoleAdmin role.\n\n4. For object_uuid of type Endpoint or type Participant the invoker must have the ParticipantAdmin role \n\n5. A UUDEX Admin may invoke this call without restrictions.\n"
+  '/auth/permissions/{privilege}/subject/{subject_uuid}/target/{object_uuid}':
+    parameters:
+      - schema:
+          type: string
+          enum:
+            - SUBSCRIBE
+            - PUBLISH
+            - DISCOVER
+        name: privilege
+        in: path
+        required: true
+        description: The privilege to revoke
+      - schema:
+          type: string
+          format: uuid
+        name: subject_uuid
+        in: path
+        required: true
+        description: The Subject to revoke the privilege from
+      - schema:
+          type: string
+          format: uuid
+        name: object_uuid
+        in: path
+        required: true
+        description: The target object that the privilege will be revoked from
+    delete:
+      summary: Remove a permission by revoking a privilege on a Subject from an object
+      operationId: auth_revoke_permission
+      responses:
+        '204':
+          description: No Content
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: object_type
+          description: 'The object type of the object_uuid param.  This code can be r, g, e or p, which represents Role, Group, Endpoint or Participant, respectively'
+          required: true
+        - schema:
+            type: string
+            enum:
+              - 'Y'
+              - 'N'
+          in: query
+          name: except_modifier_override
+          required: true
+          description: 'Specifies if the allow_except modifier applies to this permission.  Essentially inverts the permission rule and allows everyone (ie, public group) the applicable privilege EXCEPT the target of this grant.  See the UUDEX security design documents for details.'
+      description: |-
+        The invoker must have the ParticipantAdmin role or the SubjectAdmin role.
+
+        A UUDEX Admin may invoke this call without restrictions.
+      tags:
+        - Permission
+  '/auth/object_type/{object_uuid}':
+    get:
+      summary: Get object type based on a generic object UUID
+      tags:
+        - ObjectType
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generic_auth_object'
+      operationId: get_object_type
+      description: Helper function to determine what object type a generic UUID represents.
+    parameters:
+      - schema:
+          type: string
+          format: uuid
+        name: object_uuid
+        in: path
+        required: true
+        description: 'Can be the UUID of a subject, group, role, endpoint or participant.'
+components:
+  schemas:
+    participant_enriched:
+      title: participant_enriched
+      allOf:
+        - $ref: ../common/models/participant.v1.yaml
+        - type: object
+          properties:
+            contacts:
+              type: array
+              items:
+                $ref: ../common/models/contact.v1.yaml
+          required:
+            - contacts
+      description: ''
+    subscription_enriched:
+      title: subscription_enriched
+      allOf:
+        - $ref: ../common/models/subscription.v1.yaml
+        - type: object
+          properties:
+            subjects:
+              type: array
+              items:
+                type: object
+                properties:
+                  subscription_subject_id:
+                    type: integer
+                  subject_uuid:
+                    type: string
+                    format: uuid
+                  subject_name:
+                    type: string
+                  preferred_fulfillment_type:
+                    type: string
+                  backing_queue_name:
+                    type: string
+    subject_policy_enriched:
+      title: subject_policy_enriched
+      allOf:
+        - $ref: ../common/models/subject_policy.v1.yaml
+        - type: object
+          properties:
+            acl_constraints:
+              type: array
+              items:
+                type: object
+                properties:
+                  subject_policy_acl_constraint_id:
+                    type: integer
+                  privilege_allowed_name:
+                    type: string
+                  grant_scope_name:
+                    type: string
+                  object_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        object_uuid:
+                          type: string
+                        object_type:
+                          type: string
+    subject_discovered:
+      title: subject_discovered
+      type: object
+      properties:
+        subject_uuid:
+          type: string
+          format: uuid
+        subject_name:
+          type: string
+        description:
+          type: string
+    subject_enriched:
+      title: subject_enriched
+      type: object
+      x-examples:
+        example-1: {}
+      properties:
+        subject_uuid:
+          type: string
+          format: uuid
+        subject_name:
+          type: string
+        dataset_instance_key:
+          type: string
+        description:
+          type: string
+        subscription_type:
+          type: string
+          enum:
+            - MEASUREMENT_VALUES
+            - EVENT
+        fulfillment_types_available:
+          type: string
+          enum:
+            - DATA_PUSH
+            - DATA_NOTIFY
+            - BOTH
+        full_queue_behavior:
+          type: string
+        max_queue_size_kb:
+          type: integer
+        max_message_count:
+          type: integer
+        priority:
+          type: integer
+        backing_exchange_name:
+          type: string
+        owner_participant_uuid:
+          type: string
+          format: uuid
+        owner_participant_short_name:
+          type: string
+        create_datetime:
+          type: string
+          format: date-time
+        dataset_definition:
+          $ref: ../common/models/dataset_definition.v1.yaml
+      description: ''
+    metadata:
+      title: metadata_ember
+      type: object
+      properties:
+        payload_item:
+          type: integer
+        payload_item_count:
+          type: integer
+        change_log:
+          type: array
+          items:
+            type: object
+            properties:
+              attribute:
+                type: string
+              old_value:
+                type: string
+              new_value:
+                type: string
+    dataset_enriched:
+      title: dataset_enriched
+      type: object
+      properties:
+        dataset_uuid:
+          type: string
+          format: uuid
+        dataset_name:
+          type: string
+        description:
+          type: string
+        properties:
+          type: string
+        payload:
+          type: string
+        payload_size:
+          type: integer
+        payload_md5_hash:
+          type: string
+        payload_compression_algorithm:
+          type: string
+          enum:
+            - AVRO
+            - LZMA
+            - NONE
+          maxLength: 15
+        version_number:
+          type: integer
+          format: int32
+          minimum: 1
+        owner_participant_uuid:
+          type: string
+          format: uuid
+        subject_uuid:
+          type: string
+          format: uuid
+        create_datetime:
+          type: string
+          format: date-time
+    message_publish:
+      title: message_publish
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    message_consume_resp:
+      title: message_consume_resp
+      type: object
+      description: ''
+      properties:
+        subject_uuid:
+          type: string
+          format: uuid
+        subject_name:
+          type: string
+        message_count:
+          type: integer
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+    message_publish_resp:
+      title: message_publish_resp
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              message_index:
+                type: integer
+              message_md5_hash:
+                type: string
+    generic_auth_object:
+      title: generic_auth_object
+      type: object
+      description: 'Represents generic object in the system for authorization purposes and can be either a Subject, Role, Group, Endpoint or a Participant'
+      properties:
+        object_uuid:
+          type: string
+          description: The UUID of the object.
+        object_type:
+          type: string
+          description: |
+            The type code of the object represented in the object_uuid field.  This code can be 's', 'r', 'g', 'e' or 'p', which represents 'Subject', 'Role', 'Group', 'Endpoint' or 'Participant', respectively
+      required:
+        - object_uuid
+        - object_type
+    permission:
+      title: permission
+      type: object
+      description: Represents a permission that grants a privilege to a subject
+      properties:
+        subject_uuid:
+          type: string
+          format: uuid
+          description: The subject to receive the privilege grant
+        privilege:
+          type: string
+          enum:
+            - SUBSCRIBE
+            - PUBLISH
+            - MANAGE
+            - DISCOVER
+          description: 'One of PUBLISH, SUBSCRIBE, or DISCOVER'
+        object_uuid:
+          type: string
+          description: The UUID of the object
+          format: uuid
+        object_type:
+          type: string
+          description: "The type code of the object represented in the object_uuid field.  This code can be 's', 'r', 'g', 'e' or 'p', which represents 'Subject', 'Role', 'Group', 'Endpoint' or 'Participant', respectively"
+        except_modifier_override:
+          type: string
+          enum:
+            - 'Y'
+            - 'N'
+          description: 'Specifies if the allow_except modifier applies to this permission.  Essentially inverts the permission rule and allows everyone (ie, public group) the applicable privilege EXCEPT the target of this grant.  See the UUDEX security design documents for details.'
+      required:
+        - subject_uuid
+        - privilege
+        - object_uuid
+        - object_type
+        - except_modifier_override
+    endpoint_uuid:
+      title: endpoint_uuid
+      type: object
+      properties:
+        endpoint_uuid:
+          type: string
+  securitySchemes: {}

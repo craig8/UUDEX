@@ -1,0 +1,30 @@
+title: participant
+type: object
+description: ''
+properties:
+  participant_uuid:
+    type: string
+    format: uuid
+  participant_short_name:
+    type: string
+    maxLength: 20
+  participant_long_name:
+    type: string
+    maxLength: 50
+  description:
+    type: string
+    maxLength: 255
+  active_sw:
+    type: string
+    enum:
+      - 'Y'
+      - 'N'
+    maxLength: 1
+  create_datetime:
+    type: string
+    format: date-time
+required:
+  - participant_short_name
+  - participant_long_name
+  - description
+  - active_sw

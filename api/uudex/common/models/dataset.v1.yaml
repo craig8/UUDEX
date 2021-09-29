@@ -1,0 +1,33 @@
+title: dataset
+type: object
+description: ''
+x-examples:
+  example-1: {}
+properties:
+  dataset_uuid:
+    type: string
+    format: uuid
+  dataset_name:
+    type: string
+  description:
+    type: string
+  properties:
+    type: string
+  payload:
+    type: string
+  payload_compression_algorithm:
+    type: string
+    enum:
+      - AVRO
+      - LZMA
+      - NONE
+    maxLength: 15
+  subject_uuid:
+    type: string
+    format: uuid
+required:
+  - dataset_name
+  - description
+  - payload
+  - payload_compression_algorithm
+  - subject_uuid

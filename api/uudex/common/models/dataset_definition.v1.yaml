@@ -1,0 +1,18 @@
+title: dataset_definition
+type: object
+properties:
+  dataset_definition_uuid:
+    type: string
+    format: uuid
+  dataset_definition_name:
+    type: string
+  description:
+    type: string
+  schema:
+    type: string    
+  create_datetime:
+    type: string
+    format: date-time
+required:
+  - dataset_definition_name
+  - description

@@ -1,0 +1,28 @@
+title: subject_acl
+type: object
+properties:
+  subject_acl_id:
+    type: integer
+  privilege_name:
+    type: string
+    enum:
+      - PUBLISH
+      - SUBSCRIBE
+      - MANAGE
+      - DISCOVER
+  grant_scope_name:
+    type: string
+    enum:
+      - ALLOW_ONLY
+      - ALLOW_EXCEPT
+      - ALLOW_ALL
+      - ALLOW_NONE
+  participant_uuid_list:
+    type: array
+    items:
+      type: string
+      format: uuid
+required:
+  - privilege_name
+  - grant_scope_name
+  - participant_uuid_list

@@ -1,0 +1,23 @@
+title: subscription_subject
+type: object
+description: ''
+properties:
+  subscription_subject_id:
+    type: integer
+    format: int32
+  subject_uuid:
+    type: string
+    format: uuid
+  subject_name:
+    type: string    
+  preferred_fulfillment_type:
+    type: string
+    enum:
+      - DATA_PUSH
+      - DATA_NOTIFY
+    maxLength: 15
+  backing_queue_name:
+    type: string
+required:
+  - preferred_fulfillment_type
+  - subject_uuid

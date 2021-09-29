@@ -1,0 +1,18 @@
+title: contact
+type: object
+properties:
+  contact_id:
+    type: integer
+  contact_name:
+    type: string
+    maxLength: 30
+  contact_number:
+    type: string
+    maxLength: 15
+  participant_uuid:
+    type: string
+    format: uuid
+required:
+  - contact_name
+  - contact_number
+  - participant_uuid

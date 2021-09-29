@@ -1,0 +1,14 @@
+1. cd to the "user" directory of the UUDEX API definition project (this is a Stoplight Studio project) and place the the Swagger code-gen jar here (swagger-codegen-cli-3.0.20.jar)
+   a. Reference: https://github.com/swagger-api/swagger-codegen#getting-started
+   b. Reference: https://stoplight.io/studio/
+	 
+2. Make sure the "output" directory exists.
+
+3. Run the command below.  This will generate a client into the "output" directory.  In this case Python is the target language.
+   a. java -jar swagger-codegen-cli-3.0.20.jar generate -i uudex_client_api1.v1.yaml -l python -o output\api_client -c config.json
+   
+Note: uudex_client_api1.v1.yaml is the Stoplight API definition file, which is Swagger 3.0 compatible. See https://github.com/jeff-welsh/uudex_api
+
+
+
+

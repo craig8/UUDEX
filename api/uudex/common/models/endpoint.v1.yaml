@@ -1,0 +1,33 @@
+title: endpoint
+type: object
+properties:
+  endpoint_uuid:
+    type: string
+    format: uuid
+  endpoint_user_name:
+    type: string
+    maxLength: 30
+  certificate_dn:
+    type: string
+    maxLength: 255
+  description:
+    type: string
+    maxLength: 255
+  active_sw:
+    type: string
+    enum:
+      - 'Y'
+      - 'N'
+    maxLength: 1
+  create_datetime:
+    type: string
+    format: date-time
+  participant_uuid:
+    type: string
+    format: uuid
+required:
+  - endpoint_user_name
+  - certificate_dn
+  - description
+  - active_sw
+  - participant_uuid
