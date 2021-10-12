@@ -179,7 +179,7 @@ Class | Method | HTTP request | Description
 *SubjectApi* | [**update_subject**](docs/SubjectApi.md#update_subject) | **PATCH** /subjects/{subject_uuid} | Update a single Subject the invoker is authorized to use
 *SubjectPolicyApi* | [**create_acl_constraint**](docs/SubjectPolicyApi.md#create_acl_constraint) | **POST** /subject-policies/{subject_policy_uuid}/acl-constraints | Create a ACL Constraint for a given Subject Policy
 *SubjectPolicyApi* | [**create_subject_policy**](docs/SubjectPolicyApi.md#create_subject_policy) | **POST** /subject-policies | Creates a Subject Policy and attaches it to given Participant
-*SubjectPolicyApi* | [**delete_acl_constraint**](docs/SubjectPolicyApi.md#delete_acl_constraint) | **DELETE** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Delete a sincle ACL Constraint for a given Subject Policy
+*SubjectPolicyApi* | [**delete_acl_constraint**](docs/SubjectPolicyApi.md#delete_acl_constraint) | **DELETE** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Delete a single ACL Constraint for a given Subject Policy
 *SubjectPolicyApi* | [**delete_subject_policy**](docs/SubjectPolicyApi.md#delete_subject_policy) | **DELETE** /subject-policies/{subject_policy_uuid} | Delete a single Subject Policy
 *SubjectPolicyApi* | [**get_acl_constraint**](docs/SubjectPolicyApi.md#get_acl_constraint) | **GET** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Return a single ACL Constraint for a given Subject Policy
 *SubjectPolicyApi* | [**get_all_acl_constraints**](docs/SubjectPolicyApi.md#get_all_acl_constraints) | **GET** /subject-policies/{subject_policy_uuid}/acl-constraints | Return all ACL Constraints for a given Subject Policy
@@ -189,7 +189,7 @@ Class | Method | HTTP request | Description
 *SubscriptionApi* | [**attach_subscription_subject**](docs/SubscriptionApi.md#attach_subscription_subject) | **POST** /subscriptions/{subscription_uuid}/subjects | Attach a single Subject to the given Subscription
 *SubscriptionApi* | [**consume_subscription**](docs/SubscriptionApi.md#consume_subscription) | **GET** /subscriptions/{subscription_uuid}/consume | Consumes the subscription and returns one or more pending messages from message broker
 *SubscriptionApi* | [**create_subscription**](docs/SubscriptionApi.md#create_subscription) | **POST** /subscriptions | Create a single Subscription
-*SubscriptionApi* | [**delete_subscription**](docs/SubscriptionApi.md#delete_subscription) | **DELETE** /subscriptions/{subscription_uuid} | Delelete a Subscription
+*SubscriptionApi* | [**delete_subscription**](docs/SubscriptionApi.md#delete_subscription) | **DELETE** /subscriptions/{subscription_uuid} | Delete a Subscription
 *SubscriptionApi* | [**detach_subscription_subject**](docs/SubscriptionApi.md#detach_subscription_subject) | **DELETE** /subscriptions/{subscription_uuid}/subjects/{subscription_subject_id} | Detach a Subject from the given Subscription
 *SubscriptionApi* | [**get_subscription**](docs/SubscriptionApi.md#get_subscription) | **GET** /subscriptions/{subscription_uuid} | Gets a single Subscription
 *SubscriptionApi* | [**get_subscription_subjects**](docs/SubscriptionApi.md#get_subscription_subjects) | **GET** /subscriptions/{subscription_uuid}/subjects | Returns a collection of all Subjects attached to the given Subscription
@@ -223,6 +223,8 @@ Class | Method | HTTP request | Description
  - [SubjectPolicy](docs/SubjectPolicy.md)
  - [SubjectPolicyAclConstraint](docs/SubjectPolicyAclConstraint.md)
  - [SubjectPolicyEnriched](docs/SubjectPolicyEnriched.md)
+ - [SubjectPolicyEnrichedAclConstraints](docs/SubjectPolicyEnrichedAclConstraints.md)
+ - [SubjectPolicyEnrichedObjectList](docs/SubjectPolicyEnrichedObjectList.md)
  - [Subscription](docs/Subscription.md)
  - [SubscriptionEnriched](docs/SubscriptionEnriched.md)
  - [SubscriptionEnrichedSubjects](docs/SubscriptionEnrichedSubjects.md)

@@ -4,7 +4,7 @@ class BaseConfig():
     DEBUG = False
     INCLUDE_RESPONSE_META_DATA = False
     PEER_CERT_KEY_NAME = "X_PEER_CERT_COMMON_NAME"
-    SQLALCHEMY_DATABASE_URI = 'postgresql://uudex_user:Selectrick714@localhost/uudex?options=-c+timezone%3Dutc'  # options parm: options=-c timezone=utc
+    SQLALCHEMY_DATABASE_URI = 'postgresql://uudex_user:<password>@localhost/uudex?options=-c+timezone%3Dutc'  # options parm: options=-c timezone=utc
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = False
 
@@ -13,7 +13,7 @@ class DevConfig(BaseConfig):
     APP_SERVER_HOST = "weurkzieg"
     DEBUG = True
     FLASK_ENV = 'development'
-    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=Selectrik714"
+    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=<password>"
     PROPAGATE_EXCEPTIONS = False
     SQLALCHEMY_ECHO = True
 
@@ -29,7 +29,7 @@ class GunicornConfig(BaseConfig):
     APP_SERVER_HOST = "gunicorn"
     DEBUG = True
     FLASK_ENV = 'development'
-    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=Selectrik714"
+    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=<password>"
     PROPAGATE_EXCEPTIONS = False
     SQLALCHEMY_ECHO = True
 
@@ -40,6 +40,6 @@ class GunicornProxiedConfig(BaseConfig):
     PEER_CERT_KEY_NAME = "X_SSL_CLIENT_S_DN"  # the header key nginx sends us
     DEBUG = True
     FLASK_ENV = 'development'
-    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=Selectrik714"
+    MESSAGE_BROKER_URL = "rabbitmq://localhost:15672?username=uudex&password=<password>"
     PROPAGATE_EXCEPTIONS = False
     SQLALCHEMY_ECHO = True

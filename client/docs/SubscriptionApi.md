@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**attach_subscription_subject**](SubscriptionApi.md#attach_subscription_subject) | **POST** /subscriptions/{subscription_uuid}/subjects | Attach a single Subject to the given Subscription
 [**consume_subscription**](SubscriptionApi.md#consume_subscription) | **GET** /subscriptions/{subscription_uuid}/consume | Consumes the subscription and returns one or more pending messages from message broker
 [**create_subscription**](SubscriptionApi.md#create_subscription) | **POST** /subscriptions | Create a single Subscription
-[**delete_subscription**](SubscriptionApi.md#delete_subscription) | **DELETE** /subscriptions/{subscription_uuid} | Delelete a Subscription
+[**delete_subscription**](SubscriptionApi.md#delete_subscription) | **DELETE** /subscriptions/{subscription_uuid} | Delete a Subscription
 [**detach_subscription_subject**](SubscriptionApi.md#detach_subscription_subject) | **DELETE** /subscriptions/{subscription_uuid}/subjects/{subscription_subject_id} | Detach a Subject from the given Subscription
 [**get_subscription**](SubscriptionApi.md#get_subscription) | **GET** /subscriptions/{subscription_uuid} | Gets a single Subscription
 [**get_subscription_subjects**](SubscriptionApi.md#get_subscription_subjects) | **GET** /subscriptions/{subscription_uuid}/subjects | Returns a collection of all Subjects attached to the given Subscription
@@ -163,7 +163,7 @@ No authorization required
 # **delete_subscription**
 > delete_subscription(subscription_uuid)
 
-Delelete a Subscription
+Delete a Subscription
 
 The invoker must own the Subscription.
 
@@ -180,7 +180,7 @@ api_instance = uudex_client.SubscriptionApi()
 subscription_uuid = '38400000-8cf0-11bd-b23e-10b96e4ef00d' # str | 
 
 try:
-    # Delelete a Subscription
+    # Delete a Subscription
     api_instance.delete_subscription(subscription_uuid)
 except ApiException as e:
     print("Exception when calling SubscriptionApi->delete_subscription: %s\n" % e)

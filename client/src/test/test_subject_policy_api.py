@@ -45,7 +45,7 @@ class TestSubjectPolicyApi(unittest.TestCase):
     def test_delete_acl_constraint(self):
         """Test case for delete_acl_constraint
 
-        Delete a sincle ACL Constraint for a given Subject Policy  # noqa: E501
+        Delete a single ACL Constraint for a given Subject Policy  # noqa: E501
         """
         pass
 

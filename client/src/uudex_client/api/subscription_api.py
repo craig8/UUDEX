@@ -326,7 +326,7 @@ class SubscriptionApi(object):
             collection_formats=collection_formats)
 
     def delete_subscription(self, subscription_uuid, **kwargs):  # noqa: E501
-        """Delelete a Subscription  # noqa: E501
+        """Delete a Subscription  # noqa: E501
 
         The invoker must own the Subscription.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
@@ -348,7 +348,7 @@ class SubscriptionApi(object):
             return data
 
     def delete_subscription_with_http_info(self, subscription_uuid, **kwargs):  # noqa: E501
-        """Delelete a Subscription  # noqa: E501
+        """Delete a Subscription  # noqa: E501
 
         The invoker must own the Subscription.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an

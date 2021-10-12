@@ -148,7 +148,7 @@ paths:
       tags:
         - Subscription
     delete:
-      summary: Delelete a Subscription
+      summary: Delete a Subscription
       operationId: delete_subscription
       responses:
         '204':
@@ -222,7 +222,7 @@ paths:
       description: |-
         The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.
 
-        A UUDEX Admin imay create a Subject without restrictions.
+        A UUDEX Admin may create a Subject without restrictions.
     get:
       summary: Return a collection of Subjects
       operationId: get_subjects
@@ -820,7 +820,7 @@ paths:
 
         A UUDEX Admin may get any given Subject Policy constraint.
     delete:
-      summary: Delete a sincle ACL Constraint for a given Subject Policy
+      summary: Delete a single ACL Constraint for a given Subject Policy
       operationId: delete_acl_constraint
       responses:
         '204':

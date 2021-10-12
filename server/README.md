@@ -83,9 +83,9 @@ These instructions assume the following:
 
 For example:
 > curl 'https://localhost:3546/v1/uudex/parent-participant' --header "Content-Type: application/json" \
---key /home/d3p412/uudex/ssl/client/client.key \
---cert /home/d3p412/uudex/ssl/client/client.crt \
---cacert /home/d3p412/uudex/ssl/ca/ca.pem
+--key uudex/ssl/client/client.key \
+--cert uudex/ssl/client/client.crt \
+--cacert uudex/ssl/ca/ca.pem
 
 If successful, the output should resemble:
 

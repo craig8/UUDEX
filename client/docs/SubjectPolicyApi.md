@@ -6,7 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_acl_constraint**](SubjectPolicyApi.md#create_acl_constraint) | **POST** /subject-policies/{subject_policy_uuid}/acl-constraints | Create a ACL Constraint for a given Subject Policy
 [**create_subject_policy**](SubjectPolicyApi.md#create_subject_policy) | **POST** /subject-policies | Creates a Subject Policy and attaches it to given Participant
-[**delete_acl_constraint**](SubjectPolicyApi.md#delete_acl_constraint) | **DELETE** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Delete a sincle ACL Constraint for a given Subject Policy
+[**delete_acl_constraint**](SubjectPolicyApi.md#delete_acl_constraint) | **DELETE** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Delete a single ACL Constraint for a given Subject Policy
 [**delete_subject_policy**](SubjectPolicyApi.md#delete_subject_policy) | **DELETE** /subject-policies/{subject_policy_uuid} | Delete a single Subject Policy
 [**get_acl_constraint**](SubjectPolicyApi.md#get_acl_constraint) | **GET** /subject-policies/{subject_policy_uuid}/acl-constraints/{acl_constraint_id} | Return a single ACL Constraint for a given Subject Policy
 [**get_all_acl_constraints**](SubjectPolicyApi.md#get_all_acl_constraints) | **GET** /subject-policies/{subject_policy_uuid}/acl-constraints | Return all ACL Constraints for a given Subject Policy
@@ -115,7 +115,7 @@ No authorization required
 # **delete_acl_constraint**
 > delete_acl_constraint(subject_policy_uuid, acl_constraint_id)
 
-Delete a sincle ACL Constraint for a given Subject Policy
+Delete a single ACL Constraint for a given Subject Policy
 
 The invoker must be a UUDEX Admin otherwise the call will fail.
 
@@ -133,7 +133,7 @@ subject_policy_uuid = '38400000-8cf0-11bd-b23e-10b96e4ef00d' # str |
 acl_constraint_id = 56 # int | 
 
 try:
-    # Delete a sincle ACL Constraint for a given Subject Policy
+    # Delete a single ACL Constraint for a given Subject Policy
     api_instance.delete_acl_constraint(subject_policy_uuid, acl_constraint_id)
 except ApiException as e:
     print("Exception when calling SubjectPolicyApi->delete_acl_constraint: %s\n" % e)

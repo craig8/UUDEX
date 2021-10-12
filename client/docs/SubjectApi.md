@@ -17,7 +17,7 @@ Method | HTTP request | Description
 
 Creates a Subject if the calling participant is authorized
 
-The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin imay create a Subject without restrictions.
+The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin may create a Subject without restrictions.
 
 ### Example
 ```python

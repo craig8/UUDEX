@@ -35,7 +35,7 @@ class EndpointApi(object):
     def auth_create_endpoint(self, **kwargs):  # noqa: E501
         """Create a single Endpoint  # noqa: E501
 
-        Create an Endpoint for the Participant that the invoker belongs to. The invoker must have the ParticipantAdmin role.  A UUDEX Administrator may create any Endpoint for any Participant.    # noqa: E501
+        Create an Endpoint for the Participant that the invoker belongs to. The invoker must have the ParticipantAdmin role.  A UUDEX Administrator may create any Endpoint for any Participant.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.auth_create_endpoint(async_req=True)
@@ -57,7 +57,7 @@ class EndpointApi(object):
     def auth_create_endpoint_with_http_info(self, **kwargs):  # noqa: E501
         """Create a single Endpoint  # noqa: E501
 
-        Create an Endpoint for the Participant that the invoker belongs to. The invoker must have the ParticipantAdmin role.  A UUDEX Administrator may create any Endpoint for any Participant.    # noqa: E501
+        Create an Endpoint for the Participant that the invoker belongs to. The invoker must have the ParticipantAdmin role.  A UUDEX Administrator may create any Endpoint for any Participant.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.auth_create_endpoint_with_http_info(async_req=True)

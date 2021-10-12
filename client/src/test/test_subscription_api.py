@@ -52,7 +52,7 @@ class TestSubscriptionApi(unittest.TestCase):
     def test_delete_subscription(self):
         """Test case for delete_subscription
 
-        Delelete a Subscription  # noqa: E501
+        Delete a Subscription  # noqa: E501
         """
         pass
 

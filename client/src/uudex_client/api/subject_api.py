@@ -35,7 +35,7 @@ class SubjectApi(object):
     def create_subject(self, **kwargs):  # noqa: E501
         """Creates a Subject if the calling participant is authorized  # noqa: E501
 
-        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin imay create a Subject without restrictions.  # noqa: E501
+        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin may create a Subject without restrictions.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_subject(async_req=True)
@@ -57,7 +57,7 @@ class SubjectApi(object):
     def create_subject_with_http_info(self, **kwargs):  # noqa: E501
         """Creates a Subject if the calling participant is authorized  # noqa: E501
 
-        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin imay create a Subject without restrictions.  # noqa: E501
+        The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  The ability of a non-admin invoker to create a Subject is also determined by any defined Subject Policy rules.  See the UUDEX documentation for further discussion.  A UUDEX Admin may create a Subject without restrictions.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_subject_with_http_info(async_req=True)

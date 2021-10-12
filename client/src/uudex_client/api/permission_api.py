@@ -138,7 +138,7 @@ class PermissionApi(object):
     def auth_grant_permission(self, **kwargs):  # noqa: E501
         """Creates a permission by granting a privilege on a Subject to an object  # noqa: E501
 
-        Thee privilege may be either 'SUBSCRIBE', 'PUBLISH', 'MANAGE', or 'DISCOVER'  The target of the privilege grant (i.e., the object) can be either a role, a group, an endpoint or a participant.    The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  A UUDEX Admin may invoke this call without restrictions.  # noqa: E501
+        The privilege may be either 'SUBSCRIBE', 'PUBLISH', 'MANAGE', or 'DISCOVER'  The target of the privilege grant (i.e., the object) can be either a role, a group, an endpoint or a participant.    The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  A UUDEX Admin may invoke this call without restrictions.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.auth_grant_permission(async_req=True)
@@ -160,7 +160,7 @@ class PermissionApi(object):
     def auth_grant_permission_with_http_info(self, **kwargs):  # noqa: E501
         """Creates a permission by granting a privilege on a Subject to an object  # noqa: E501
 
-        Thee privilege may be either 'SUBSCRIBE', 'PUBLISH', 'MANAGE', or 'DISCOVER'  The target of the privilege grant (i.e., the object) can be either a role, a group, an endpoint or a participant.    The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  A UUDEX Admin may invoke this call without restrictions.  # noqa: E501
+        The privilege may be either 'SUBSCRIBE', 'PUBLISH', 'MANAGE', or 'DISCOVER'  The target of the privilege grant (i.e., the object) can be either a role, a group, an endpoint or a participant.    The invoker must have either the ParticipantAdmin role or the SubjectAdmin role.  A UUDEX Admin may invoke this call without restrictions.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.auth_grant_permission_with_http_info(async_req=True)

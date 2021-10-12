@@ -231,7 +231,7 @@ class SubjectPolicyApi(object):
             collection_formats=collection_formats)
 
     def delete_acl_constraint(self, subject_policy_uuid, acl_constraint_id, **kwargs):  # noqa: E501
-        """Delete a sincle ACL Constraint for a given Subject Policy  # noqa: E501
+        """Delete a single ACL Constraint for a given Subject Policy  # noqa: E501
 
         The invoker must be a UUDEX Admin otherwise the call will fail.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
@@ -254,7 +254,7 @@ class SubjectPolicyApi(object):
             return data
 
     def delete_acl_constraint_with_http_info(self, subject_policy_uuid, acl_constraint_id, **kwargs):  # noqa: E501
-        """Delete a sincle ACL Constraint for a given Subject Policy  # noqa: E501
+        """Delete a single ACL Constraint for a given Subject Policy  # noqa: E501
 
         The invoker must be a UUDEX Admin otherwise the call will fail.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
