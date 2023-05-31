@@ -10,7 +10,7 @@ Jinja2==2.11.1
 kafka-python~=2.0.2
 kazoo~=2.8.0
 MarkupSafe==1.1.1
-psycopg2-binary==2.8.4
+psycopg2-binary==2.9.6
 pyrabbit2~=1.0.7
 pytz==2019.3
 six==1.14.0
