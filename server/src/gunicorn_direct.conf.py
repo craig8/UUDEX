@@ -6,9 +6,9 @@ bind = "0.0.0.0:3546"
 worker_class = "server_handlers.gunicorn_handler.CustomWorker"
 
 #### Site specific - change these parameters
-ca_certs = "uudex/ssl/ca/ca.pem"
-certfile = "uudex/ssl/server/server.crt"
-keyfile = "uudex/ssl/server/server.key"
+ca_certs = "/home/d3m614/repos/UUDEX/example_ssl_certs/ca.pem"
+certfile = "/home/d3m614/repos/UUDEX/example_ssl_certs/server/server.crt"
+keyfile = "/home/d3m614/repos/UUDEX/example_ssl_certs/server/server.key"
 ####
 
 cert_reqs = ssl.CERT_REQUIRED

@@ -36,23 +36,24 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
 from http import HTTPStatus
+from pathlib import Path
+
 #
 import casbin
 import casbin_sqlalchemy_adapter
-from flask import g
-from flask_restful import abort
-from sqlalchemy.orm import aliased
 #
 import config
-from models import AuthRole, GrantScope, SubjectPolicy, \
-     DatasetDefinition, PrivilegeAllowed, SubjectPolicyAclConstraint
+from flask import g
+from flask_restful import abort
+from models import (AuthRole, DatasetDefinition, GrantScope, PrivilegeAllowed,
+                    SubjectPolicy, SubjectPolicyAclConstraint)
+from sqlalchemy.orm import aliased
 from uudex_model_base import db
-
 
 ##########################################################################################
 
 adapter = casbin_sqlalchemy_adapter.Adapter(config.SQLALCHEMY_DATABASE_URI)
-e = casbin.Enforcer(os.path.join("services","auth_model.conf"), adapter)
+e = casbin.Enforcer(str(Path(__file__).parent.absolute() / "auth_model.conf"), adapter)
 
 uudex_privileges = ('PUBLISH', 'SUBSCRIBE', 'MANAGE', 'DISCOVER')
 
