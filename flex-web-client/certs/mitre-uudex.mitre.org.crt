@@ -1,0 +1,86 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            6e:ad:50:75:41:f0:4b:67:1a:f1:9a:07:d9:53:2e:11
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=UUDEX CA
+        Validity
+            Not Before: May  5 04:33:35 2024 GMT
+            Not After : Aug  8 04:33:35 2026 GMT
+        Subject: C=US, ST=Washington, L=Richland, O=UUDEX, OU=UUDEX, CN=mitre-uudex.mitre.org
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:cc:b8:b3:d0:78:58:ea:8c:63:5e:1e:7d:a1:0b:
+                    8d:dc:98:b8:a3:7d:19:5a:21:9b:ac:99:b0:77:23:
+                    7d:df:2e:89:0e:2c:04:d5:63:d7:48:e9:24:fa:d4:
+                    8c:6d:63:34:b2:e4:ee:cd:ef:5f:5d:6b:2d:31:66:
+                    d7:8b:37:d4:a4:3d:76:80:73:b5:8a:1a:f1:2a:08:
+                    03:fe:7b:52:4b:fb:44:ea:a7:88:1f:5a:ee:86:0e:
+                    48:f8:ce:60:f8:e1:d9:bd:e5:41:9d:10:c4:61:c0:
+                    51:3f:e7:53:57:fe:27:4c:2f:e8:0a:bd:81:03:c5:
+                    ac:ba:ce:52:0f:01:62:8b:28:a1:08:50:8f:dc:22:
+                    46:7c:01:ac:a9:80:a0:09:f4:df:a9:1f:1b:40:47:
+                    d0:83:86:c7:71:c6:9c:cd:f7:6f:32:d5:23:b7:8b:
+                    21:f0:cf:28:e0:2c:17:a6:cd:ca:54:29:fc:b7:ec:
+                    76:95:fe:b4:4e:8d:d2:f2:55:f9:70:65:e9:d0:38:
+                    eb:32:90:cb:2d:04:94:94:f0:f3:2b:ee:18:ac:85:
+                    cc:e9:4c:79:7a:7d:02:5f:8a:2b:c8:46:a7:4e:ab:
+                    76:cc:65:af:f0:e5:f3:21:4f:14:46:4d:c7:de:f5:
+                    11:20:b4:41:63:60:ad:4a:0d:68:08:a9:2a:df:a6:
+                    41:09
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                70:FD:BA:F1:F7:22:40:D6:76:7C:8F:CC:8D:1E:F9:60:F7:07:41:BC
+            X509v3 Authority Key Identifier: 
+                keyid:0F:E3:AE:35:64:9C:FE:53:85:B5:EE:EA:A7:3A:A5:BC:87:61:1A:8A
+                DirName:/CN=UUDEX CA
+                serial:36:B7:E9:79:C0:00:9C:79:A6:B1:EC:4F:E3:32:C1:2E:05:DB:FE:92
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        94:a6:fa:6b:f2:27:7b:39:67:9e:fb:4b:f2:7b:1b:d7:b5:0f:
+        02:55:1a:9f:8d:60:d2:d5:ff:e2:05:27:af:0a:30:fe:5f:7b:
+        47:28:e2:9f:a9:62:77:fa:8e:31:93:fc:61:d2:8b:6c:02:53:
+        2c:47:08:34:ae:b0:fa:44:43:19:d1:ea:fa:fe:ea:9e:37:c2:
+        33:51:1d:f8:18:0b:c0:d1:6e:5d:e6:8e:46:d5:70:c5:f4:df:
+        ae:49:b5:01:1e:08:5b:19:82:59:42:d1:0f:d0:e1:4f:fd:f1:
+        78:4e:50:bb:8b:e8:c0:de:be:64:6a:5b:1b:30:8c:87:08:b5:
+        0e:5d:17:01:41:69:3e:83:e5:aa:7b:72:a4:c7:98:a0:05:1c:
+        96:85:33:77:92:66:c8:53:2c:7b:6e:d2:c8:dd:bb:26:51:a6:
+        89:85:40:43:1b:4b:88:ea:68:7f:d1:ee:db:41:60:bb:6b:d5:
+        9a:81:1d:45:14:33:0b:29:be:f2:95:01:22:69:18:44:e4:40:
+        37:b9:c6:e5:64:8a:64:43:44:4b:fe:fc:c1:f1:fa:af:d8:18:
+        4c:99:e3:d5:3a:9c:04:64:02:89:e4:8c:89:9f:08:79:3c:97:
+        d0:d1:f3:3b:0f:9c:be:37:1e:7f:4c:95:93:4e:a0:13:b7:51:
+        48:8a:06:a2
+-----BEGIN CERTIFICATE-----
+MIIDsjCCApqgAwIBAgIQbq1QdUHwS2ca8ZoH2VMuETANBgkqhkiG9w0BAQsFADAT
+MREwDwYDVQQDDAhVVURFWCBDQTAeFw0yNDA1MDUwNDMzMzVaFw0yNjA4MDgwNDMz
+MzVaMHUxCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApXYXNoaW5ndG9uMREwDwYDVQQH
+DAhSaWNobGFuZDEOMAwGA1UECgwFVVVERVgxDjAMBgNVBAsMBVVVREVYMR4wHAYD
+VQQDDBVtaXRyZS11dWRleC5taXRyZS5vcmcwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQDMuLPQeFjqjGNeHn2hC43cmLijfRlaIZusmbB3I33fLokOLATV
+Y9dI6ST61IxtYzSy5O7N719day0xZteLN9SkPXaAc7WKGvEqCAP+e1JL+0Tqp4gf
+Wu6GDkj4zmD44dm95UGdEMRhwFE/51NX/idML+gKvYEDxay6zlIPAWKLKKEIUI/c
+IkZ8AaypgKAJ9N+pHxtAR9CDhsdxxpzN928y1SO3iyHwzyjgLBemzcpUKfy37HaV
+/rROjdLyVflwZenQOOsykMstBJSU8PMr7hishczpTHl6fQJfiivIRqdOq3bMZa/w
+5fMhTxRGTcfe9REgtEFjYK1KDWgIqSrfpkEJAgMBAAGjgZ8wgZwwCQYDVR0TBAIw
+ADAdBgNVHQ4EFgQUcP268fciQNZ2fI/MjR75YPcHQbwwTgYDVR0jBEcwRYAUD+Ou
+NWSc/lOFte7qpzqlvIdhGoqhF6QVMBMxETAPBgNVBAMMCFVVREVYIENBghQ2t+l5
+wACceaax7E/jMsEuBdv+kjATBgNVHSUEDDAKBggrBgEFBQcDAjALBgNVHQ8EBAMC
+B4AwDQYJKoZIhvcNAQELBQADggEBAJSm+mvyJ3s5Z577S/J7G9e1DwJVGp+NYNLV
+/+IFJ68KMP5fe0co4p+pYnf6jjGT/GHSi2wCUyxHCDSusPpEQxnR6vr+6p43wjNR
+HfgYC8DRbl3mjkbVcMX0365JtQEeCFsZgllC0Q/Q4U/98XhOULuL6MDevmRqWxsw
+jIcItQ5dFwFBaT6D5ap7cqTHmKAFHJaFM3eSZshTLHtu0sjduyZRpomFQEMbS4jq
+aH/R7ttBYLtr1ZqBHUUUMwspvvKVASJpGETkQDe5xuVkimRDREv+/MHx+q/YGEyZ
+49U6nARkAonkjImfCHk8l9DR8zsPnL43Hn9MlZNOoBO3UUiKBqI=
+-----END CERTIFICATE-----

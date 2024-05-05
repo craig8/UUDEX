@@ -1,0 +1,489 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "UUDEX API",
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/participant/me": {
+            "get": {
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Get Participant By Id",
+                "operationId": "get_participant_by_id_participant_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Participant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/participant/{participant_id}": {
+            "get": {
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Get Participant By Id",
+                "operationId": "get_participant_by_id_participant__participant_id__get",
+                "parameters": [
+                    {
+                        "name": "participant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Participant Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Participant"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/participants/": {
+            "get": {
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Get All Participants",
+                "operationId": "get_all_participants_participants__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Participant"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get All Participants Participants  Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/endpoint/me": {
+            "get": {
+                "tags": [
+                    "endpoints"
+                ],
+                "summary": "Get Endpoint User",
+                "operationId": "get_endpoint_user_endpoint_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndPointCache"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subject/{subject_id}": {
+            "get": {
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Get Subject By Id",
+                "operationId": "get_subject_by_id_subject__subject_id__get",
+                "parameters": [
+                    {
+                        "name": "subject_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Subject Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subject"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subjects/": {
+            "get": {
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Get All Subjects",
+                "operationId": "get_all_subjects_subjects__get",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthenticatedUser"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Subject"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get All Subjects Subjects  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AuthenticatedUser": {
+                "properties": {
+                    "endpoint_id": {
+                        "type": "integer",
+                        "title": "Endpoint Id"
+                    },
+                    "endpoint_uuid": {
+                        "type": "string",
+                        "title": "Endpoint Uuid"
+                    },
+                    "endpoint_user_name": {
+                        "type": "string",
+                        "title": "Endpoint User Name"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "endpoint_id",
+                    "endpoint_uuid",
+                    "endpoint_user_name"
+                ],
+                "title": "AuthenticatedUser"
+            },
+            "EndPointCache": {
+                "properties": {
+                    "endpoint_id": {
+                        "type": "integer",
+                        "title": "Endpoint Id"
+                    },
+                    "endpoint_uuid": {
+                        "type": "string",
+                        "title": "Endpoint Uuid"
+                    },
+                    "endpoint_user_name": {
+                        "type": "string",
+                        "title": "Endpoint User Name"
+                    },
+                    "participant_id": {
+                        "type": "integer",
+                        "title": "Participant Id"
+                    },
+                    "active_sw": {
+                        "type": "string",
+                        "title": "Active Sw"
+                    },
+                    "participant_uudex_admin_sw": {
+                        "type": "string",
+                        "title": "Participant Uudex Admin Sw"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "endpoint_id",
+                    "endpoint_uuid",
+                    "endpoint_user_name",
+                    "participant_id",
+                    "active_sw",
+                    "participant_uudex_admin_sw"
+                ],
+                "title": "EndPointCache"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Participant": {
+                "properties": {
+                    "create_datetime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Create Datetime"
+                    },
+                    "active_sw": {
+                        "type": "string",
+                        "title": "Active Sw"
+                    },
+                    "participant_uuid": {
+                        "type": "string",
+                        "title": "Participant Uuid"
+                    },
+                    "participant_short_name": {
+                        "type": "string",
+                        "title": "Participant Short Name"
+                    },
+                    "participant_long_name": {
+                        "type": "string",
+                        "title": "Participant Long Name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "root_org_sw": {
+                        "type": "string",
+                        "title": "Root Org Sw"
+                    },
+                    "participant_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Participant Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "active_sw",
+                    "participant_uuid",
+                    "participant_short_name",
+                    "participant_long_name",
+                    "description",
+                    "root_org_sw"
+                ],
+                "title": "Participant"
+            },
+            "Subject": {
+                "properties": {
+                    "create_datetime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Create Datetime"
+                    },
+                    "subject_uuid": {
+                        "type": "string",
+                        "title": "Subject Uuid"
+                    },
+                    "subject_name": {
+                        "type": "string",
+                        "title": "Subject Name"
+                    },
+                    "dataset_instance_key": {
+                        "type": "string",
+                        "title": "Dataset Instance Key"
+                    },
+                    "subscription_type": {
+                        "type": "string",
+                        "title": "Subscription Type"
+                    },
+                    "fulfillment_types_available": {
+                        "type": "string",
+                        "title": "Fulfillment Types Available"
+                    },
+                    "full_queue_behavior": {
+                        "type": "string",
+                        "title": "Full Queue Behavior"
+                    },
+                    "max_queue_size_kb": {
+                        "type": "integer",
+                        "title": "Max Queue Size Kb"
+                    },
+                    "max_message_count": {
+                        "type": "integer",
+                        "title": "Max Message Count"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "title": "Priority"
+                    },
+                    "backing_exchange_name": {
+                        "type": "string",
+                        "title": "Backing Exchange Name"
+                    },
+                    "subject_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Subject Id"
+                    },
+                    "owner_participant_id": {
+                        "type": "integer",
+                        "title": "Owner Participant Id"
+                    },
+                    "dataset_definition_id": {
+                        "type": "integer",
+                        "title": "Dataset Definition Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "subject_uuid",
+                    "subject_name",
+                    "dataset_instance_key",
+                    "subscription_type",
+                    "fulfillment_types_available",
+                    "full_queue_behavior",
+                    "max_queue_size_kb",
+                    "max_message_count",
+                    "priority",
+                    "backing_exchange_name",
+                    "owner_participant_id",
+                    "dataset_definition_id"
+                ],
+                "title": "Subject"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "participants",
+            "description": "Participants API"
+        },
+        {
+            "name": "endpoints",
+            "description": "Endpoints API"
+        },
+        {
+            "name": "subjects",
+            "description": "Subjects API"
+        }
+    ]
+}

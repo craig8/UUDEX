@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "uudex-flex-client"
+version = "0.1.0"
+description = "UUDEX web client for communication with UUDEX server"
+authors = ["Craig <3979063+craig8@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "uudex_web", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.7"
+requests = "^2.31.0"
+python-benedict = "^0.32.0"
+uudex-api-client = { path="../fastapi-web-server/generated-client-api/uudex-api-client", develop=true}
+pydantic-settings = "^2.2.1"
+cryptography = "^42.0.5"
+flet = "^0.21.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pre-commit = "^3.6.0"
+yapf = "^0.40.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.yapfignore]
+ignore_patterns = [
+    ".venv/**",
+    ".pytest_cache/**",
+    "dist/**",
+    "docs/**"
+]
+
+[tool.yapf]
+based_on_style = "pep8"
+spaces_before_comment = 4
+column_limit = 99
+split_before_logical_operator = true
+
+[tool.mypy]
+show_error_context = true
+pretty = true
+show_column_numbers = true
