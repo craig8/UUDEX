@@ -18,6 +18,7 @@ class Certificate(BaseModel):
     crt_path: Path
     name: str
 
+
 certificate_by_session: dict[SessionId, Certificate] = {}
 
 # This should only have the crt_path specified in it.
@@ -25,16 +26,25 @@ ca_certificate: Path
 
 certificates: list[Certificate] = []
 
-def set_session_certificate(session_id: SessionId, certificate: Certificate):
+CertificateCommonName = str
+
+
+def set_session_certificate(session_id: SessionId,
+                            certificate: Certificate | CertificateCommonName):
+    if isinstance(certificate, CertificateCommonName):
+        certificate = get_certificate_by_name(certificate)
     certificate_by_session[session_id] = certificate
+
 
 def get_session_certificate(session_id: SessionId) -> Certificate:
     return certificate_by_session[session_id]
 
+
 def get_ca_certificate_path() -> Path:
     return ca_certificate
 
-def get_certificate_by_name(name: str) -> Optional[Certificate]:
+
+def get_certificate_by_name(name: CertificateCommonName) -> Optional[Certificate]:
     return next(filter(lambda x: x.name == name, certificates))
 
 
@@ -55,7 +65,9 @@ def get_certificates(cert_dir: Optional[Path] = None) -> list[Certificate]:
                 key_path = Path(cert.as_posix()[:-len(cert.suffix) + 1] + 'key')
                 if 'UUDEX CA' not in name:
                     certs.append(
-                        Certificate(crt_path=cert, key_path=key_path, name=name.decode() if isinstance(name, bytes) else name))
+                        Certificate(crt_path=cert,
+                                    key_path=key_path,
+                                    name=name.decode() if isinstance(name, bytes) else name))
                 else:
                     ca_certificate = cert
     certs = sorted(certs, key=lambda k: k.name)

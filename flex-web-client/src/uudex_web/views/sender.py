@@ -6,120 +6,113 @@ import logging
 from uudex_web.settings import UUDEXSettings as settings
 from pathlib import Path
 from functools import partial
-from uudex_web.views.common import build_certificates_dropdown
+from uudex_web.views.common import build_certificates_dropdown, build_subject_dropdown
 
 import uudex_api_client.models as md
-from uudex_web.data.certificates import Certificate
+from uudex_web.data.certificates import Certificate, set_session_certificate
+from uudex_web.data import get_subjects
 from typing import Callable
 
 _log = logging.getLogger(__name__)
 
+certificate_dropdown = Ref[Dropdown]()
+subject_dropdown = Ref[Dropdown]()
+upload_row = Ref[Row]()
+
+this_view = Ref[View]()
+this_page = Ref[Page]()
+file_picker = Ref[FilePicker]()
+selected_files = Ref[Text]()
+send_button = Ref[ElevatedButton]()
+send_results = Ref[Text]()
+
 
 def sender_view(page: Page, get_certificates: Callable, get_subjects: Callable):
-    file_picker = FilePicker(on_result=pick_files_result, on_upload=on_file_picker_upload)
+    page.title = "Sender Application"
 
-    selected_files = Text()
-    files = Column()
-    upload_button = ElevatedButton(
-        "Upload",
-        icon=icons.UPLOAD,
-        on_click=upload_files,
-        disabled=True,
-    )
+    this_page.current = page
 
-
-
-    # certs: list[Certificate] = get_certificates() or []    # type: ignore
-    # cert_drop_down_options = [
-    #     dropdown.Option(text=cert.name) for cert in certs
-    # ]
-
-
-    # subjects: list[md.Subject] = get_subjects() or []    # type: ignore
-    # drop_down_options = [
-    #     dropdown.Option(key=subject.subject_id, text=subject.subject_name)
-    #     for subject in subjects
-    # ]
-    # drop_down_width = 400
-    # dd_subjects = Dropdown(options=drop_down_options,
-    #                         width=drop_down_width,
-    #                         on_change=on_subject_change),
     controls = [
-        build_certificates_dropdown(get_certificates, on_change=on_change_certificate),
-        # Dropdown(label="Choose Certificate",
-        #          options=cert_drop_down_options,
-        #          on_change=partial(on_certificate_change, subject_drop_down=dd_subjects)),
-        #dd_subjects,
-    #    Row([
-    #         ElevatedButton(
-    #             "Pick files",
-    #             icon=icons.UPLOAD_FILE,
-    #             on_click=lambda _: file_picker.pick_files(allow_multiple=True),
-    #         ), selected_files
-    #     ]),
-    #     upload_button,
-    # # ElevatedButton(
-    # #     "Upload",
-    # #     ref=upload_button,
-    # #     icon=icons.UPLOAD,
-    # #     on_click=upload_files,
-    # #     disabled=True,
-    # # ),
-    #     ElevatedButton("Send", on_click=on_send_click),
-    #     file_picker,
-    #     selected_files,
-    #     files,
+        AppBar(title=Text("Sender App"),
+               bgcolor=colors.SURFACE_VARIANT,
+               automatically_imply_leading=False),
+        build_certificates_dropdown(get_certificates,
+                                    on_change=on_change_certificate,
+                                    ref=certificate_dropdown),
+        FilePicker(on_result=pick_and_upload_results, ref=file_picker)
     ]
 
-    return View("/sender", controls=controls)
+    this_view.current = View("/sender", controls=controls)
+    return this_view.current
 
-def upload_files(e):
-    uf = []
-    if file_picker.result is not None and file_picker.result.files is not None:
-        for f in file_picker.result.files:
-            pth = Path(f"{settings.upload_dir}").expanduser() / f.name
-            _log.info(f"Uploading: {pth.as_posix()}")
-            uf.append(
-                FilePickerUploadFile(
-                    f.name,
-                    upload_url=pth.as_posix(),
-                ))
-        file_picker.upload(uf)
 
-def on_file_picker_upload(e: FilePickerUploadEvent):
-    print("File uploaded", e.data)
+def pick_and_upload_results(e: FilePickerUploadEvent):
 
-def pick_files_result(e: FilePickerUploadEvent):
-    _log.debug(f"pick_files_result SELF IS: {id(self)}")
-    upload_button.disabled = True if e.files is None else False
-    progress_bars.clear()
-    if len(files.controls) > 0:
-        files.controls.clear()
-    if e.files is not None:
-        for f in e.files:
-            prog = ProgressRing(value=0, bgcolor="#eeeeee", width=20, height=20)
-            progress_bars[f.name] = prog
-            files.controls.append(Row([prog, Text(f.name)]))
+    uploads = []
+    disable_send_button = True
+    for f in file_picker.current.result.files:
+        disable_send_button = False
+        uploads.append(
+            FilePickerUploadFile(f.name, upload_url=this_page.current.get_upload_url(f.name, 600)))
+    send_button.current.disabled = disable_send_button
+    file_picker.current.upload(uploads)
+    selected_files.current.value = ", ".join(map(lambda f: f.name, e.files))
+    this_view.current.update()
 
-    # selected_files.value = (", ".join(map(lambda f: f.name, e.files))
-    #                         if e.files else "Cancelled!")
-    # selected_files.update()
 
-def on_send_click(e):
-    print("Send clicked")
+def send_files():
+    for f in file_picker.current.result.files:
+        pth = Path(f"{settings.upload_dir}").expanduser() / f.name
+        if send_results.current.value is None:
+            send_results.current.width = 500
+            send_results.current.value = ""
+        send_results.current.value = f"Loading: {f.name}\n" + send_results.current.value
+        send_results.current.value = f"Sending: {f.name}\n" + send_results.current.value
 
-def on_file_picker_result(e: FilePickerResultEvent):
-    print("File picked", e.data)
+    this_view.current.update()
 
-def on_file_picker_upload(e: FilePickerUploadEvent):
-    print("File uploaded", e.data)
 
-def on_file_picker(e: FilePickerResultEvent):
-    print("File picked", e.data)
+def on_change_subject(e: ControlEvent):
+    if upload_row.current is None:
+        this_view.current.controls.append(
+            Row([
+                ElevatedButton(
+                    "Pick files",
+                    icon=icons.UPLOAD_FILE,
+        # allow_multiple = True if multiple files are necessary.
+                    on_click=lambda _: file_picker.current.pick_files(dialog_title="Select Files"),
+                ),
+                ElevatedButton("Send",
+                               icon=icons.SEND,
+                               disabled=True,
+                               on_click=lambda _: send_files(),
+                               ref=send_button),
+                ElevatedButton(
+                    "Clear",
+                    icon=icons.CLEAR,
+        #disabled=True,
+        #on_click=lambda _: send_files(),
+        #ref=clear_button),
+                ),
+                Text(ref=selected_files)
+            ]))
+        this_view.current.controls.append(Row([Text(ref=send_results)]))
 
-def on_subject_change(e):
-    print("Dropdown changed to", e.data)
+    this_view.current.update()
 
 
 def on_change_certificate(e: ControlEvent):
-    _log.debug(f"Change for certficate {e}")
+    set_session_certificate(e.page.session_id, certificate=certificate_dropdown.current.value)
+    if subject_dropdown.current is not None:
+        build_subject_dropdown(partial(get_subjects, e.page.session_id),
+                               on_change=on_change_subject,
+                               ref=subject_dropdown)
+        subject_dropdown.current.update()
+
+    else:
+        this_view.current.controls.append(
+            build_subject_dropdown(partial(get_subjects, e.page.session_id),
+                                   on_change=on_change_subject,
+                                   ref=subject_dropdown))
+
+    e.page.update()
