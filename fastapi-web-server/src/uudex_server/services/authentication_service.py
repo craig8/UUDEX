@@ -16,12 +16,12 @@ import logging
 _log = logging.getLogger(__name__)
 
 
-def get_request_user(request: Annotated[Request, Request]) -> AuthenticatedUser | None:
+async def get_request_user(request: Annotated[Request, Request]) -> AuthenticatedUser | None:
     _log.debug(request.state.endpoint)
 
     endpoint: EndPoint = request.state.endpoint
 
-    return AuthenticatedUser(endpoint=request.state.endpoint)
+    return AuthenticatedUser(endpoint=await request.state.endpoint)
 
 
 def authenticate(func: Callable) -> Callable:

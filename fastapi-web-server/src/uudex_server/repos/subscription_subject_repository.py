@@ -1,6 +1,17 @@
 from typing import Awaitable
 from sqlmodel import Session, select
 from uudex_server.models import Subject
+from uudex_server.models.subscription_models import Subscription
+from uudex_server.models.subscription_subject_models import SubscriptionSubject
+
+
+async def select_subjects_by_subscription_uuid(
+        session: Session, subscription_uuid: str) -> list[SubscriptionSubject]:
+    statement = select(SubscriptionSubject).join(Subscription, isouter=True).where(
+        Subscription.subscription_uuid == subscription_uuid
+    )    #.where(SubscriptionSubject.subscription.subscription_uuid == subscription_uuid)
+    res = session.exec(statement=statement)
+    return list(res)
 
 
 def select_all_subjects(session: Session) -> list[Subject]:

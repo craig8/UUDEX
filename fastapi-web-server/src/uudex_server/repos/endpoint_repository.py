@@ -2,16 +2,17 @@ from sqlmodel import Session, select
 from uudex_server.models import EndPoint
 
 
-def select_endpoint_by_certificate_dn(session: Session, certificate_dn: str) -> EndPoint:
+async def select_endpoint_by_certificate_dn(session: Session,
+                                            certificate_dn: str) -> EndPoint | None:
     statement = select(EndPoint).where(EndPoint.certificate_dn == certificate_dn)
     res = session.exec(statement=statement)
     return res.first()
 
 
-def select_all_endpoints(session: Session) -> list[EndPoint]:
+async def select_all_endpoints(session: Session) -> list[EndPoint]:
     statement = select(EndPoint)
     res = session.exec(statement=statement)
-    return res
+    return list(res)
 
 
 # async def select_participant_by_id(session: Session, participant_id: int) -> EndPoint:

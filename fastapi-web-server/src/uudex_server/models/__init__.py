@@ -25,3 +25,4 @@ from .attached_data_type_models import AttachedDataType, AttachedDataTypeAdd
 from .data_type_models import DataType, DataTypeAdd
 from .subject_policy_models import SubjectPolicy, SubjectPolicyAdd
 from .subscription_subject_models import SubscriptionSubject, SubscriptionSubjectAdd
+from .subscription_models import Subscription, SubscriptionAdd
