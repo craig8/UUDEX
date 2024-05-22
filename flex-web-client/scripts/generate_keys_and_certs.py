@@ -1,6 +1,8 @@
-
 """
 This module generates private keys and certificates for UUDEX common names.
+
+The private keys and certificates are generated using easy-rsa from
+https://github.com/OpenVPN/easy-rsa.
 
 Usage:
     python generate_private_keys.py <easyrsa_dir>
@@ -47,20 +49,15 @@ if not Path(opts.easyrsa_dir).exists():
 
 opts.easyrsa_dir = Path(opts.easyrsa_dir).expanduser()
 
-key_common_names = (
-    '4b3b819e-94bd-4adf-b461-17ccb58ac870__app_rt_1',
-    '0a476033-5cc6-4050-a289-ddf11a8fe0d4-pnnl-client',
-    '3fa9be8b-a0f9-40a5-ab3d-51d580d4797e_alice',
-    '7ef06c20-1937-4492-b697-122d07fc72e8_subj_pol_demo',
-    '8f026ebe-c71e-4fa1-8d66-82d3d85b72a4-mitre-client',
-    '58c728dc-bb26-4d13-a670-348f8821057e_carol',
-    '8487799e-237b-4c26-8d25-c50665ac909a-oati-client',
-    'b24c1e2b-5c00-41ce-b196-630e69428d29_bob',
-    'mitre-uudex.mitre.org',
-    'oati-uudex.oati.com',
-    'uudex-demo.pnl.gov',
-    'localhost'
-)
+key_common_names = ('4b3b819e-94bd-4adf-b461-17ccb58ac870__app_rt_1',
+                    '0a476033-5cc6-4050-a289-ddf11a8fe0d4-pnnl-client',
+                    '3fa9be8b-a0f9-40a5-ab3d-51d580d4797e_alice',
+                    '7ef06c20-1937-4492-b697-122d07fc72e8_subj_pol_demo',
+                    '8f026ebe-c71e-4fa1-8d66-82d3d85b72a4-mitre-client',
+                    '58c728dc-bb26-4d13-a670-348f8821057e_carol',
+                    '8487799e-237b-4c26-8d25-c50665ac909a-oati-client',
+                    'b24c1e2b-5c00-41ce-b196-630e69428d29_bob', 'mitre-uudex.mitre.org',
+                    'oati-uudex.oati.com', 'uudex-demo.pnl.gov', 'localhost')
 
 server_key = 'localhost'
 
@@ -70,7 +67,9 @@ cmd_generate_csr = 'openssl req -new -key {key}.key -out {key}.csr -subj /C=US/S
 for key in key_common_names:
     print(f"Create key: {cmd_generate_csr}".format(key=key))
     try:
-        subprocess.check_call(f"{cmd_create_key}".format(key=key).split(), stderr=PIPE, stdout=PIPE)
+        subprocess.check_call(f"{cmd_create_key}".format(key=key).split(),
+                              stderr=PIPE,
+                              stdout=PIPE)
     except subprocess.CalledProcessError as e:
         print(e.stderr.decode())
 
@@ -120,9 +119,14 @@ for key in key_common_names:
     except subprocess.CalledProcessError as e:
         print(e.stderr.decode())
 
-
     print("Signing Client: ", easy_rsa_sign)
-    p = subprocess.run(easy_rsa_sign.split(), stderr=PIPE, stdout=PIPE, cwd=easyrsa_dir, input="yes\n", encoding='ascii', text=True)
+    p = subprocess.run(easy_rsa_sign.split(),
+                       stderr=PIPE,
+                       stdout=PIPE,
+                       cwd=easyrsa_dir,
+                       input="yes\n",
+                       encoding='ascii',
+                       text=True)
     assert p.returncode == 0
 
 print("Copying certs")
@@ -131,3 +135,7 @@ print("Copying certs")
 print("Copying ca")
 shutil.copy(f"{easyrsa_dir}/pki/private/ca.key", ".")
 shutil.copy(f"{easyrsa_dir}/pki/ca.crt", ".")
+
+print("Creating p12 file for crt and key")
+print("Not implemented yet!")
+# openssl pkcs12 -export -in 0a476033-5cc6-4050-a289-ddf11a8fe0d4-pnnl-client.crt -inkey 0a476033-5cc6-4050-a289-ddf11a8fe0d4-pnnl-client.key -out 0a476033-5cc6-4050-a289-ddf11a8fe0d4-pnnl-client.p12
