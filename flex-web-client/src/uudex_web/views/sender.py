@@ -27,7 +27,7 @@ send_button = Ref[ElevatedButton]()
 send_results = Ref[Text]()
 
 
-def sender_view(page: Page, get_certificates: Callable, get_subjects: Callable):
+def sender_view(page: Page, get_certificates: Callable):
     page.title = "Sender Application"
 
     this_page.current = page

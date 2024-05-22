@@ -1,46 +1,79 @@
-from flet import AppBar, ElevatedButton, Page, Text, View, colors, Dropdown, dropdown, ControlEvent
+from flet import AppBar, ElevatedButton, Page, Text, View, colors, Dropdown, dropdown, ControlEvent, Ref, Row, icons, DataTable, DataColumn, DataRow
 import uudex_api_client.models as md
 from uudex_web.data.certificates import Certificate, set_session_certificate, get_certificate_by_name
 from functools import partial
-from uudex_web.views.common import build_certificates_dropdown
+from uudex_web.views.common import build_certificates_dropdown, build_subscription_dropdown
 from typing import Callable
 import logging
-from uudex_web.data import get_subjects
+from uudex_web.data import get_subscriptions
 import json
 
 _log = logging.getLogger(__name__)
 
-def subscriber_view(page: Page, get_certificates: Callable, get_message_list: Callable, get_message: Callable) -> View:
-    certs: list[Certificate] = get_certificates() or []    # type: ignore
+certificate_dropdown = Ref[Dropdown]()
+subscription_dropdown = Ref[Dropdown]()
 
-    set_session_certificate(page.session_id, certificate=certs[0])
-    subjects = get_subjects(page.session_id)
-    for v in subjects:
-        print(v)
+this_view = Ref[View]()
+this_page = Ref[Page]()
 
-    return View("/subscriber", [
-        build_certificates_dropdown(get_certificates, on_change=on_change_certificate),
-    ])
+action_row = Ref[Row]()
+results_row = Ref[Row]()
+results_datatable = Ref[DataTable]()
+
+
+def subscriber_view(page: Page, get_certificates: Callable) -> View:
+    page.title = "Subscriber Application"
+
+    this_page.current = page
+
+    controls = [
+        AppBar(title=Text("Sender App"),
+               bgcolor=colors.SURFACE_VARIANT,
+               automatically_imply_leading=False),
+        build_certificates_dropdown(get_certificates,
+                                    on_change=on_change_certificate,
+                                    ref=certificate_dropdown)
+    ]
+
+    this_view.current = View("/subscriber", controls=controls)
+    return this_view.current
+
+
+def on_subscription_change(e: ControlEvent):
+    if action_row.current is None:
+        this_view.current.controls.append(
+            Row([
+                ElevatedButton("List",
+                               icon=icons.LIST
+        # allow_multiple = True if multiple files are necessary.
+        #on_click=lambda _: file_picker.current.pick_files(dialog_title="Select Files"),
+                               ),
+                ElevatedButton(text="Subscribe Dynamic", icon=icons.SUBSCRIPTIONS)
+            ]))
+
+    if results_row.current is None:
+        results_row.current = Row([
+            DataTable(ref=results_datatable,
+                      columns=[DataColumn(label=Text("foo")),
+                               DataColumn(label=Text("bar"))])
+        ])
+        this_view.current.controls.append(results_row.current)
+    this_view.current.update()
 
 
 def on_change_certificate(e: ControlEvent):
+    set_session_certificate(e.page.session_id, certificate=certificate_dropdown.current.value)
 
-    cert = get_certificate_by_name(e.control.value)
-    if not cert:
-        raise KeyError("Invalid certificate specified in list.")
+    if subscription_dropdown.current is not None:
+        build_subscription_dropdown(partial(get_subscriptions, e.page.session_id),
+                                    on_change=on_subscription_change,
+                                    ref=subscription_dropdown)
+        subscription_dropdown.current.update()
 
-    _log.debug(e.page.session_id)
+    else:
+        this_view.current.controls.append(
+            build_subscription_dropdown(partial(get_subscriptions, e.page.session_id),
+                                        on_change=on_subscription_change,
+                                        ref=subscription_dropdown))
 
-    set_session_certificate(e.page.session_id, cert)
-
-    my_view: View = e.page.views[0]
-
-    subjects = get_subjects(e.page.session_id)
-    output = '\n'.join([str(s) for s in subjects])
-    my_view.controls.append(Text(output))
-
-
-    #e.page.views[0].controls.clear()
-    #e.page.session.set("backend_cert", dd.options[dd.options.index])
-    e.page.views[0].controls.append(Text("Wow is this how its done?"))
     e.page.update()

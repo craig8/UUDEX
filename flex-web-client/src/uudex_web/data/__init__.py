@@ -6,8 +6,9 @@ from pathlib import Path
 
 from uudex_api_client.api.participants import get_all_participants
 from uudex_api_client.api.subjects import get_all_subjects
+from uudex_api_client.api.subscriptions import get_user_subscriptions
 from uudex_api_client.client import Client as APIClient
-from uudex_api_client.models import Participant, Subject    # , Dataset
+from uudex_api_client.models import Participant, Subject, Subscription    # , Dataset
 from functools import lru_cache
 
 from .sessions import SessionId
@@ -68,6 +69,10 @@ def get_subjects(session_id: SessionId) -> list[Subject]:
     # print(resp.status, resp.reason)
 
     return get_all_subjects.sync(client=__api_client__(session_id=session_id)) or []
+
+
+def get_subscriptions(session_id: SessionId) -> list[Subscription]:
+    return get_user_subscriptions.sync(client=__api_client__(session_id=session_id))
 
 
 # def get_datasets() -> list[Dataset]:

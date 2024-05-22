@@ -63,6 +63,7 @@ def get_certificates(cert_dir: Optional[Path] = None) -> list[Certificate]:
                 cert_obj = load_pem_x509_certificate(pem_data, default_backend())
                 name = cert_obj.subject.get_attributes_for_oid(x509.NameOID.COMMON_NAME)[0].value
                 key_path = Path(cert.as_posix()[:-len(cert.suffix) + 1] + 'key')
+                # TODO Figure out how to filter out the server certificate
                 if 'UUDEX CA' not in name:
                     certs.append(
                         Certificate(crt_path=cert,

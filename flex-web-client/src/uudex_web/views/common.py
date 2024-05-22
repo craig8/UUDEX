@@ -1,6 +1,6 @@
 from flet import Dropdown, dropdown, Ref
 from uudex_web.data.certificates import Certificate
-from uudex_api_client.models import Subject
+from uudex_api_client.models import Subject, Subscription
 from typing import Callable, Optional
 
 
@@ -36,6 +36,30 @@ def build_subject_dropdown(get_subjects: Callable,
         drp_down = ref.current
     else:
         drp_down = Dropdown(label="Select Subject for API",
+                            ref=ref,
+                            options=options,
+                            on_change=on_change,
+                            width=500)
+    return drp_down
+
+
+def build_subscription_dropdown(get_subscriptions: Callable,
+                                on_change: Callable,
+                                ref: Optional[Ref] = None) -> Dropdown:
+
+    subscriptions: list[Subscription] = get_subscriptions()
+
+    options = [
+        dropdown.Option(text=subscription.subscription_name, key=subscription.subscription_uuid)
+        for subscription in sorted(subscriptions,
+                                   key=lambda subscription: subscription.subscription_name)
+    ]
+
+    if ref is not None and ref.current is not None:
+        ref.current.options = options
+        drp_down = ref.current
+    else:
+        drp_down = Dropdown(label="Select Subscription for API",
                             ref=ref,
                             options=options,
                             on_change=on_change,
