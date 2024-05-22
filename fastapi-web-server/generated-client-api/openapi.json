@@ -186,6 +186,193 @@
                 }
             }
         },
+        "/subscription/{subscription_uuid}/subjects": {
+            "get": {
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Get Subscription Subjects",
+                "operationId": "get_subscription_subjects",
+                "parameters": [
+                    {
+                        "name": "subscription_uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Subscription Uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubscriptionSubject"
+                                    },
+                                    "title": "Response Get Subscription Subjects Subscription  Subscription Uuid  Subjects Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscription/": {
+            "post": {
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Create Subscription",
+                "operationId": "create_subscription",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscriptionAdd"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscription/{subscription_uuid}": {
+            "get": {
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Get Subscription",
+                "operationId": "get_subscription",
+                "parameters": [
+                    {
+                        "name": "subscription_uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Subscription Uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Subscription"
+                                        },
+                                        {
+                                            "type": "null"
+                                        }
+                                    ],
+                                    "title": "Response Get Subscription"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscriptions/admin": {
+            "get": {
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Get All Subscriptions",
+                "operationId": "get_all_subscriptions",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Subscription"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get All Subscriptions"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscriptions/": {
+            "get": {
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Get User Subscriptions",
+                "operationId": "get_user_subscriptions",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Subscription"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get User Subscriptions"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "summary": "Root",
@@ -420,6 +607,117 @@
                 ],
                 "title": "Subject"
             },
+            "Subscription": {
+                "properties": {
+                    "create_datetime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Create Datetime"
+                    },
+                    "subscription_uuid": {
+                        "type": "string",
+                        "title": "Subscription Uuid"
+                    },
+                    "subscription_name": {
+                        "type": "string",
+                        "title": "Subscription Name"
+                    },
+                    "subscription_state": {
+                        "type": "string",
+                        "title": "Subscription State"
+                    },
+                    "subscription_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Subscription Id"
+                    },
+                    "owner_endpoint_id": {
+                        "type": "integer",
+                        "title": "Owner Endpoint Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "subscription_uuid",
+                    "subscription_name",
+                    "subscription_state",
+                    "owner_endpoint_id"
+                ],
+                "title": "Subscription"
+            },
+            "SubscriptionAdd": {
+                "properties": {
+                    "create_datetime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Create Datetime"
+                    },
+                    "subscription_uuid": {
+                        "type": "string",
+                        "title": "Subscription Uuid"
+                    },
+                    "subscription_name": {
+                        "type": "string",
+                        "title": "Subscription Name"
+                    },
+                    "subscription_state": {
+                        "type": "string",
+                        "title": "Subscription State"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "subscription_uuid",
+                    "subscription_name",
+                    "subscription_state"
+                ],
+                "title": "SubscriptionAdd"
+            },
+            "SubscriptionSubject": {
+                "properties": {
+                    "preferred_fulfillment_type": {
+                        "type": "string",
+                        "title": "Preferred Fulfillment Type"
+                    },
+                    "backing_queue_name": {
+                        "type": "string",
+                        "title": "Backing Queue Name"
+                    },
+                    "subscription_subject_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Subscription Subject Id"
+                    },
+                    "subject_id": {
+                        "type": "integer",
+                        "title": "Subject Id"
+                    },
+                    "subscription_id": {
+                        "type": "integer",
+                        "title": "Subscription Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "preferred_fulfillment_type",
+                    "backing_queue_name",
+                    "subject_id",
+                    "subscription_id"
+                ],
+                "title": "SubscriptionSubject"
+            },
             "ValidationError": {
                 "properties": {
                     "loc": {
@@ -467,6 +765,10 @@
         {
             "name": "subjects",
             "description": "Subjects API"
+        },
+        {
+            "name": "subscriptions",
+            "description": "Subscriptions API"
         }
     ]
 }
