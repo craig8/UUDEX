@@ -9,16 +9,17 @@ from fastapi.responses import JSONResponse
 #from uudex_server.core.config import load_config
 from .core import get_settings, get_logger
 from uudex_server.services import get_services, create_services
-from uudex_server.endpoints import add_routers
 
 logger = get_logger("uudex_server.main")
 logger.debug("Starting UUDEX Server")
 
-# config = load_config(Path(".env-develop"))
-# create_services(config)
-#settings = get_settings(".env-develop")
-settings = get_settings(".env")
+# Allows override of settings path from environmental variable.
+settings_path = os.environ.get('UUDEX_SETTINGS', '.env')
+settings = get_settings(settings_path)
+
 #create_services(settings)
+from uudex_server.endpoints import add_routers
+
 app = FastAPI(title="UUDEX API")
 
 # Adds the endpoint routers to the FastAPI app
@@ -60,7 +61,6 @@ async def check_ssl_cert(request: Request, call_next):
     if not request.headers.get('x-ssl-cert'):
         return JSONResponse(content=dict(error="Not Authorized"), status_code=403)
 
-
     from cryptography.x509 import load_pem_x509_certificate
     from cryptography.x509.oid import NameOID
     from cryptography.hazmat.backends import default_backend
@@ -78,15 +78,14 @@ async def check_ssl_cert(request: Request, call_next):
 
     cn = str(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value)
 
-
-    endpoint = er.select_endpoint_by_certificate_dn(session=get_db_session(),
-                                                    certificate_dn=cn)
+    endpoint = er.select_endpoint_by_certificate_dn(session=get_db_session(), certificate_dn=cn)
 
     if not endpoint:
         return JSONResponse(status_code=401, content="Unauthorized certificate detected.")
 
     # Modify the request state adding the endpoint before continuing.
     request.state.endpoint = endpoint
+    request.state.cert_pem = pem_data
 
     return await call_next(request)
 

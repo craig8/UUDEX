@@ -38,7 +38,7 @@ from urllib import parse
 
 from pyrabbit2.api import Client
 #
-from services.message_services.base import MessageBrokerServiceBase
+from uudex_server.services.message_services.base import MessageBrokerServiceBase
 
 #
 # note: this interface  is in-flux as use cases mature
@@ -69,16 +69,26 @@ class RabbitMqService(MessageBrokerServiceBase):
     def create_subscription_subject(self, subscription_uuid, subject_uuid, subject_name, tag):
 
         queue_name = self.build_queue_name(tag, subject_name, subscription_uuid)
-        rc = self._client.create_queue('/', queue_name, auto_delete=False, durable=True, exclusive=False)
+        rc = self._client.create_queue('/',
+                                       queue_name,
+                                       auto_delete=False,
+                                       durable=True,
+                                       exclusive=False)
 
         exchange_name = self.build_exchange_name(subject_name, subject_uuid)
         rc = self._client.create_binding('/', exchange_name, queue_name, "")
 
         return queue_name
 
-    def create_subscription_subject_with_performance_constraints(self, subscription_uuid, subject_uuid, subject_name,
-                                                                 tag, max_queue_size_kb=None, max_message_count=None,
-                                                                 full_queue_behavior="NO_CONSTRAINT"):
+    def create_subscription_subject_with_performance_constraints(
+            self,
+            subscription_uuid,
+            subject_uuid,
+            subject_name,
+            tag,
+            max_queue_size_kb=None,
+            max_message_count=None,
+            full_queue_behavior="NO_CONSTRAINT"):
         queue_name = self.build_queue_name(tag, subject_name, subscription_uuid)
         kwargs = {}
         kwargs['arguments'] = {}
@@ -89,7 +99,12 @@ class RabbitMqService(MessageBrokerServiceBase):
                 kwargs['arguments']['x-max-length-bytes'] = max_queue_size_kb
             if max_message_count is not None:
                 kwargs['arguments']['x-max-length'] = max_message_count
-            rc = self._client.create_queue('/', queue_name, auto_delete=False, durable=True, exclusive=False, **kwargs)
+            rc = self._client.create_queue('/',
+                                           queue_name,
+                                           auto_delete=False,
+                                           durable=True,
+                                           exclusive=False,
+                                           **kwargs)
         elif full_queue_behavior == "BLOCK_NEW":
             # Here, if max queue size in bytes and/or max message count is set, then behavior is
             # rabbitmq doesn't allow more publishes after queue is full
@@ -98,10 +113,19 @@ class RabbitMqService(MessageBrokerServiceBase):
             if max_message_count is not None:
                 kwargs['arguments']['x-max-length'] = max_message_count
             kwargs['arguments']['x-overflow'] = 'reject-publish'
-            rc = self._client.create_queue('/', queue_name, auto_delete=False, durable=True, exclusive=False, **kwargs)
+            rc = self._client.create_queue('/',
+                                           queue_name,
+                                           auto_delete=False,
+                                           durable=True,
+                                           exclusive=False,
+                                           **kwargs)
         else:
             # Reverting to default behavior: full_queue_behavior==NO_CONSTRAINT
-            rc = self._client.create_queue('/', queue_name, auto_delete=False, durable=True, exclusive=False)
+            rc = self._client.create_queue('/',
+                                           queue_name,
+                                           auto_delete=False,
+                                           durable=True,
+                                           exclusive=False)
         exchange_name = self.build_exchange_name(subject_name, subject_uuid)
         rc = self._client.create_binding('/', exchange_name, queue_name, "")
 
@@ -131,10 +155,12 @@ class RabbitMqService(MessageBrokerServiceBase):
 
     def publish_message(self, subject_exchange, routing_key, payload, payload_enc="string"):
         # payload_enc: string or base64
-        return self._client.publish('/', subject_exchange, routing_key, payload, payload_enc,
-                                    properties={"delivery_mode": 2})  # 2 = persistent
+        return self._client.publish('/',
+                                    subject_exchange,
+                                    routing_key,
+                                    payload,
+                                    payload_enc,
+                                    properties={"delivery_mode": 2})    # 2 = persistent
 
     def get_messages(self, queue, count=1):
         return self._client.get_messages('/', queue, count)
-
-

@@ -7,7 +7,8 @@ See (DEVLIST.md) for features and status of project
 ## URLS for this site
 
 - (<https://localhost/api/docs>) Swaggar UI - It validates that you have a correct tls certificate
-before allowing you to see anything
+before allowing you to see anything.  NOTE: The client must have the ca and certificate key in the
+browser before going to this site.
 
 ## NGINX Setup
 

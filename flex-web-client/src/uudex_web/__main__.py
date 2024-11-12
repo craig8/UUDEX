@@ -71,3 +71,19 @@ app.mount(
     flet_fastapi.app(main,
                      web_renderer=ft.WebRenderer.AUTO,
                      upload_dir=Path(settings.upload_dir).expanduser().as_posix()))
+
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--reload",
+                        default=False,
+                        action="store_true",
+                        help="Reload the underlying server when a file changes.")
+    opts = parser.parse_args()
+    import uvicorn
+    import sys
+
+    sys.stderr.write(f"{Path('.').absolute().as_posix()}\n")
+
+    uvicorn.run(app="uudex_web.__main__:app", reload=opts.reload, port=8000)

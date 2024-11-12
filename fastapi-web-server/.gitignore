@@ -1,6 +1,8 @@
 # Program specific ignores
 database-layer/db-init-us/03_uudex.sql
-
+generated-client-api/uudex-api-client/
+.vscode/
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

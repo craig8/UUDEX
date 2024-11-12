@@ -3,11 +3,11 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import BaseDataModel
+from uudex_server.models import TimeStampMixin, BaseModel
 from uudex_server.models.attached_data_type_models import AttachedDataType
 
 
-class DataTypeBase(BaseDataModel):
+class DataTypeBase(BaseModel):
     data_type_uuid: str
     data_type_name: str
     description: str
@@ -15,7 +15,7 @@ class DataTypeBase(BaseDataModel):
     specification_reference: str
 
 
-class DataType(DataTypeBase, table=True):
+class DataType(DataTypeBase, TimeStampMixin, table=True):
     __tablename__ = 'data_type'
 
     data_type_id: Optional[int] = Field(default=None, primary_key=True)
@@ -30,5 +30,9 @@ class DataType(DataTypeBase, table=True):
     # create_datetime: datetime = Field(default_factory=lambda: datetime.utcnow())
 
 
-class DataTypeAdd(DataTypeBase):
+class DataTypeCreate(DataTypeBase):
+    pass
+
+
+class DataTypeDelete(DataTypeBase):
     pass

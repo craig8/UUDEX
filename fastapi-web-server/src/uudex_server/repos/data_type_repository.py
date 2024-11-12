@@ -1,19 +1,52 @@
 from typing import Awaitable
-from sqlmodel import Session, select
-from uudex_server.models import DataType
+from sqlmodel import Session, select as _select, delete as _delete
+from uudex_server.models import DataType, DataTypeCreate, DataTypeDelete
 
 
 def select_all_data_types(session: Session) -> list[DataType]:
-    statement = select(DataType)
+    statement = _select(DataType)
     res = session.exec(statement=statement)
     return list(res)
 
 
 async def select_by_data_type_id(session: Session,
                                  data_type_id: int) -> Awaitable[DataType] | None:
-    statement = select(DataType).where(DataType.data_type_id == data_type_id)
+    statement = _select(DataType).where(DataType.data_type_id == data_type_id)
     res = session.exec(statement=statement)
     return res.first()    # type: ignore
+
+
+async def create(session: Session, data_type: DataTypeCreate) -> DataType:
+    dt = DataType(**data_type.model_dump())
+    session.add(dt)
+    session.commit()
+    session.refresh(dt)
+    return dt
+
+
+async def select_all(session: Session) -> list[DataType]:
+    statement = _select(DataType)
+    res = session.exec(statement)
+    return list(res)
+
+
+async def select_by_id(session: Session, data_type_id: int) -> DataType | None:
+    statement = _select(DataType).where(DataType.data_type_id == data_type_id)
+    res = session.exec(statement)
+    return res.first()
+
+
+async def update(session: Session, data_type: DataType) -> DataType:
+    session.add(data_type)
+    session.commit()
+    session.refresh(data_type)
+    return data_type
+
+
+async def delete(session: Session, data_type_remove: DataTypeDelete) -> None:
+    statement = _delete(DataType).where(DataType.data_type_id == data_type_remove.data_type_id)
+    session.exec(statement)
+    session.commit()
 
 
 if __name__ == '__main__':
