@@ -3,17 +3,17 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import BaseDataModel
+from uudex_server.models import TimeStampMixin, BaseModel
 from uudex_server.models.attached_data_type_models import AttachedDataType
 
 
-class DatasetDefinitionBase(BaseDataModel):
+class DatasetDefinitionBase(BaseModel):
     dataset_definition_uuid: str
     dataset_definition_name: str
     description: str
 
 
-class DatasetDefinition(DatasetDefinitionBase, table=True):
+class DatasetDefinition(DatasetDefinitionBase, TimeStampMixin, table=True):
     __tablename__ = 'dataset_definition'
 
     dataset_definition_id: Optional[int] = Field(default=None, primary_key=True)
@@ -21,5 +21,9 @@ class DatasetDefinition(DatasetDefinitionBase, table=True):
         back_populates="dataset_definitions", link_model=AttachedDataType)
 
 
-class DatasetDefinitionAdd(DatasetDefinitionBase):
+class DatasetDefinitionCreate(DatasetDefinitionBase):
     pass
+
+
+class DatasetDefinitionDelete(BaseModel):
+    dataset_definition_id: int

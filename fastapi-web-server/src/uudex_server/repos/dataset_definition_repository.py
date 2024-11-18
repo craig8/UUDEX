@@ -1,21 +1,49 @@
-from typing import Awaitable
-from sqlmodel import Session, select
 from uudex_server.models import DatasetDefinition
+from uudex_server.repos import Repository
 
 
-def select_all_data_definitions(session: Session) -> list[DatasetDefinition]:
-    statement = select(DatasetDefinition)
-    res = session.exec(statement=statement)
-    return list(res)
+class DatasetDefinitionRepository(Repository[DatasetDefinition]):
+
+    def __init__(self):
+        super().__init__(DatasetDefinition, id_field="dataset_definition_id")
 
 
-async def select_by_data_definition_id(
-        session: Session, data_definition_id: int) -> Awaitable[DatasetDefinition] | None:
-    statement = select(DatasetDefinition).where(
-        DatasetDefinition.dataset_definition_id == data_definition_id)
-    res = session.exec(statement=statement)
-    return res.first()    # type: ignore
-
+#
+# async def select_by_data_definition_id(
+#         session: Session, data_definition_id: int) -> Awaitable[DatasetDefinition] | None:
+#     statement = _select(DatasetDefinition).where(
+#         DatasetDefinition.dataset_definition_id == data_definition_id)
+#     res = session.exec(statement=statement)
+#     return res.first()    # type: ignore
+#
+#
+# async def create(session: Session, dataset_definition: DatasetDefinitionCreate) -> DatasetDefinition:
+#     ds_def = DatasetDefinition(**dataset_definition.model_dump())
+#     session.add(ds_def)
+#     session.commit()
+#     session.refresh(ds_def)
+#     return ds_def
+#
+# async def select_all(session: Session) -> list[DatasetDefinition]:
+#     statement = _select(DatasetDefinition)
+#     res = session.exec(statement)
+#     return list(res)
+#
+# async def select_by_id(session: Session, dataset_definition_id: int) -> DatasetDefinition | None:
+#     statement = _select(DatasetDefinition).where(DatasetDefinition.dataset_definition_id == dataset_definition_id)
+#     res = session.exec(statement)
+#     return res.first()
+#
+# async def update(session: Session, dataset_definition: DatasetDefinition) -> DatasetDefinition:
+#     session.add(dataset_definition)
+#     session.commit()
+#     session.refresh(dataset_definition)
+#     return dataset_definition
+#
+# async def delete(session: Session, dataset_definition_remove: DatasetDefinitionDelete) -> None:
+#     statement = _delete(DatasetDefinition).where(DatasetDefinition.dataset_definition_id == dataset_definition_remove.dataset_definition_id)
+#     session.exec(statement)
+#     session.commit()
 
 if __name__ == '__main__':
 
