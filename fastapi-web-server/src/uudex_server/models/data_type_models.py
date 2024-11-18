@@ -34,5 +34,5 @@ class DataTypeCreate(DataTypeBase):
     pass
 
 
-class DataTypeDelete(DataTypeBase):
-    pass
+class DataTypeDelete(BaseModel):
+    data_type_id: int
