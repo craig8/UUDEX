@@ -9,17 +9,20 @@ T = TypeVar('T', bound=BaseModel)
 
 class Repository(Generic[T]):
 
-    def __init__(self, model: Type[T], id_field: str):
+    def __init__(self, model: Type[T], id_field: str | list[str]):
         self._model = model
-        self._id_field = id_field
+        if isinstance(id_field, str):
+            self._id_fields = [id_field]
+        else:
+            self._id_fields = id_field
 
     @property
     def model(self) -> Type[T]:
         return self._model
 
     @property
-    def id_field(self) -> str:
-        return self._id_field
+    def id_fields(self) -> list[str]:
+        return self._id_fields
 
     async def select_all(self, session: Session) -> List[T]:
         statement = _select(self.model)
@@ -27,20 +30,32 @@ class Repository(Generic[T]):
         return list(res)
 
     async def select_by_id(self, session: Session, record_id: int) -> Optional[T]:
-        statement = _select(self.model).where(getattr(self.model, self.id_field) == record_id)
+        if len(self._id_fields) > 1:
+            raise ValueError("Multiple ids required as key value pairs for this repository")
+
+        statement = _select(self.model).where(getattr(self.model, self._id_fields[0]) == record_id)
+        res = session.exec(statement)
+        return res.first()
+
+    async def select_by_ids(self, session: Session, **ids: int) -> Optional[T]:
+        statements = [getattr(self.model, field) == ids[field] for field in self.id_fields]
+        statement = _select(self.model).where(*statements)
         res = session.exec(statement)
         return res.first()
 
     async def delete(self, session: Session, obj: BaseModel) -> None:
-        statement = _delete(
-            self.model).where(getattr(self.model, self.id_field) == getattr(obj, self.id_field))
+        statements = [
+            getattr(self.model, field) == getattr(obj, field) for field in self.id_fields
+        ]
+        statement = _delete(self.model).where(*statements)
         session.exec(statement)
         session.commit()
 
     async def update(self, session: Session, obj: T) -> T:
-        statement = _update(self.model).where(
-            getattr(self.model, self.id_field) == getattr(obj, self.id_field)).values(
-                **obj.model_dump(exclude_unset=True))
+        statements = [
+            getattr(self.model, field) == getattr(obj, field) for field in self.id_fields
+        ]
+        statement = _update(self.model).where(*statements).values(**obj.dict(exclude_unset=True))
         session.exec(statement)
         session.commit()
         session.refresh(obj)
@@ -55,12 +70,13 @@ class Repository(Generic[T]):
 
 
 # Importing repository modules with standardized function names
+from .attached_data_type_repository import AttachedDataTypeRepository
 from .data_type_repository import DataTypeRepository
 from .dataset_definition_repository import DatasetDefinitionRepository
 from .subject_repository import SubjectRepository
 from .dataset_repository import DatasetRepository
 from .endpoint_repository import EndpointRepository
-from .subject_policy_repository import SubjectPolicy
+from .subject_policy_repository import SubjectPolicyRepository
 from .subscription_repository import SubscriptionRepository
 from .subject_repository import SubjectRepository
 from .subscription_subject_repository import SubscriptionSubjectRepository

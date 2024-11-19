@@ -25,7 +25,7 @@ class AttachedDataTypeCreate(AttachedDataType):
     # data_type_id: int
 
 
-class AttachedDataTypeRemove(AttachedDataType):
+class AttachedDataTypeDelete(AttachedDataType):
     pass
     # dataset_definition_id: int
     # data_type_id = int
