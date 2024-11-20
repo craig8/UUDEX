@@ -1,31 +1,17 @@
 from sqlmodel import Session, select
 from uudex_server.models import EndPoint
 
-
-async def select_endpoint_by_certificate_dn(session: Session,
-                                            certificate_dn: str) -> EndPoint | None:
-    statement = select(EndPoint).where(EndPoint.certificate_dn == certificate_dn)
-    res = session.exec(statement=statement)
-    return res.first()
+from uudex_server.models.endpoint_models import EndPoint
+from uudex_server.repos import Repository
 
 
-async def select_all_endpoints(session: Session) -> list[EndPoint]:
-    statement = select(EndPoint)
-    res = session.exec(statement=statement)
-    return list(res)
+class EndpointRepository(Repository[EndPoint]):
 
+    def __init__(self):
+        super().__init__(EndPoint, id_field="endpoint_id")
 
-# async def select_participant_by_id(session: Session, participant_id: int) -> EndPoint:
-#     statement = select(EndPoint).where(EndPoint.participant_id == participant_id)
-#     res = session.exec(statement=statement)
-#     return res.first()
-
-if __name__ == '__main__':
-    from uudex_server.core.settings import get_settings
-    from uudex_server.services.database_service import get_db_session
-
-    settings = get_settings(".env-develop")
-    session = get_db_session()
-    endpoints = select_all_endpoints(session=session)
-    for endpoint in endpoints:
-        print(endpoint.model_dump_json())
+    async def select_endpoint_by_certificate_dn(self, session: Session,
+                                                certificate_dn: str) -> EndPoint | None:
+        statement = select(EndPoint).where(EndPoint.certificate_dn == certificate_dn)
+        res = session.exec(statement=statement)
+        return res.first()

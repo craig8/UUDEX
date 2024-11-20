@@ -45,39 +45,39 @@ class DatasetDefinitionRepository(Repository[DatasetDefinition]):
 #     session.exec(statement)
 #     session.commit()
 
-if __name__ == '__main__':
-
-    async def main():
-
-        from uudex_server.core.settings import get_settings
-        from uudex_server.services.database_service import get_db_session
-
-        settings = get_settings(".env-develop")
-        session = get_db_session()
-        endpoints = select_all_data_definitions(session=session)
-        print("LIST")
-        for endpoint in endpoints:
-            print(endpoint.model_dump_json())
-        print("END LIST")
-        # item = await select_by_data_definition_id(session=session,
-        #                                           data_type_id=endpoints[0].data_type_id
-        #                                           )    # type: ignore
-        # print("SINGLE SELECT")
-        # print(item)
-        # print("END SINGLE SELECT")
-
-        item = await select_by_data_definition_id(
-            session=session, data_definition_id=endpoints[0].dataset_definition_id)
-
-        print("SINGLE SELECT")
-        print(item)
-        print("END SINGLE SELECT")
-
-        item = await select_by_data_definition_id(session=session, data_definition_id=-1)
-
-        print("SINGLE SELECT")
-        print(item)
-        print("END SINGLE SELECT")
-
-    import asyncio
-    asyncio.run(main())
+# if __name__ == '__main__':
+#
+#     async def main():
+#
+#         from uudex_server.core.settings import get_settings
+#         from uudex_server.services.database_service import get_db_session
+#
+#         settings = get_settings(".env-develop")
+#         session = get_db_session()
+#         endpoints = select_all_dataset_definitions(session=session)
+#         print("LIST")
+#         for endpoint in endpoints:
+#             print(endpoint.model_dump_json())
+#         print("END LIST")
+#         # item = await select_by_data_definition_id(session=session,
+#         #                                           data_type_id=endpoints[0].data_type_id
+#         #                                           )    # type: ignore
+#         # print("SINGLE SELECT")
+#         # print(item)
+#         # print("END SINGLE SELECT")
+#
+#         item = await select_by_datas_definition_id(
+#             session=session, data_definition_id=endpoints[0].dataset_definition_id)
+#
+#         print("SINGLE SELECT")
+#         print(item)
+#         print("END SINGLE SELECT")
+#
+#         item = await select_by_data_definition_id(session=session, data_definition_id=-1)
+#
+#         print("SINGLE SELECT")
+#         print(item)
+#         print("END SINGLE SELECT")
+#
+#     import asyncio
+#     asyncio.run(main())

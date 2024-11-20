@@ -32,7 +32,7 @@ class ActiveSwitchMixin():
 
 from .authenticated_user import AuthenticatedUser
 from .participant_models import Participant, ParticipantCreate, ParticipantDelete
-from .endpoint_models import EndPoint
+from .endpoint_models import EndPoint, EndPointDelete, EndPointCreate
 from .dataset_definition_models import DatasetDefinition, DatasetDefinitionCreate, DatasetDefinitionDelete
 from .dataset_models import Dataset, DatasetCreate, DatasetDelete
 from .attached_data_type_models import AttachedDataType, AttachedDataTypeCreate, AttachedDataTypeDelete
@@ -40,4 +40,4 @@ from .data_type_models import DataType, DataTypeCreate, DataTypeDelete
 from .subject_models import Subject, SubjectCreate, SubjectDelete
 from .subject_policy_models import SubjectPolicy, SubjectPolicyAdd, SubjectPolicyDelete
 from .subscription_subject_models import SubscriptionSubject, SubscriptionSubjectAdd, SubscriptionSubjectDelete
-from .subscription_models import Subscription, SubscriptionAdd, SubscriptionDelete
+from .subscription_models import Subscription, SubscriptionCreate, SubscriptionDelete

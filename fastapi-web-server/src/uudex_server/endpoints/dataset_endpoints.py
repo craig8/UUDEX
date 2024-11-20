@@ -20,3 +20,7 @@ async def get_subject_by_id(subject_id: int,
                             session: Annotated[Session, Depends(get_db_session)]) -> Subject:
     subject: Subject = await pr.select_subject_by_id(session=session, subject_id=subject_id)
     return subject
+
+
+# @subject_router.post("/")
+# async def create_dataset("")

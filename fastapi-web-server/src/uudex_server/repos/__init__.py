@@ -55,7 +55,8 @@ class Repository(Generic[T]):
         statements = [
             getattr(self.model, field) == getattr(obj, field) for field in self.id_fields
         ]
-        statement = _update(self.model).where(*statements).values(**obj.dict(exclude_unset=True))
+        statement = _update(
+            self.model).where(*statements).values(**obj.model_dump(exclude_unset=True))
         session.exec(statement)
         session.commit()
         session.refresh(obj)

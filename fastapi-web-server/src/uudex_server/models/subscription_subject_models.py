@@ -24,3 +24,7 @@ class SubscriptionSubject(SubscriptionSubjectBase, table=True):
 
 class SubscriptionSubjectAdd(SubscriptionSubjectBase):
     pass
+
+
+class SubscriptionSubjectDelete:
+    pass
