@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from uudex_server.models.subject_models import Subject
 from uudex_server.services.database_service import get_db_session
-from uudex_server.repos import subject_repository as pr
+from uudex_server.repos import subscription_and_subject_repositories as pr
 
 subjects_router = APIRouter(prefix="/subjects")
 subject_router = APIRouter(prefix="/subject")

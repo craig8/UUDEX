@@ -43,10 +43,10 @@ import abc
 #
 
 
-class MessageBrokerServiceBase(abc.ABC):
+class UUDEXBrokerService(abc.ABC):
 
     @staticmethod
-    def build_queue_name(tag, subject_name, subscription_uuid)  -> str:
+    def build_queue_name(tag, subject_name, subscription_uuid) -> str:
         return f"q_{tag}_{subject_name}_{subscription_uuid}"
 
     @staticmethod
@@ -55,7 +55,8 @@ class MessageBrokerServiceBase(abc.ABC):
 
     # return newly created "queue"
     @abc.abstractmethod
-    def create_subscription_subject(self, subscription_uuid, subject_uuid, subject_name, tag) -> str:
+    def create_subscription_subject(self, subscription_uuid, subject_uuid, subject_name,
+                                    tag) -> str:
         # pure virtual
         pass
 
@@ -76,7 +77,7 @@ class MessageBrokerServiceBase(abc.ABC):
     def delete_subject(self, subject_name, subject_uuid):
         # pure virtual
         pass
-    
+
     # return an rc that signifies success or failure
     @abc.abstractmethod
     def delete_queue(self, queue_name) -> int:
@@ -94,7 +95,13 @@ class MessageBrokerServiceBase(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def create_subscription_subject_with_performance_constraints(self, subscription_uuid, subject_uuid, subject_name,
-                                                                 tag, max_queue_size_kb=None, max_message_count=None,
-                                                                 full_queue_behavior="NO_CONSTRAINT"):
+    def create_subscription_subject_with_performance_constraints(
+            self,
+            subscription_uuid,
+            subject_uuid,
+            subject_name,
+            tag,
+            max_queue_size_kb=None,
+            max_message_count=None,
+            full_queue_behavior="NO_CONSTRAINT"):
         pass

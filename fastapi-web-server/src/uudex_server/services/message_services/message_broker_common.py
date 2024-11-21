@@ -39,11 +39,12 @@ from services.message_services.kafka_mq import KafkaService
 
 
 # TODO: make this a shared resource pool, where the objects persist their connections and states
-def message_broker_factory(url, **kwargs):
+def message_broker_factory(url: str, **kwargs):
 
     provider = url.partition(':')[0]
 
-    if provider == "rabbitmq":
+    if provider in ("rabbitmq", "amqp"):
+        url = url.replace("rabbitmq://", "amqp://")
         return RabbitMqService(url, **kwargs)
     if provider == "kafka":
         return KafkaService(url, **kwargs)

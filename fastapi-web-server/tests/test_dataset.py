@@ -1,12 +1,12 @@
 import pytest
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine
 import uuid
 import uudex_server.models as m
 from uudex_server.repos import DatasetRepository, ParticipantRepository, SubjectRepository
 
 
 @pytest.mark.asyncio
-async def setup_participant_and_subject(session: Session, participant_repo: ParticipantRepository,
+async def setup_participant_and_subject(participant_repo: ParticipantRepository,
                                         subject_repo: SubjectRepository):
     participant = m.ParticipantCreate(participant_uuid=str(uuid.uuid4()),
                                       participant_short_name="short1",
@@ -26,18 +26,18 @@ async def setup_participant_and_subject(session: Session, participant_repo: Part
                               backing_exchange_name="exchange1",
                               owner_participant_id=1,
                               dataset_definition_id=1)
-    created_participant = await participant_repo.create(session, participant)
-    created_subject = await subject_repo.create(session, subject)
+    created_participant = await participant_repo.create(participant)
+    created_subject = await subject_repo.create(subject)
     return created_participant, created_subject
 
 
 # Dataset Tests
 @pytest.mark.asyncio
-async def test_create_dataset(session: Session, dataset_repo: DatasetRepository,
+async def test_create_dataset(dataset_repo: DatasetRepository,
                               participant_repo: ParticipantRepository,
                               subject_repo: SubjectRepository):
     created_participant, created_subject = await setup_participant_and_subject(
-        session, participant_repo, subject_repo)
+        participant_repo, subject_repo)
     dataset_create = m.DatasetCreate(dataset_uuid=str(uuid.uuid4()),
                                      dataset_name="Test Dataset",
                                      description="This is a test description",
@@ -49,23 +49,23 @@ async def test_create_dataset(session: Session, dataset_repo: DatasetRepository,
                                      version_number=1,
                                      owner_participant_id=created_participant.participant_id,
                                      subject_id=created_subject.subject_id)
-    created_dataset = await dataset_repo.create(session, dataset_create)
+    created_dataset = await dataset_repo.create(dataset_create)
     assert created_dataset.dataset_name == "Test Dataset"
     assert created_dataset.description == "This is a test description"
 
 
 @pytest.mark.asyncio
-async def test_select_all_datasets(session: Session, dataset_repo: DatasetRepository):
-    datasets = await dataset_repo.select_all(session)
+async def test_select_all_datasets(dataset_repo: DatasetRepository):
+    datasets = await dataset_repo.select_all()
     assert isinstance(datasets, list)
 
 
 @pytest.mark.asyncio
-async def test_select_dataset_by_id(session: Session, dataset_repo: DatasetRepository,
+async def test_select_dataset_by_id(dataset_repo: DatasetRepository,
                                     participant_repo: ParticipantRepository,
                                     subject_repo: SubjectRepository):
     created_participant, created_subject = await setup_participant_and_subject(
-        session, participant_repo, subject_repo)
+        participant_repo, subject_repo)
     dataset_create = m.DatasetCreate(dataset_uuid=str(uuid.uuid4()),
                                      dataset_name="Test Dataset for Select",
                                      description="This is a test for select",
@@ -77,8 +77,8 @@ async def test_select_dataset_by_id(session: Session, dataset_repo: DatasetRepos
                                      version_number=1,
                                      owner_participant_id=created_participant.participant_id,
                                      subject_id=created_subject.subject_id)
-    created_dataset = await dataset_repo.create(session, dataset_create)
-    selected_dataset = await dataset_repo.select_by_id(session, created_dataset.dataset_id)
+    created_dataset = await dataset_repo.create(dataset_create)
+    selected_dataset = await dataset_repo.select_by_id(created_dataset.dataset_id)
     assert selected_dataset is not None
     assert selected_dataset.dataset_name == "Test Dataset for Select"
     assert created_dataset.owner.participant_id == created_participant.participant_id
@@ -86,11 +86,11 @@ async def test_select_dataset_by_id(session: Session, dataset_repo: DatasetRepos
 
 
 @pytest.mark.asyncio
-async def test_update_dataset(session: Session, dataset_repo: DatasetRepository,
+async def test_update_dataset(dataset_repo: DatasetRepository,
                               participant_repo: ParticipantRepository,
                               subject_repo: SubjectRepository):
     created_participant, created_subject = await setup_participant_and_subject(
-        session, participant_repo, subject_repo)
+        participant_repo, subject_repo)
     dataset_create = m.DatasetCreate(dataset_uuid=str(uuid.uuid4()),
                                      dataset_name="Test Dataset for Update",
                                      description="This is a test for update",
@@ -102,18 +102,18 @@ async def test_update_dataset(session: Session, dataset_repo: DatasetRepository,
                                      version_number=1,
                                      owner_participant_id=created_participant.participant_id,
                                      subject_id=created_subject.subject_id)
-    created_dataset = await dataset_repo.create(session, dataset_create)
+    created_dataset = await dataset_repo.create(dataset_create)
     created_dataset.dataset_name = "Updated Dataset"
-    updated_dataset = await dataset_repo.update(session, created_dataset)
+    updated_dataset = await dataset_repo.update(created_dataset)
     assert updated_dataset.dataset_name == "Updated Dataset"
 
 
 @pytest.mark.asyncio
-async def test_delete_dataset(session: Session, dataset_repo: DatasetRepository,
+async def test_delete_dataset(dataset_repo: DatasetRepository,
                               participant_repo: ParticipantRepository,
                               subject_repo: SubjectRepository):
     created_participant, created_subject = await setup_participant_and_subject(
-        session, participant_repo, subject_repo)
+        participant_repo, subject_repo)
     dataset_create = m.DatasetCreate(dataset_uuid=str(uuid.uuid4()),
                                      dataset_name="Test Dataset for Delete",
                                      description="This is a test for delete",
@@ -125,8 +125,8 @@ async def test_delete_dataset(session: Session, dataset_repo: DatasetRepository,
                                      version_number=1,
                                      owner_participant_id=created_participant.participant_id,
                                      subject_id=created_subject.subject_id)
-    created_dataset = await dataset_repo.create(session, dataset_create)
+    created_dataset = await dataset_repo.create(dataset_create)
     dataset_remove = m.DatasetDelete(dataset_id=created_dataset.dataset_id)
-    await dataset_repo.delete(session, dataset_remove)
-    result = await dataset_repo.select_by_id(session, created_dataset.dataset_id)
+    await dataset_repo.delete(dataset_remove)
+    result = await dataset_repo.select_by_id(created_dataset.dataset_id)
     assert result is None

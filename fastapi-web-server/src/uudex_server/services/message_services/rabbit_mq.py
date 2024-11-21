@@ -38,7 +38,7 @@ from urllib import parse
 
 from pyrabbit2.api import Client
 #
-from uudex_server.services.message_services.base import MessageBrokerServiceBase
+from uudex_server.services.message_services.base import UUDEXBrokerService
 
 #
 # note: this interface  is in-flux as use cases mature
@@ -46,7 +46,7 @@ from uudex_server.services.message_services.base import MessageBrokerServiceBase
 # todo: handle vhost with these calls - this assumes "/" for vhost
 
 
-class RabbitMqService(MessageBrokerServiceBase):
+class RabbitMqService(UUDEXBrokerService):
 
     def __init__(self, url, **kwargs):
 

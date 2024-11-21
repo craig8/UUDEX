@@ -14,6 +14,7 @@ from typing import Optional
 __engine__: Optional[Engine] = None
 #engine: Engine = None #  create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}", echo=True)
 
+
 def get_db_session() -> Session:
     """Retrieve a new database session each time called
 
@@ -29,7 +30,8 @@ def get_db_session() -> Session:
         settings = get_settings()
         __engine__ = create_engine(settings.db_uri, echo=True)
 
-    return Session(__engine__)
+    return Session(__engine__, expire_on_commit=False)
+
 
 # @contextmanager
 # def create_session() -> Session:

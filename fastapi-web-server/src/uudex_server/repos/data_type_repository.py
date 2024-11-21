@@ -8,8 +8,8 @@ from uudex_server.repos import Repository
 
 class DataTypeRepository(Repository[DataType]):
 
-    def __init__(self):
-        super().__init__(DataType, "data_type_id")
+    def __init__(self, session: Session):
+        super().__init__(DataType, session=session, id_field="data_type_id")
 
 
 # def select_all_data_types(session: Session) -> list[DataType]:

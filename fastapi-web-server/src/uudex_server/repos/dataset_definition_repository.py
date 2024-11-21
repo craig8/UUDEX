@@ -1,11 +1,13 @@
+from sqlmodel import Session
+
 from uudex_server.models import DatasetDefinition
 from uudex_server.repos import Repository
 
 
 class DatasetDefinitionRepository(Repository[DatasetDefinition]):
 
-    def __init__(self):
-        super().__init__(DatasetDefinition, id_field="dataset_definition_id")
+    def __init__(self, session: Session):
+        super().__init__(DatasetDefinition, session=session, id_field="dataset_definition_id")
 
 
 #

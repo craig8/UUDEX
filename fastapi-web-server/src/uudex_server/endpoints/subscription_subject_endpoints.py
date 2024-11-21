@@ -6,7 +6,7 @@ from uudex_server.models.subscription_models import Subscription, SubscriptionCr
 from uudex_server.services.database_service import get_db_session
 from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser
-from uudex_server.repos import subscription_subject_repository as pr
+from uudex_server.repos import subscription_and_subject_repositories as pr
 from uudex_server.models.subscription_subject_models import SubscriptionSubject
 from uudex_server.endpoints.subscription_endpoints import get_subscription_router
 

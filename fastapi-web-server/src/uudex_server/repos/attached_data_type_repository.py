@@ -12,8 +12,10 @@ from uudex_server.repos import Repository
 
 class AttachedDataTypeRepository(Repository[AttachedDataType]):
 
-    def __init__(self):
-        super().__init__(AttachedDataType, id_field=["dataset_definition_id", "data_type_id"])
+    def __init__(self, session: Session):
+        super().__init__(AttachedDataType,
+                         session=session,
+                         id_field=["dataset_definition_id", "data_type_id"])
 
     async def select_by_dataset_definition_id(
             self, session: Session, dataset_definition_id: int) -> AttachedDataType | None:
@@ -22,26 +24,25 @@ class AttachedDataTypeRepository(Repository[AttachedDataType]):
         res = session.exec(statement)
         return res.first()
 
-    async def select_by_data_type_id(self, session: Session,
-                                     data_type_id: int) -> AttachedDataType | None:
+    async def select_by_data_type_id(self, data_type_id: int) -> AttachedDataType | None:
         statement = _select(self._model).where(self._model.data_type_id == data_type_id)
-        res = session.exec(statement)
+        res = self.session.exec(statement)
         return res.first()
 
-    async def select_by_ids(self, session: Session, dataset_definition_id: int,
+    async def select_by_ids(self, dataset_definition_id: int,
                             data_type_id: int) -> AttachedDataType | None:
         statement = _select(
             self._model).where((self._model.dataset_definition_id == dataset_definition_id)
                                & (self._model.data_type_id == data_type_id))
-        res = session.exec(statement)
+        res = self.session.exec(statement)
         return res.first()
 
-    async def delete(self, session: Session, obj: BaseModel) -> None:
+    async def delete(self, obj: BaseModel) -> None:
         statement = _delete(
             self._model).where((self._model.dataset_definition_id == obj.dataset_definition_id)
                                & (self._model.data_type_id == obj.data_type_id))
-        session.exec(statement)
-        session.commit()
+        self.session.exec(statement)
+        self.session.commit()
 
 
 #
