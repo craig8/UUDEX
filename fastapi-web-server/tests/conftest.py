@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import pytest
-import uudex_server.repos as repo
 
 pth = Path(__file__).parent
 os.environ["FIXTURE_DIR"] = str(pth / "fixtures")
@@ -80,7 +79,7 @@ def subscription_subject_repo_fixture():
     return repo.SubscriptionSubjectRepository()
 
 
-@pytest.fixture(name="session")
+@pytest.fixture(name="session", scope="function")
 def fixture_session():
     engine = create_engine(DATABASE_URL)
     SQLModel.metadata.create_all(engine)

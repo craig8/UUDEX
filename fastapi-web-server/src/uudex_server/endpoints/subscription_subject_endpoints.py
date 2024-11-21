@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from uudex_server.models.subject_models import Subject
-from uudex_server.models.subscription_models import Subscription, SubscriptionAdd
+from uudex_server.models.subscription_models import Subscription, SubscriptionCreate
 from uudex_server.services.database_service import get_db_session
 from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser

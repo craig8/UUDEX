@@ -39,5 +39,5 @@ from .attached_data_type_models import AttachedDataType, AttachedDataTypeCreate,
 from .data_type_models import DataType, DataTypeCreate, DataTypeDelete
 from .subject_models import Subject, SubjectCreate, SubjectDelete
 from .subject_policy_models import SubjectPolicy, SubjectPolicyAdd, SubjectPolicyDelete
-from .subscription_subject_models import SubscriptionSubject, SubscriptionSubjectAdd, SubscriptionSubjectDelete
+from .subscription_subject_models import SubscriptionSubject, SubscriptionSubjectCreate, SubscriptionSubjectDelete
 from .subscription_models import Subscription, SubscriptionCreate, SubscriptionDelete

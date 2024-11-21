@@ -43,6 +43,15 @@ class Repository(Generic[T]):
         res = session.exec(statement)
         return res.first()
 
+    async def select_by_fields(self, session: Session, **ids: int) -> Optional[T]:
+        statements = [
+            getattr(self.model, field) == ids[field] for field in self.model.model_fields
+            if field in ids
+        ]
+        statement = _select(self.model).where(*statements)
+        res = session.exec(statement)
+        return res.first()
+
     async def delete(self, session: Session, obj: BaseModel) -> None:
         statements = [
             getattr(self.model, field) == getattr(obj, field) for field in self.id_fields
