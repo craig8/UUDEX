@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import BaseModel
+from .base import BaseModel
 
 
 class SubscriptionSubjectBase(BaseModel):

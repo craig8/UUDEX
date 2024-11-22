@@ -3,7 +3,7 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import TimeStampMixin, BaseModel
+from .base import TimeStampMixin, BaseModel
 from uudex_server.models.attached_data_type_models import AttachedDataType
 
 

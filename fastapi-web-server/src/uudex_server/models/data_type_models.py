@@ -3,7 +3,7 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import TimeStampMixin, BaseModel
+from .base import BaseModel, TimeStampMixin
 from uudex_server.models.attached_data_type_models import AttachedDataType
 
 
@@ -36,3 +36,26 @@ class DataTypeCreate(DataTypeBase):
 
 class DataTypeDelete(BaseModel):
     data_type_id: int
+
+
+class DataTypeHistoryBase(BaseModel):
+    description: str
+    schema_definition: str
+    specification_reference: str | None = None
+    version_number: int
+
+
+class DataTypeHistory(DataTypeHistoryBase, TimeStampMixin, table=True):
+    __tablename__ = "data_type_history"
+
+    data_type_id: int = Field(foreign_key="data_type.data_type_id", primary_key=True)
+
+
+class DataTypeHistoryCreate(DataTypeHistoryBase):
+    data_type_id: int
+
+
+class DataTypeHistoryDelete(BaseModel):
+    data_type_id: int
+    # Assuming timestamp is part of the PK in deletion
+    created_datetime: datetime

@@ -3,7 +3,8 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import TimeStampMixin, BaseModel
+from .base import BaseModel, TimeStampMixin
+
 from uudex_server.models.subscription_subject_models import SubscriptionSubject
 
 

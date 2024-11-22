@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 from uudex_server.models.endpoint_models import EndPoint
 
+
 class AuthenticatedUser(BaseModel):
     endpoint: EndPoint
 

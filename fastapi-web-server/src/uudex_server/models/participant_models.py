@@ -3,22 +3,33 @@ from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from uudex_server.models import TimeStampMixin, BaseModel, ActiveSwitchMixin
+from .base import BaseModel, TimeStampMixin, ActiveSwitchMixin
 
 
 class ParticipantBase(BaseModel):
-    participant_uuid: str = Field(unique=True)
+    participant_uuid: str    # UUID stored as a string
     participant_short_name: str
     participant_long_name: str
-    description: str
-    root_org_sw: str = Field(default="Y")
+    description: Optional[str] = None
+    root_org_sw: str
 
 
 class Participant(ParticipantBase, TimeStampMixin, ActiveSwitchMixin, table=True):
-    participant_id: Optional[int] = Field(default=None, primary_key=True)
+    __tablename__ = "participant"
 
-    # Relationship to datasets
+    participant_id: int | None = Field(default=None, primary_key=True)
+
+    contacts: list["Contact"] = Relationship(back_populates="participant")
+    endpoints: list["EndPoint"] = Relationship(back_populates="participant")
     datasets: list["Dataset"] = Relationship(back_populates="owner")
+
+    # # Align relationships with descriptive names
+    # participant_visibility_exposed_by: list["ParticipantVisibility"] = Relationship(
+    #     back_populates="exposed_by_participant"
+    # )
+    # participant_visibility_exposed_to: list["ParticipantVisibility"] = Relationship(
+    #     back_populates="exposed_to_participant"
+    # )
 
 
 class ParticipantCreate(ParticipantBase):
@@ -27,24 +38,3 @@ class ParticipantCreate(ParticipantBase):
 
 class ParticipantDelete(BaseModel):
     participant_id: int
-
-
-class ParticipantVisibilityBase(BaseModel):
-    exposed_by_participant_id: int
-    exposed_to_participant_id: int
-
-
-class ParticipantVisibility(ParticipantVisibilityBase, TimeStampMixin, table=True):
-    __tablename__ = "participant_visibility"
-    exposed_by_participant_id: int = Field(primary_key=True,
-                                           foreign_key="participant.participant_id")
-    exposed_to_participant_id: int = Field(primary_key=True,
-                                           foreign_key="participant.participant_id")
-
-
-class ParticipantParticipantVisibilityCreate(ParticipantVisibilityBase):
-    pass
-
-
-class ParticipantVisibilityDelete(ParticipantVisibilityBase):
-    pass

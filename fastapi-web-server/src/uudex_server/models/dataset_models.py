@@ -4,7 +4,7 @@ from typing import Optional
 
 from sqlmodel import Field
 
-from uudex_server.models import TimeStampMixin, BaseModel
+from .base import TimeStampMixin, BaseModel
 
 
 class DatasetBase(BaseModel):

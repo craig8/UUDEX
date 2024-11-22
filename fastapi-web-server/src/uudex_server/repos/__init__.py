@@ -2,7 +2,7 @@ from typing import Type, TypeVar, Generic, List, Optional
 from sqlmodel import Session, SQLModel, select as _select, delete as _delete, update as _update
 
 # Use BaseModel as the bound for the generic type
-from uudex_server.models import BaseModel
+from ..models.base import BaseModel
 
 T = TypeVar('T', bound=BaseModel)
 

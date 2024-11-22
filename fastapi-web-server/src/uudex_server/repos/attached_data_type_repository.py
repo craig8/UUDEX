@@ -1,6 +1,6 @@
 from typing import Awaitable
 from sqlmodel import Session, select
-from uudex_server.models import AttachedDataType, BaseModel
+from ..models.base import BaseModel
 from sqlmodel import Session, select
 from uudex_server.models import AttachedDataType, AttachedDataTypeCreate
 from sqlmodel import Session, select as _select, delete as _delete

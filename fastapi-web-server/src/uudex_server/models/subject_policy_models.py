@@ -4,24 +4,17 @@ from typing import Optional
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field
 
-from uudex_server.models import BaseModel
+from .base import BaseModel
 
 
 class SubjectPolicyAclConstraint(BaseModel, table=True):
     __tablename__ = "subject_policy_acl_constraint"
-
-    subject_policy_acl_constraint_id: Optional[int] = Field(default=None, primary_key=True)
-    subject_policy_id: int = Field(foreign_key="subject_policy.subject_policy_id",
-                                   primary_key=True)
-    privilege_allowed_id: int = Field(foreign_key="privilege_allowed.privilege_allowed_id",
-                                      primary_key=True)
-    grant_scope_id: int = Field(foreign_key="grant_scope.grant_scope_id", primary_key=True)
-
-
-class PrivilegeAllowed(BaseModel, table=True):
-    __tablename__ = "privilege_allowed"
-    privilege_allowed_id: Optional[int] = Field(default=None, primary_key=True)
-    privilege_allowed_name: str
+    __table_args__ = (UniqueConstraint("subject_policy_id", "privilege_allowed_id",
+                                       "grant_scope_id"), )
+    subject_policy_acl_constraint_id: int | None = Field(default=None, primary_key=True)
+    subject_policy_id: int = Field(foreign_key="subject_policy.subject_policy_id")
+    privilege_allowed_id: int = Field(foreign_key="privilege_allowed.privilege_allowed_id")
+    grant_scope_id: int = Field(foreign_key="grant_scope.grant_scope_id")
 
 
 class GrantScope(BaseModel, table=True):
@@ -44,7 +37,7 @@ class SubjectPolicyBase(BaseModel):
 
 class SubjectPolicy(SubjectPolicyBase, table=True):
     __tablename__ = 'subject_policy'
-    __tableargs__ = (UniqueConstraint('dataset_definition_id', 'target_participant_id'), )
+    __table_args__ = (UniqueConstraint('dataset_definition_id', 'target_participant_id'), )
 
     subject_policy_id: Optional[int] = Field(default=None, primary_key=True)
     dataset_definition_id: int = Field(foreign_key="dataset_definition.dataset_definition_id")
@@ -61,11 +54,11 @@ class SubjectPolicyDelete(BaseModel):
 
 class SubjectAcl(BaseModel, table=True):
     __tablename__ = "subject_acl"
-
+    __table_args__ = (UniqueConstraint("subject_id", "privilege_id", "grant_scope_id"), )
     subject_acl_id: Optional[int] = Field(default=None, primary_key=True)
-    subject_id: int = Field(foreign_key="subject.subject_id", primary_key=True)
-    privilege_id: int = Field(foreign_key="privilege.privilege_id", primary_key=True)
-    grant_scope_id: int = Field(foreign_key="grant_scope.grant_scope_id", primary_key=True)
+    subject_id: int = Field(foreign_key="subject.subject_id")
+    privilege_id: int = Field(foreign_key="privilege.privilege_id")
+    grant_scope_id: int = Field(foreign_key="grant_scope.grant_scope_id")
 
 
 class SubjectAclGrant(BaseModel, table=True):
@@ -90,12 +83,3 @@ class SubjectPolicyGrantAllowed(BaseModel, table=True):
         foreign_key="subject_policy_acl_constraint.subject_policy_acl_constraint_id",
         primary_key=True)
     participant_id: int = Field(foreign_key="participant.participant_id", primary_key=True)
-
-
-class Privilege(BaseModel, table=True):
-    privilege_id: Optional[int] = Field(default=None, primary_key=True)
-    privilege_name: str
-
-
-class SubjectPolicyDelete:
-    pass

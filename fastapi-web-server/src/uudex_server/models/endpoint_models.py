@@ -1,12 +1,9 @@
 from __future__ import annotations
-from datetime import datetime
-from typing import Optional
-from cryptography.hazmat.primitives import serialization
 
-from sqlmodel import Field
-import jwt
+from sqlmodel import Field, Relationship
 
-from uudex_server.models import TimeStampMixin, ActiveSwitchMixin, BaseModel
+from .participant_models import Participant
+from .base import BaseModel, TimeStampMixin, ActiveSwitchMixin
 
 
 class EndPointBase(BaseModel):
@@ -22,20 +19,14 @@ class EndPointBase(BaseModel):
 EndpointJwt = str
 
 
-class EndPoint(EndPointBase, ActiveSwitchMixin, TimeStampMixin, table=True):
-    endpoint_id: Optional[int] = Field(default=None, primary_key=True)
+class EndPoint(EndPointBase, TimeStampMixin, ActiveSwitchMixin, table=True):
+    __tablename__ = "endpoint"
+
+    endpoint_id: int | None = Field(default=None, primary_key=True)
     participant_id: int = Field(foreign_key="participant.participant_id")
 
-    # def to_jwt(self, private_key: serialization.PrivateFormat) -> EndpointJwt:
-
-    #     payload = dict(self)
-    #     encoded_jwt = jwt.encode(payload=payload, key=private_key, algorithm="HS256")
-    #     return encoded_jwt
-
-    # @staticmethod
-    # def from_jwt(jwtstr: EndpointJwt) -> EndPoint:
-
-    #     pass
+    # Use a direct string for the relationship
+    participant: Participant = Relationship(back_populates="endpoints")
 
 
 class EndPointCreate(EndPointBase):
