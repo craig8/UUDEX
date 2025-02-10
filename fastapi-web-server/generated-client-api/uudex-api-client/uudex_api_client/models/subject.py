@@ -14,39 +14,45 @@ T = TypeVar("T", bound="Subject")
 class Subject:
     """
     Attributes:
+        create_datetime (Union[None, datetime.datetime]):
         subject_uuid (str):
         subject_name (str):
         dataset_instance_key (str):
         subscription_type (str):
         fulfillment_types_available (str):
-        full_queue_behavior (str):
-        max_queue_size_kb (int):
-        max_message_count (int):
-        priority (int):
+        full_queue_behavior (Union[None, str]):
+        max_queue_size_kb (Union[None, int]):
+        max_message_count (Union[None, int]):
+        priority (Union[None, int]):
         backing_exchange_name (str):
         owner_participant_id (int):
         dataset_definition_id (int):
-        create_datetime (Union[Unset, datetime.datetime]):
         subject_id (Union[None, Unset, int]):
     """
 
+    create_datetime: Union[None, datetime.datetime]
     subject_uuid: str
     subject_name: str
     dataset_instance_key: str
     subscription_type: str
     fulfillment_types_available: str
-    full_queue_behavior: str
-    max_queue_size_kb: int
-    max_message_count: int
-    priority: int
+    full_queue_behavior: Union[None, str]
+    max_queue_size_kb: Union[None, int]
+    max_message_count: Union[None, int]
+    priority: Union[None, int]
     backing_exchange_name: str
     owner_participant_id: int
     dataset_definition_id: int
-    create_datetime: Union[Unset, datetime.datetime] = UNSET
     subject_id: Union[None, Unset, int] = UNSET
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
+        create_datetime: Union[None, str]
+        if isinstance(self.create_datetime, datetime.datetime):
+            create_datetime = self.create_datetime.isoformat()
+        else:
+            create_datetime = self.create_datetime
+
         subject_uuid = self.subject_uuid
 
         subject_name = self.subject_name
@@ -57,12 +63,16 @@ class Subject:
 
         fulfillment_types_available = self.fulfillment_types_available
 
+        full_queue_behavior: Union[None, str]
         full_queue_behavior = self.full_queue_behavior
 
+        max_queue_size_kb: Union[None, int]
         max_queue_size_kb = self.max_queue_size_kb
 
+        max_message_count: Union[None, int]
         max_message_count = self.max_message_count
 
+        priority: Union[None, int]
         priority = self.priority
 
         backing_exchange_name = self.backing_exchange_name
@@ -70,10 +80,6 @@ class Subject:
         owner_participant_id = self.owner_participant_id
 
         dataset_definition_id = self.dataset_definition_id
-
-        create_datetime: Union[Unset, str] = UNSET
-        if not isinstance(self.create_datetime, Unset):
-            create_datetime = self.create_datetime.isoformat()
 
         subject_id: Union[None, Unset, int]
         if isinstance(self.subject_id, Unset):
@@ -83,24 +89,21 @@ class Subject:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "subject_uuid": subject_uuid,
-                "subject_name": subject_name,
-                "dataset_instance_key": dataset_instance_key,
-                "subscription_type": subscription_type,
-                "fulfillment_types_available": fulfillment_types_available,
-                "full_queue_behavior": full_queue_behavior,
-                "max_queue_size_kb": max_queue_size_kb,
-                "max_message_count": max_message_count,
-                "priority": priority,
-                "backing_exchange_name": backing_exchange_name,
-                "owner_participant_id": owner_participant_id,
-                "dataset_definition_id": dataset_definition_id,
-            }
-        )
-        if create_datetime is not UNSET:
-            field_dict["create_datetime"] = create_datetime
+        field_dict.update({
+            "create_datetime": create_datetime,
+            "subject_uuid": subject_uuid,
+            "subject_name": subject_name,
+            "dataset_instance_key": dataset_instance_key,
+            "subscription_type": subscription_type,
+            "fulfillment_types_available": fulfillment_types_available,
+            "full_queue_behavior": full_queue_behavior,
+            "max_queue_size_kb": max_queue_size_kb,
+            "max_message_count": max_message_count,
+            "priority": priority,
+            "backing_exchange_name": backing_exchange_name,
+            "owner_participant_id": owner_participant_id,
+            "dataset_definition_id": dataset_definition_id,
+        })
         if subject_id is not UNSET:
             field_dict["subject_id"] = subject_id
 
@@ -109,6 +112,22 @@ class Subject:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
+
+        def _parse_create_datetime(data: object) -> Union[None, datetime.datetime]:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                create_datetime_type_0 = isoparse(data)
+
+                return create_datetime_type_0
+            except:    # noqa: E722
+                pass
+            return cast(Union[None, datetime.datetime], data)
+
+        create_datetime = _parse_create_datetime(d.pop("create_datetime"))
+
         subject_uuid = d.pop("subject_uuid")
 
         subject_name = d.pop("subject_name")
@@ -119,26 +138,39 @@ class Subject:
 
         fulfillment_types_available = d.pop("fulfillment_types_available")
 
-        full_queue_behavior = d.pop("full_queue_behavior")
+        def _parse_full_queue_behavior(data: object) -> Union[None, str]:
+            if data is None:
+                return data
+            return cast(Union[None, str], data)
 
-        max_queue_size_kb = d.pop("max_queue_size_kb")
+        full_queue_behavior = _parse_full_queue_behavior(d.pop("full_queue_behavior"))
 
-        max_message_count = d.pop("max_message_count")
+        def _parse_max_queue_size_kb(data: object) -> Union[None, int]:
+            if data is None:
+                return data
+            return cast(Union[None, int], data)
 
-        priority = d.pop("priority")
+        max_queue_size_kb = _parse_max_queue_size_kb(d.pop("max_queue_size_kb"))
+
+        def _parse_max_message_count(data: object) -> Union[None, int]:
+            if data is None:
+                return data
+            return cast(Union[None, int], data)
+
+        max_message_count = _parse_max_message_count(d.pop("max_message_count"))
+
+        def _parse_priority(data: object) -> Union[None, int]:
+            if data is None:
+                return data
+            return cast(Union[None, int], data)
+
+        priority = _parse_priority(d.pop("priority"))
 
         backing_exchange_name = d.pop("backing_exchange_name")
 
         owner_participant_id = d.pop("owner_participant_id")
 
         dataset_definition_id = d.pop("dataset_definition_id")
-
-        _create_datetime = d.pop("create_datetime", UNSET)
-        create_datetime: Union[Unset, datetime.datetime]
-        if isinstance(_create_datetime, Unset):
-            create_datetime = UNSET
-        else:
-            create_datetime = isoparse(_create_datetime)
 
         def _parse_subject_id(data: object) -> Union[None, Unset, int]:
             if data is None:
@@ -150,6 +182,7 @@ class Subject:
         subject_id = _parse_subject_id(d.pop("subject_id", UNSET))
 
         subject = cls(
+            create_datetime=create_datetime,
             subject_uuid=subject_uuid,
             subject_name=subject_name,
             dataset_instance_key=dataset_instance_key,
@@ -162,7 +195,6 @@ class Subject:
             backing_exchange_name=backing_exchange_name,
             owner_participant_id=owner_participant_id,
             dataset_definition_id=dataset_definition_id,
-            create_datetime=create_datetime,
             subject_id=subject_id,
         )
 

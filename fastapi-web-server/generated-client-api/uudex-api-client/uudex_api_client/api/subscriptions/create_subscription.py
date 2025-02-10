@@ -7,13 +7,13 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.http_validation_error import HTTPValidationError
 from ...models.subscription import Subscription
-from ...models.subscription_add import SubscriptionAdd
+from ...models.subscription_create import SubscriptionCreate
 from ...types import Response
 
 
 def _get_kwargs(
     *,
-    body: SubscriptionAdd,
+    body: SubscriptionCreate,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
 
@@ -62,12 +62,12 @@ def _build_response(
 def sync_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionAdd,
+    body: SubscriptionCreate,
 ) -> Response[Union[HTTPValidationError, Subscription]]:
     """Create Subscription
 
     Args:
-        body (SubscriptionAdd):
+        body (SubscriptionCreate):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -87,12 +87,12 @@ def sync_detailed(
 def sync(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionAdd,
+    body: SubscriptionCreate,
 ) -> Optional[Union[HTTPValidationError, Subscription]]:
     """Create Subscription
 
     Args:
-        body (SubscriptionAdd):
+        body (SubscriptionCreate):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -111,12 +111,12 @@ def sync(
 async def asyncio_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionAdd,
+    body: SubscriptionCreate,
 ) -> Response[Union[HTTPValidationError, Subscription]]:
     """Create Subscription
 
     Args:
-        body (SubscriptionAdd):
+        body (SubscriptionCreate):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -136,12 +136,12 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionAdd,
+    body: SubscriptionCreate,
 ) -> Optional[Union[HTTPValidationError, Subscription]]:
     """Create Subscription
 
     Args:
-        body (SubscriptionAdd):
+        body (SubscriptionCreate):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

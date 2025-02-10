@@ -10,69 +10,6 @@
         }
     ],
     "paths": {
-        "/participant/me": {
-            "get": {
-                "tags": [
-                    "participants"
-                ],
-                "summary": "Get Participant By Id",
-                "operationId": "get_participant_by_id",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Participant"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/participant/{participant_id}": {
-            "get": {
-                "tags": [
-                    "participants"
-                ],
-                "summary": "Get Participant By Id",
-                "operationId": "get_participant_by_id",
-                "parameters": [
-                    {
-                        "name": "participant_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "title": "Participant Id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Participant"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/HTTPValidationError"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/participants/": {
             "get": {
                 "tags": [
@@ -91,6 +28,45 @@
                                     },
                                     "type": "array",
                                     "title": "Response Get All Participants Participants  Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "participants"
+                ],
+                "summary": "Create Participant",
+                "operationId": "create_participant",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParticipantCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Participant"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
                                 }
                             }
                         }
@@ -184,6 +160,99 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Create Subject",
+                "operationId": "create_subject",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubjectCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subject"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subjects/{subject_uuid}/publish": {
+            "post": {
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Publish Messages To Subject",
+                "operationId": "publish_messages_to_subject",
+                "parameters": [
+                    {
+                        "name": "subject_uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Subject Uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "title": "Messages"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/subscription/{subscription_uuid}/subjects": {
@@ -243,7 +312,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/SubscriptionAdd"
+                                "$ref": "#/components/schemas/SubscriptionCreate"
                             }
                         }
                     },
@@ -394,14 +463,22 @@
         "schemas": {
             "EndPoint": {
                 "properties": {
-                    "create_datetime": {
-                        "type": "string",
-                        "format": "date-time",
-                        "title": "Create Datetime"
-                    },
                     "active_sw": {
                         "type": "string",
-                        "title": "Active Sw"
+                        "title": "Active Sw",
+                        "default": "Y"
+                    },
+                    "create_datetime": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Create Datetime"
                     },
                     "endpoint_uuid": {
                         "type": "string",
@@ -427,6 +504,10 @@
                         "type": "string",
                         "title": "Participant Administrator Sw"
                     },
+                    "participant_id": {
+                        "type": "integer",
+                        "title": "Participant Id"
+                    },
                     "endpoint_id": {
                         "anyOf": [
                             {
@@ -437,15 +518,11 @@
                             }
                         ],
                         "title": "Endpoint Id"
-                    },
-                    "participant_id": {
-                        "type": "integer",
-                        "title": "Participant Id"
                     }
                 },
                 "type": "object",
                 "required": [
-                    "active_sw",
+                    "create_datetime",
                     "endpoint_uuid",
                     "endpoint_user_name",
                     "certificate_dn",
@@ -471,14 +548,22 @@
             },
             "Participant": {
                 "properties": {
-                    "create_datetime": {
-                        "type": "string",
-                        "format": "date-time",
-                        "title": "Create Datetime"
-                    },
                     "active_sw": {
                         "type": "string",
-                        "title": "Active Sw"
+                        "title": "Active Sw",
+                        "default": "Y"
+                    },
+                    "create_datetime": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Create Datetime"
                     },
                     "participant_uuid": {
                         "type": "string",
@@ -493,7 +578,14 @@
                         "title": "Participant Long Name"
                     },
                     "description": {
-                        "type": "string",
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Description"
                     },
                     "root_org_sw": {
@@ -514,20 +606,65 @@
                 },
                 "type": "object",
                 "required": [
-                    "active_sw",
+                    "create_datetime",
                     "participant_uuid",
                     "participant_short_name",
                     "participant_long_name",
-                    "description",
                     "root_org_sw"
                 ],
                 "title": "Participant"
             },
+            "ParticipantCreate": {
+                "properties": {
+                    "participant_uuid": {
+                        "type": "string",
+                        "title": "Participant Uuid"
+                    },
+                    "participant_short_name": {
+                        "type": "string",
+                        "title": "Participant Short Name"
+                    },
+                    "participant_long_name": {
+                        "type": "string",
+                        "title": "Participant Long Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "root_org_sw": {
+                        "type": "string",
+                        "title": "Root Org Sw"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "participant_uuid",
+                    "participant_short_name",
+                    "participant_long_name",
+                    "root_org_sw"
+                ],
+                "title": "ParticipantCreate"
+            },
             "Subject": {
                 "properties": {
                     "create_datetime": {
-                        "type": "string",
-                        "format": "date-time",
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Create Datetime"
                     },
                     "subject_uuid": {
@@ -551,24 +688,60 @@
                         "title": "Fulfillment Types Available"
                     },
                     "full_queue_behavior": {
-                        "type": "string",
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Full Queue Behavior"
                     },
                     "max_queue_size_kb": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Max Queue Size Kb"
                     },
                     "max_message_count": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Max Message Count"
                     },
                     "priority": {
-                        "type": "integer",
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Priority"
                     },
                     "backing_exchange_name": {
                         "type": "string",
                         "title": "Backing Exchange Name"
+                    },
+                    "owner_participant_id": {
+                        "type": "integer",
+                        "title": "Owner Participant Id"
+                    },
+                    "dataset_definition_id": {
+                        "type": "integer",
+                        "title": "Dataset Definition Id"
                     },
                     "subject_id": {
                         "anyOf": [
@@ -580,6 +753,95 @@
                             }
                         ],
                         "title": "Subject Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "create_datetime",
+                    "subject_uuid",
+                    "subject_name",
+                    "dataset_instance_key",
+                    "subscription_type",
+                    "fulfillment_types_available",
+                    "full_queue_behavior",
+                    "max_queue_size_kb",
+                    "max_message_count",
+                    "priority",
+                    "backing_exchange_name",
+                    "owner_participant_id",
+                    "dataset_definition_id"
+                ],
+                "title": "Subject"
+            },
+            "SubjectCreate": {
+                "properties": {
+                    "subject_uuid": {
+                        "type": "string",
+                        "title": "Subject Uuid"
+                    },
+                    "subject_name": {
+                        "type": "string",
+                        "title": "Subject Name"
+                    },
+                    "dataset_instance_key": {
+                        "type": "string",
+                        "title": "Dataset Instance Key"
+                    },
+                    "subscription_type": {
+                        "type": "string",
+                        "title": "Subscription Type"
+                    },
+                    "fulfillment_types_available": {
+                        "type": "string",
+                        "title": "Fulfillment Types Available"
+                    },
+                    "full_queue_behavior": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Full Queue Behavior"
+                    },
+                    "max_queue_size_kb": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Queue Size Kb"
+                    },
+                    "max_message_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Message Count"
+                    },
+                    "priority": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Priority"
+                    },
+                    "backing_exchange_name": {
+                        "type": "string",
+                        "title": "Backing Exchange Name"
                     },
                     "owner_participant_id": {
                         "type": "integer",
@@ -605,13 +867,20 @@
                     "owner_participant_id",
                     "dataset_definition_id"
                 ],
-                "title": "Subject"
+                "title": "SubjectCreate"
             },
             "Subscription": {
                 "properties": {
                     "create_datetime": {
-                        "type": "string",
-                        "format": "date-time",
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
                         "title": "Create Datetime"
                     },
                     "subscription_uuid": {
@@ -626,6 +895,10 @@
                         "type": "string",
                         "title": "Subscription State"
                     },
+                    "owner_endpoint_id": {
+                        "type": "integer",
+                        "title": "Owner Endpoint Id"
+                    },
                     "subscription_id": {
                         "anyOf": [
                             {
@@ -636,6 +909,31 @@
                             }
                         ],
                         "title": "Subscription Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "create_datetime",
+                    "subscription_uuid",
+                    "subscription_name",
+                    "subscription_state",
+                    "owner_endpoint_id"
+                ],
+                "title": "Subscription"
+            },
+            "SubscriptionCreate": {
+                "properties": {
+                    "subscription_uuid": {
+                        "type": "string",
+                        "title": "Subscription Uuid"
+                    },
+                    "subscription_name": {
+                        "type": "string",
+                        "title": "Subscription Name"
+                    },
+                    "subscription_state": {
+                        "type": "string",
+                        "title": "Subscription State"
                     },
                     "owner_endpoint_id": {
                         "type": "integer",
@@ -649,35 +947,7 @@
                     "subscription_state",
                     "owner_endpoint_id"
                 ],
-                "title": "Subscription"
-            },
-            "SubscriptionAdd": {
-                "properties": {
-                    "create_datetime": {
-                        "type": "string",
-                        "format": "date-time",
-                        "title": "Create Datetime"
-                    },
-                    "subscription_uuid": {
-                        "type": "string",
-                        "title": "Subscription Uuid"
-                    },
-                    "subscription_name": {
-                        "type": "string",
-                        "title": "Subscription Name"
-                    },
-                    "subscription_state": {
-                        "type": "string",
-                        "title": "Subscription State"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "subscription_uuid",
-                    "subscription_name",
-                    "subscription_state"
-                ],
-                "title": "SubscriptionAdd"
+                "title": "SubscriptionCreate"
             },
             "SubscriptionSubject": {
                 "properties": {
@@ -689,6 +959,14 @@
                         "type": "string",
                         "title": "Backing Queue Name"
                     },
+                    "subject_id": {
+                        "type": "integer",
+                        "title": "Subject Id"
+                    },
+                    "subscription_id": {
+                        "type": "integer",
+                        "title": "Subscription Id"
+                    },
                     "subscription_subject_id": {
                         "anyOf": [
                             {
@@ -699,14 +977,6 @@
                             }
                         ],
                         "title": "Subscription Subject Id"
-                    },
-                    "subject_id": {
-                        "type": "integer",
-                        "title": "Subject Id"
-                    },
-                    "subscription_id": {
-                        "type": "integer",
-                        "title": "Subscription Id"
                     }
                 },
                 "type": "object",
