@@ -8,12 +8,21 @@ from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser
 #from uudex_server.services.authentication_service import get_auth_service
 from uudex_server.repos import subscription_and_subject_repositories as pr
-from uudex_server import Settings, get_settings
+#from uudex_server import Settings, get_settings
 from uudex_server.services.message_services.base import UUDEXBrokerService
 from uudex_server.services.message_services import create_broker_service
 from uudex_server.models.core_datatypes import Message
 
 from . import SessionAndUser
+from ..models.subject_models import Subject, SubjectCreate
+from ..services.database_service import get_db_session
+from ..services.authentication_service import get_request_user
+from ..models.authenticated_user import AuthenticatedUser
+from ..repos import subscription_and_subject_repositories as pr
+from ..core import Settings, get_settings
+from ..services.message_services.base import UUDEXBrokerService
+from ..services.message_services import create_broker_service
+from ..models.core_datatypes import Message
 
 subjects_router = APIRouter(prefix="/subjects")
 subject_router = APIRouter(prefix="/subject")

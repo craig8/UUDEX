@@ -13,14 +13,14 @@ class BaseModel(SQLModel):
 
 
 class TimeStampMixin(SQLModel):
-    created_datetime: datetime | None = Field(
+    create_datetime: datetime | None = Field(
         sa_type=TIMESTAMP(timezone=True),
         sa_column_kwargs={"server_default": text("CURRENT_TIMESTAMP")},
         nullable=False)
-    updated_datetime: datetime | None = Field(
-        sa_type=TIMESTAMP(timezone=True),
-        sa_column_kwargs={"server_default": text("CURRENT_TIMESTAMP")},
-        nullable=False)
+    # update_datetime: datetime | None = Field(
+    #     sa_type=TIMESTAMP(timezone=True),
+    #     sa_column_kwargs={"server_default": text("CURRENT_TIMESTAMP")},
+    #     nullable=False)
 
 
 class ActiveSwitchMixin():

@@ -1,9 +1,32 @@
-from fastapi import FastAPI
+from typing import Annotated
+
+from sqlmodel import Session
+
+from uudex_server.services.database_service import get_db_session
+from uudex_server.services.authentication_service import get_request_user
+from uudex_server.models.authenticated_user import AuthenticatedUser
+
+from fastapi import FastAPI, Depends
 from fastapi.routing import APIRoute
+
+from ..core import get_settings
+from ..services.message_services import UUDEXBrokerService, create_broker_service
+
+
+class SessionAndUser:
+
+    def __init__(self, session: Annotated[Session, Depends(get_db_session)],
+                 user: Annotated[AuthenticatedUser, Depends(get_request_user)]):
+
+        self.session = session
+        self.user = user
+
+
 from .participant_endpoints import participant_router, participants_router
 from .subject_endpoints import subject_router, subjects_router
 from .uudex_endpoints import endpoint_router
 from .subscription_endpoints import subscription_router, subscriptions_router
+import uudex_server.repos as r
 
 tags_metadata = [{
     "name": "participants",
@@ -30,6 +53,21 @@ def use_route_names_as_operation_ids(app: FastAPI) -> None:
     for route in app.routes:
         if isinstance(route, APIRoute):
             route.operation_id = route.name
+
+
+class BaseAPI:
+
+    def __init__(self, session: Session = Depends(get_db_session), user=Depends(get_request_user)):
+        self.session = session
+        self.user = user
+
+    @property
+    def subject_repo(self):
+        return r.SubjectRepository(self.session)
+
+    @property
+    def broker_service(self) -> UUDEXBrokerService:
+        return create_broker_service(get_settings().messagebus_connection)
 
 
 def add_routers(app: FastAPI):

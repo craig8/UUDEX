@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 from sqlmodel import Session
-from uudex_server.models.participant_models import Participant
+from uudex_server.models.participant_models import Participant, ParticipantCreate
 from uudex_server.services.database_service import get_db_session
 from uudex_server.repos import participant_repositories as pr
 from uudex_server.endpoints import SessionAndUser
@@ -19,25 +19,11 @@ async def get_all_participants(
     return participants
 
 
-# @participant_router.get("/me")
-# async def get_participant_by_id() -> Participant:
-#     participant = Participant(
-#         participant_id=1,
-#         participant_uuid="1",
-#         participant_short_name="me",
-#         participant_long_name="me",
-#         description="me",
-#         root_org_sw="Y",
-#         active_sw="Y",
-#     )
-#     return participant
-#     # participant: Participant = await pr.select_participant_by_id(session=session, participant_id=participant_id)
-#     # return participant
+@participants_router.post("/", operation_id="create_participant")
+async def create_participant(participant_create: ParticipantCreate,
+                             session: Annotated[Session, Depends(get_db_session)]) -> Participant:
 
+    part: Participant(**participant_create.model_dump())
+    part2 = await pr.ParticipantRepository(session=session).create(part)
 
-@participant_router.get("/{participant_id}")
-async def get_participant_by_id(
-        participant_id: int, session: Annotated[Session, Depends(get_db_session)]) -> Participant:
-    participant: Participant = await pr.select_participant_by_id(session=session,
-                                                                 participant_id=participant_id)
-    return participant
+    return part2

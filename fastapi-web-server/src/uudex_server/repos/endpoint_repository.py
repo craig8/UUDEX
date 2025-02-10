@@ -10,8 +10,8 @@ class EndpointRepository(Repository[EndPoint]):
     def __init__(self, session: Session):
         super().__init__(EndPoint, session=session, id_field="endpoint_id")
 
-    async def select_endpoint_by_certificate_dn(self, session: Session,
-                                                certificate_dn: str) -> EndPoint | None:
+    async def select_endpoint_by_certificate_dn(self, certificate_dn: str) -> EndPoint | None:
+
         statement = select(EndPoint).where(EndPoint.certificate_dn == certificate_dn)
-        res = session.exec(statement=statement)
+        res = self.session.exec(statement)
         return res.first()

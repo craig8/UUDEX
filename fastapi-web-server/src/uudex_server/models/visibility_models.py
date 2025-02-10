@@ -3,7 +3,6 @@ from typing import Optional
 from sqlalchemy import Column as sacolumn, ForeignKey, Integer, Column
 from sqlmodel import Field, Relationship
 
-from uudex_api_client.models import Participant
 from .base import BaseModel
 
 
