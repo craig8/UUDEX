@@ -1,0 +1,54 @@
+[project]
+name = "uudex-web-client"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "C. Allwardt",email = "3979063+craig8@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = "^3.10"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<2.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+reflex = "^0.7.0"
+uudex-api-client = {path = "./uudex-api-client", develop = true}
+python-dotenv = "^1.0.1"
+uudex-api-mock-server = {path = "./uudex-api-mock-server", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^4.1.0"
+coverage = "^7.4.3"
+pytest-asyncio = "^0.25.3"
+
+[tool.poetry]
+packages = [
+    { include = "uudex_web_client" }
+]
+
+# Keeping these commented for reference
+# [tool.poetry.scripts]
+# start = "reflex run"
+#
+# [tool.poetry]
+# [tool.poetry.env]
+# path = ".env"
+
+[tool.coverage.run]
+source = ["uudex_web_client"]
+omit = ["tests/*", "**/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+]
+show_missing = true
+fail_under = 80
