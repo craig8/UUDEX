@@ -58,14 +58,14 @@ show_help() {
 list_certificates() {
     echo "Certificates in directory: $CERTS_DIR"
     echo "=================================================="
-    
+
     if [ ! -d "$CERTS_DIR" ]; then
         echo "Directory does not exist: $CERTS_DIR"
         return 1
     fi
-    
+
     local found_certs=false
-    
+
     # Check for CA certificate
     if [ -f "$CERTS_DIR/ca.crt" ]; then
         echo "CA Certificate:"
@@ -75,7 +75,7 @@ list_certificates() {
         echo ""
         found_certs=true
     fi
-    
+
     # List client certificates
     echo "Client Certificates:"
     for cert_file in "$CERTS_DIR"/*.crt; do
@@ -91,7 +91,7 @@ list_certificates() {
             found_certs=true
         fi
     done
-    
+
     if [ "$found_certs" = false ]; then
         echo "No certificates found in $CERTS_DIR"
     fi
@@ -190,7 +190,7 @@ if [ "$SERVER_ONLY" = true ]; then
             ORG="$DEFAULT_ORG"
         fi
     fi
-    
+
     # Require at least one domain for server-only mode
     if [ ${#DOMAINS[@]} -eq 0 ]; then
         echo "Error: --server-only requires at least one --domain specification" >&2
@@ -201,7 +201,7 @@ else
     # Set defaults for normal mode (client certificate generation)
     CLIENT_NAME="${CLIENT_NAME:-$DEFAULT_CLIENT_NAME}"
     ORG="${ORG:-$DEFAULT_ORG}"
-    
+
     # If no domains specified, default to localhost
     if [ ${#DOMAINS[@]} -eq 0 ]; then
         DOMAINS=("localhost")
@@ -214,13 +214,13 @@ mkdir -p "$CERTS_DIR"
 # Generate CA only if it doesn't exist
 if [ ! -f "$CERTS_DIR/ca.key" ] || [ ! -f "$CERTS_DIR/ca.crt" ]; then
     echo "Generating new CA certificate..."
-    
+
     # Generate CA private key
     openssl genrsa -out "$CERTS_DIR/ca.key" "$KEY_SIZE"
-    
+
     # Generate CA certificate
     openssl req -new -x509 -days "$DAYS" -key "$CERTS_DIR/ca.key" -out "$CERTS_DIR/ca.crt" -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORG/CN=LocalCA"
-    
+
     echo "CA certificate generated successfully!"
 else
     echo "Using existing CA certificate..."
@@ -231,17 +231,17 @@ generate_server_certificate() {
     local domains=("$@")
     local primary_domain="${domains[0]}"
     local cert_name="server"
-    
+
     # If only localhost, use localhost as filename for backward compatibility
     if [ ${#domains[@]} -eq 1 ] && [ "${domains[0]}" = "localhost" ]; then
         cert_name="localhost"
     fi
-    
+
     echo "Generating server certificate for domains: ${domains[*]}"
-    
+
     # Generate server private key
     openssl genrsa -out "$CERTS_DIR/${cert_name}.key" "$KEY_SIZE"
-    
+
     # Create a config file for SAN (Subject Alternative Names)
     local config_file="$CERTS_DIR/${cert_name}.conf"
     cat > "$config_file" << EOF
@@ -264,23 +264,23 @@ subjectAltName = @alt_names
 
 [alt_names]
 EOF
-    
+
     # Add all domains as alternative names
     local i=1
     for domain in "${domains[@]}"; do
         echo "DNS.${i} = $domain" >> "$config_file"
         ((i++))
     done
-    
+
     # Generate server certificate signing request with SAN
     openssl req -new -key "$CERTS_DIR/${cert_name}.key" -out "$CERTS_DIR/${cert_name}.csr" -config "$config_file"
-    
+
     # Generate server certificate signed by CA with SAN extensions
     openssl x509 -req -days "$DAYS" -in "$CERTS_DIR/${cert_name}.csr" -CA "$CERTS_DIR/ca.crt" -CAkey "$CERTS_DIR/ca.key" -CAcreateserial -out "$CERTS_DIR/${cert_name}.crt" -extensions v3_req -extfile "$config_file"
-    
+
     # Clean up temporary files
     rm "$CERTS_DIR/${cert_name}.csr" "$config_file"
-    
+
     echo "Server certificate generated successfully!"
     echo "  Certificate: $CERTS_DIR/${cert_name}.crt"
     echo "  Private Key: $CERTS_DIR/${cert_name}.key"

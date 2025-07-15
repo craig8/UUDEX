@@ -1,4 +1,13 @@
 localhost {
+
+    @public {
+        path /docs* /health /status /openapi.json
+    }
+
+    handle @public {
+        reverse_proxy host.docker.internal:8004
+    }
+
     # Enable TLS with our CA certificate for server and client authentication
     tls /etc/caddy/certs/localhost.crt /etc/caddy/certs/localhost.key {
         client_auth {
