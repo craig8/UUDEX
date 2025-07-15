@@ -1,0 +1,16 @@
+localhost {
+    # Enable TLS with our CA certificate for server and client authentication
+    tls /etc/caddy/certs/localhost.crt /etc/caddy/certs/localhost.key {
+        client_auth {
+            mode require_and_verify
+            trust_pool file /etc/caddy/ca.crt /etc/caddy/ca-trusted.crt
+        }
+    }
+
+    # Proxy to FastAPI server running on host machine
+    reverse_proxy host.docker.internal:8004 {
+        header_up X-Client-Cert-Subject "{http.request.tls.client.subject}"
+        header_up X-Client-Cert-Issuer "{http.request.tls.client.issuer}"
+        header_up X-Client-Cert-Serial "{http.request.tls.client.serial}"
+    }
+}
