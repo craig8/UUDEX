@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import Callable
+import threading
+import time
+from typing import Callable, Optional
 from functools import wraps
 from fastapi import Request
 from fastapi import Depends
 from typing import Annotated
 import os
 
-from uudex_server.core.settings import get_settings
+from uudex_server.core.settings import get_settings, Settings
 from uudex_server.models.authenticated_user import AuthenticatedUser
 from uudex_server.models.endpoint_models import EndPoint
 
@@ -16,12 +18,84 @@ import logging
 _log = logging.getLogger(__name__)
 
 
+class EndpointCache:
+    """
+    A simple cache to store endpoint information based on the certificate common name (CN).
+    This is used to avoid repeated database lookups for the same endpoint.
+    """
+
+    def __init__(self, max_size: int = 100, ttl_seconds: int = 3600):
+        """
+        Initialize the cache with a maximum size and time-to-live (TTL) for cached items.
+        """
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self.timestamps: dict[str, float] = {}
+        self._cache: dict[str, EndPoint] = {}
+        self._lock = threading.RLock()
+
+    def _is_expired(self, key: str) -> bool:
+        if key not in self.timestamps:
+            return True
+        return time.time() - self.timestamps[key] > self.ttl_seconds
+
+    def _cleanup_expired(self):
+        """Remove expired entries"""
+        current_time = time.time()
+        expired_keys = [
+            key for key, timestamp in self.timestamps.items()
+            if current_time - timestamp > self.ttl_seconds
+        ]
+        for key in expired_keys:
+            self._cache.pop(key, None)
+            self.timestamps.pop(key, None)
+
+    def _evict_oldest(self):
+        """Remove oldest entry if cache is full"""
+        if len(self._cache) >= self.max_size:
+            oldest_key = min(self.timestamps.keys(), key=self.timestamps.get)
+            self._cache.pop(oldest_key, None)
+            self.timestamps.pop(oldest_key, None)
+
+    def get(self, key: str) -> Optional[EndPoint]:
+        with self._lock:
+            if key in self._cache and not self._is_expired(key):
+                return self._cache[key]
+            return None
+
+    def set(self, key: str, value: EndPoint):
+        with self._lock:
+            self._cleanup_expired()
+            self._evict_oldest()
+            self._cache[key] = value
+            self.timestamps[key] = time.time()
+
+    def invalidate(self, key: str):
+        with self._lock:
+            self._cache.pop(key, None)
+            self.timestamps.pop(key, None)
+
+    def clear(self):
+        with self._lock:
+            self._cache.clear()
+            self.timestamps.clear()
+
+
+authentication_cache = EndpointCache(max_size=100, ttl_seconds=3600)
+
+
 async def get_request_user(request: Annotated[Request, Request]) -> AuthenticatedUser | None:
-    _log.debug(request.state.endpoint)
+    """
+    Get authenticated user from request state, using the certificate CN stored by middleware.
+    """
+    cert_cn = getattr(request.state, 'cert_cn', None)
 
-    endpoint: EndPoint = request.state.endpoint
+    if not cert_cn:
+        return None
 
-    return AuthenticatedUser(endpoint=await request.state.endpoint)
+    # This would need a database session - better to use the dependency instead
+    # For now, return None to indicate we need to use the proper dependency
+    return None
 
 
 def authenticate(func: Callable) -> Callable:
@@ -39,6 +113,33 @@ class AuthenticationService:
     def create(settings: Settings) -> AuthenticationService:
         return AuthenticationService()
 
+    async def get_endpoint_by_certificate_dn(self, certificate_dn: str,
+                                             db_session) -> Optional[EndPoint]:
+        """
+        Get endpoint by certificate DN, using cache first, then database lookup.
+        """
+        # Check cache first
+        cached_endpoint = authentication_cache.get(certificate_dn)
+        if cached_endpoint:
+            return cached_endpoint
+
+        # Query database using the endpoint repository pattern
+        from uudex_server.repos.endpoint_repository import EndpointRepository
+
+        repo = EndpointRepository(db_session)
+        endpoint = await repo.select_endpoint_by_certificate_dn(certificate_dn)
+
+        if not endpoint or endpoint.active_sw.upper() != "Y":
+            return None
+
+        # Check if participant is active
+        if endpoint.participant.active_sw.upper() != "Y":
+            return None
+
+        # Cache the endpoint
+        authentication_cache.set(certificate_dn, endpoint)
+        return endpoint
+
 
 # """
 
@@ -48,7 +149,7 @@ class AuthenticationService:
 
 # 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants
 # permission to any person or entity lawfully obtaining a copy of this
-# software and associated documentation files (hereinafter “the Software”)
+# software and associated documentation files (hereinafter "the Software")
 # to redistribute and use the Software in source and binary forms, with or
 # without modification.  Such person or entity may use, copy, modify, merge,
 # publish, distribute, sublicense, and/or sell copies of the Software, and

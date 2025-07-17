@@ -15,6 +15,7 @@ class AuthGroup(AuthGroupBase, TimeStampMixin, table=True):
     __tablename__ = "auth_group"
 
     group_id: int | None = Field(default=None, primary_key=True)
+    active_sw: str = Field(default='Y', max_length=1)    # 'Y' or 'N'
 
 
 class AuthGroupCreate(AuthGroupBase):
@@ -35,6 +36,7 @@ class AuthRole(AuthRoleBase, TimeStampMixin, table=True):
     __tablename__ = "auth_role"
 
     role_id: int | None = Field(default=None, primary_key=True)
+    active_sw: str = Field(default='Y', max_length=1)    # 'Y' or 'N'
 
 
 class AuthRoleCreate(AuthRoleBase):

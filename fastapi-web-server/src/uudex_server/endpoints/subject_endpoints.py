@@ -1,9 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from uudex_server.models.subject_models import Subject, SubjectCreate
-from uudex_server.services.database_service import get_db_session
+from uudex_server.services.database_service import get_db_session, get_db
 from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser
 #from uudex_server.services.authentication_service import get_auth_service
@@ -35,23 +36,19 @@ subject_router = APIRouter(prefix="/subject")
 
 
 @subjects_router.get("/", operation_id="get_all_subjects")
-async def get_all_subjects(
-        common: Annotated[SessionAndUser, Depends(SessionAndUser)]) -> list[Subject]:
-    # session: Annotated[Session, Depends(get_db_session)],
-    # user: Annotated[AuthenticatedUser, Depends(get_request_user)]) -> list[Subject]:
-    subjects: list[Subject] = await pr.select_all_subjects(session=common.session,
-                                                           user=common.user)
-    return subjects
+async def get_all_subjects(session: AsyncSession = Depends(get_db)) -> list[Subject]:
+    repo = pr.SubjectRepository(session)
+    return await repo.select_all()
 
 
 @subjects_router.post("/", operation_id="create_subject")
-async def create_subject(subject: SubjectCreate, session: Annotated[
-    Session, Depends(get_db_session)], broker: Annotated[
-        UUDEXBrokerService,
-        Depends(lambda: create_broker_service(get_settings().messagebus_connection))],
-                         user: Annotated[AuthenticatedUser,
-                                         Depends(get_request_user)]) -> Subject:
-
+async def create_subject(
+    subject: SubjectCreate,
+    session: AsyncSession = Depends(get_db),
+    broker: UUDEXBrokerService = Depends(
+        lambda: create_broker_service(get_settings().messagebus_connection)),
+    user: AuthenticatedUser = Depends(get_request_user)
+) -> Subject:
     subject.owner_participant_id = user.endpoint.participant_id
     subject.dataset_definition_id = 1
 

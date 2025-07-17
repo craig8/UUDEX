@@ -1,12 +1,14 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import Session
-from uudex_server.models.subscription_models import Subscription, SubscriptionCreate
+from uudex_server.models import Subscription
+from uudex_server.models.subscription_models import SubscriptionCreate
 from uudex_server.models.subscription_subject_models import SubscriptionSubject
-from uudex_server.services.database_service import get_db_session
+from uudex_server.services.database_service import get_db
 from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser
-from uudex_server.repos import SubjectRepository, SubscriptionSubjectRepository
+from uudex_server.repos import subscription_and_subject_repositories as ssr
 
 subscriptions_router = APIRouter(prefix="/subscriptions")
 subscription_router = APIRouter(prefix="/subscription")
@@ -14,13 +16,15 @@ subscription_router = APIRouter(prefix="/subscription")
 
 @subscription_router.get("/{subscription_uuid}/subjects")
 async def get_subscription_subjects(
-        subscription_uuid: str, session: Annotated[Session, Depends(get_db_session)],
-        user: Annotated[AuthenticatedUser,
-                        Depends(get_request_user)]) -> list[SubscriptionSubject]:
+    subscription_uuid: str,
+    session: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_request_user)
+) -> list[SubscriptionSubject]:
 
+    repo = ssr.SubscriptionSubjectRepository(session)
     subscription_subjects: list[
-        SubscriptionSubject] = await pr_subject.select_subjects_by_subscription_uuid(
-            session=session, subscription_uuid=subscription_uuid)
+        SubscriptionSubject] = await repo.select_subjects_by_subscription_uuid(
+            subscription_uuid=subscription_uuid)
 
     if not user.is_admin():
         subscription_subjects = [
@@ -31,48 +35,39 @@ async def get_subscription_subjects(
     return subscription_subjects
 
 
-@subscriptions_router.get("/admin", operation_id="get_all_subscriptions")
-async def get_all_subscriptions(
-        session: Annotated[Session, Depends(get_db_session)],
-        user: Annotated[AuthenticatedUser, Depends(get_request_user)]) -> list[Subscription]:
-    if not user.is_admin():
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not Authorized")
-    subscriptions: list[Subscription] = await pr.select_admin_subscriptions(session=session,
-                                                                            user=user)
-    return subscriptions
+@subscriptions_router.get("/admin", operation_id="get_admin_subscriptions")
+async def get_admin_subscriptions(session: AsyncSession = Depends(get_db),
+                                  user: AuthenticatedUser = Depends(
+                                      get_request_user)) -> list[Subscription]:
+    repo = ssr.SubscriptionRepository(session)
+    return await repo.select_admin_subscriptions()
 
 
 @subscriptions_router.get("/", operation_id="get_user_subscriptions")
-async def get_user_subscriptions(
-        session: Annotated[Session, Depends(get_db_session)],
-        user: Annotated[AuthenticatedUser, Depends(get_request_user)]) -> list[Subscription]:
-    subscriptions: list[Subscription] = await pr.select_user_subscriptions(session=session,
-                                                                           user=user)
-    return subscriptions
+async def get_user_subscriptions(session: AsyncSession = Depends(get_db),
+                                 user: AuthenticatedUser = Depends(
+                                     get_request_user)) -> list[Subscription]:
+    repo = ssr.SubscriptionRepository(session)
+    return await repo.select_user_subscriptions(user=user)
 
 
 @subscription_router.post("/", operation_id="create_subscription")
 async def create_subscription(
-        subscription: SubscriptionCreate, session: Annotated[Session,
-                                                             Depends(get_db_session)],
-        user: Annotated[AuthenticatedUser, Depends(get_request_user)]) -> Subscription:
-    sub: Subscription = await pr.create_subscription(session=session,
-                                                     user=user,
-                                                     subscription_add=subscription)
+    subscription: SubscriptionCreate,
+    session: AsyncSession = Depends(get_db),
+    user: AuthenticatedUser = Depends(get_request_user)
+) -> Subscription:
+    repo = ssr.SubscriptionRepository(session)
+    sub: Subscription = await repo.create_subscription(user=user, subscription_add=subscription)
     return sub
 
 
-@subscription_router.get("/{subscription_uuid}", operation_id="get_subscription")
-async def get_subscription(
-        subscription_uuid: str, session: Annotated[Session, Depends(get_db_session)],
-        user: Annotated[AuthenticatedUser, Depends(get_request_user)]) -> Subscription | None:
-    sub: Subscription | None = await pr.select_subscription_by_uuid(
-        session=session, subscription_uuid=subscription_uuid)
+@subscription_router.get("/{subscription_uuid}", operation_id="get_subscription_by_uuid")
+async def get_subscription_by_uuid(
+    subscription_uuid: str, session: AsyncSession = Depends(get_db)) -> Subscription:
+    repo = ssr.SubscriptionRepository(session)
+    sub: Subscription = await repo.select_subscription_by_uuid(subscription_uuid=subscription_uuid)
     if not sub:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
-
-    if sub.owner_endpoint_id != user.endpoint.endpoint_id and not (user.is_active()
-                                                                   and user.is_admin()):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not Authorized")
 
     return sub

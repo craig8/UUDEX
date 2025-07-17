@@ -1,29 +1,27 @@
 from typing import Type, TypeVar, Generic, List, Optional
-from sqlmodel import Session, SQLModel, select as _select, delete as _delete, update as _update
+from sqlmodel import SQLModel, select as _select, delete as _delete, update as _update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # Use BaseModel as the bound for the generic type
 from ..models.base import BaseModel
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar('T', bound=SQLModel)
 
 
 class Repository(Generic[T]):
 
-    def __init__(self, model: Type[T], session: Session, id_field: str | list[str]):
+    def __init__(self, model: Type[T], session: AsyncSession, id_field: str | list[str]):
         self._session = session
         self._model = model
-        if isinstance(id_field, str):
-            self._id_fields = [id_field]
-        else:
-            self._id_fields = id_field
-
-    @property
-    def session(self) -> Session:
-        return self._session
+        self._id_fields = [id_field] if isinstance(id_field, str) else id_field
 
     @property
     def model(self) -> Type[T]:
         return self._model
+
+    @property
+    def session(self) -> AsyncSession:
+        return self._session
 
     @property
     def id_fields(self) -> list[str]:
@@ -31,16 +29,13 @@ class Repository(Generic[T]):
 
     async def select_all(self) -> List[T]:
         statement = _select(self.model)
-        res = self.session.exec(statement)
-        return list(res)
+        result = await self.session.execute(statement)
+        return list(result.scalars().all())
 
     async def select_by_id(self, record_id: int) -> Optional[T]:
-        if len(self._id_fields) > 1:
-            raise ValueError("Multiple ids required as key value pairs for this repository")
-
         statement = _select(self.model).where(getattr(self.model, self._id_fields[0]) == record_id)
-        res = self.session.exec(statement)
-        return res.first()
+        result = await self.session.execute(statement)
+        return result.scalar_one_or_none()
 
     async def select_by_ids(self, **ids: int) -> Optional[T]:
         statements = [getattr(self.model, field) == ids[field] for field in self.id_fields]
@@ -76,12 +71,11 @@ class Repository(Generic[T]):
         self.session.refresh(obj)
         return obj
 
-    async def create(self, obj: BaseModel) -> T:
-        db_obj = self.model(**obj.model_dump())
-        self.session.add(db_obj)
-        self.session.commit()
-        self.session.refresh(db_obj)
-        return db_obj
+    async def create(self, obj: T) -> T:
+        self.session.add(obj)
+        await self.session.commit()
+        await self.session.refresh(obj)
+        return obj
 
 
 # Importing repository modules with standardized function names

@@ -1,41 +1,64 @@
-from sqlalchemy import Engine
-from sqlmodel import create_engine, Session
-from contextlib import contextmanager
+from typing import AsyncGenerator, AsyncContextManager
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel
+from contextlib import asynccontextmanager
 
 from uudex_server.core.settings import get_settings
-from typing import Optional
 
-# host = "localhost"
-# database = "uudex"
-# user = "uudex_user"
-# password = "uudex"
-# port = 5432
-
-__engine__: Optional[Engine] = None
-#engine: Engine = None #  create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}", echo=True)
+# Lazy loaded engine and session
+_engine = None
+_async_session = None
 
 
-def get_db_session() -> Session:
-    """Retrieve a new database session each time called
-
-    The _`ref:uudex_server.core.settings:get_settings` must have
-    been called with a path before this function can be called.
-
-    :return: A sqlalchemy `Session` object.
-    :rtype: Session
-    """
-    global __engine__
-
-    if __engine__ is None:
+def get_engine():
+    global _engine
+    if _engine is None:
         settings = get_settings()
-        __engine__ = create_engine(settings.db_uri, echo=True)
+        _engine = create_async_engine(settings.db_uri, echo=False, future=True)
+    return _engine
 
-    return Session(__engine__, expire_on_commit=False)
+
+def get_async_session():
+    global _async_session
+    if _async_session is None:
+        _async_session = sessionmaker(get_engine(), class_=AsyncSession, expire_on_commit=False)
+    return _async_session
 
 
-# @contextmanager
-# def create_session() -> Session:
-#     yield Session(engine)
+async def init_db():
+    async with get_engine().begin() as conn:
+        # Create tables
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+
+@asynccontextmanager
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    """Get async database session"""
+    session = get_async_session()()
+    try:
+        yield session
+        await session.commit()
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
+        await session.close()
+
+
+# For FastAPI dependency injection
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    async with get_db_session() as session:
+        yield session
+
+
+async def shutdown_db():
+    """Cleanup database connections"""
+    global _engine
+    if _engine is not None:
+        await _engine.dispose()
+        _engine = None
+
 
 if __name__ == '__main__':
     from sqlmodel import select

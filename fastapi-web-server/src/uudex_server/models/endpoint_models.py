@@ -4,6 +4,7 @@ from sqlmodel import Field, Relationship
 
 from .participant_models import Participant
 from .base import BaseModel, TimeStampMixin, ActiveSwitchMixin
+from .common_types import YNSwitch
 
 
 class EndPointBase(BaseModel):
@@ -11,8 +12,8 @@ class EndPointBase(BaseModel):
     endpoint_user_name: str
     certificate_dn: str
     description: str
-    uudex_administrator_sw: str
-    participant_administrator_sw: str
+    uudex_administrator_sw: YNSwitch = Field(max_length=1)    # 'Y' or 'N'
+    participant_administrator_sw: YNSwitch = Field(max_length=1)    # 'Y' or 'N'
     participant_id: int
 
 

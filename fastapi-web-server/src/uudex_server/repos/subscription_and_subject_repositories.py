@@ -2,32 +2,31 @@ from typing import Awaitable
 from sqlmodel import Session, select
 import uudex_server.models as m
 from uudex_server.repos import Repository
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
 
 
 class SubscriptionRepository(Repository[m.Subscription]):
 
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         super().__init__(m.Subscription, session=session, id_field="subscription_id")
 
-    async def select_user_subscriptions(self, session: Session,
-                                        user: m.AuthenticatedUser) -> list[m.Subscription]:
+    async def select_user_subscriptions(self, user: m.AuthenticatedUser) -> list[m.Subscription]:
         statement = select(
             m.Subscription).where(m.Subscription.owner_endpoint_id == user.endpoint.endpoint_id)
-        res = session.exec(statement=statement)
-        return list(res)
+        result = await self.session.execute(statement)
+        return list(result.scalars().all())
 
-    async def select_admin_subscriptions(self, session: Session) -> list[m.Subscription]:
-        raise NotImplemented("This needs to be implemented better!")
-        statement = select(Subscription)
-        res = session.exec(statement=statement)
-        return list(res)
+    async def select_admin_subscriptions(self) -> list[m.Subscription]:
+        statement = select(m.Subscription)
+        result = await self.session.execute(statement)
+        return list(result.scalars().all())
 
-    async def select_subscription_by_uuid(self, session: Session,
-                                          subscription_uuid: str) -> m.Subscription | None:
+    async def select_subscription_by_uuid(self, subscription_uuid: str) -> m.Subscription | None:
         statement = select(
             m.Subscription).where(m.Subscription.subscription_uuid == subscription_uuid)
-        res = session.exec(statement=statement)
-        return res.first()
+        result = await self.session.execute(statement)
+        return result.scalar_one_or_none()
 
 
 class SubscriptionSubjectRepository(Repository[m.SubscriptionSubject]):
@@ -54,8 +53,17 @@ class SubscriptionSubjectRepository(Repository[m.SubscriptionSubject]):
 
 class SubjectRepository(Repository[m.Subject]):
 
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         super().__init__(m.Subject, session=session, id_field="subject_id")
+
+
+async def select_all_subjects(session: AsyncSession,
+                              participant_id: int | None = None) -> List[m.Subject]:
+    stmt = select(m.Subject)
+    if participant_id is not None:
+        stmt = stmt.where(m.Subject.participant_id == participant_id)
+    result = await session.execute(stmt)
+    return list(result.scalars().all())
 
 
 if __name__ == '__main__':

@@ -2,14 +2,13 @@ from datetime import datetime
 import pytz
 from sqlalchemy import text, TIMESTAMP
 from sqlmodel import SQLModel, Field
+from pydantic import ConfigDict
 
 TZ_UTC = pytz.timezone("UTC")
 
 
 class BaseModel(SQLModel):
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class TimeStampMixin(SQLModel):
@@ -24,4 +23,4 @@ class TimeStampMixin(SQLModel):
 
 
 class ActiveSwitchMixin():
-    active_sw: str = Field(default="Y")
+    active_sw: str = Field(default='Y', max_length=1)    # 'Y' or 'N'
