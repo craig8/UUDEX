@@ -4,10 +4,16 @@ from typing import Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import logging
+from functools import lru_cache
+import sys
 
 logger = logging.getLogger(__name__)
 
+# Get settings file from UUDEX_SETTINGS env var, fallback to .env
 SETTINGS_FILE = Path(os.environ.get('UUDEX_SETTINGS', '.env')).resolve().as_posix()
+
+# Check for development environment
+IS_DEVELOPMENT = os.environ.get('DEV', '').lower() in ('true', '1', 'yes')
 
 
 class Settings(BaseSettings):
@@ -15,35 +21,56 @@ class Settings(BaseSettings):
     x_ssl_cert: str = Field(alias="X-SSL-CERT")
     db_uri: str = Field(alias="postgres_dsn")
     messagebus_connection: str = Field(alias="messagebus_connection")
-    model_config = SettingsConfigDict(env_file=SETTINGS_FILE,
-                                      extra='ignore',
-                                      secrets_dir="secrets")
+
+    model_config = SettingsConfigDict(
+        env_file=".env-develop" if IS_DEVELOPMENT else ".env",
+        env_file_encoding='utf-8',
+        extra='ignore',
+        validate_default=True,
+        secrets_dir="secrets"    # Each file in this directory becomes an env var
+    )
+
+    @classmethod
+    def get_test_settings(cls) -> "Settings":
+        """Get settings configured for testing"""
+        return cls(_env_file="tests/.env.test", _env_file_encoding='utf-8')
 
 
-def get_settings(path: Optional[str] = None) -> Settings:
-    global __settings__
+@lru_cache()
+def get_settings(env_file: str | None = None) -> Settings:
+    """Get settings instance, optionally with specific env file"""
+    if "pytest" in sys.modules:
+        return Settings.get_test_settings()
 
-    if __settings__ is None:
-        if path is None:
-            path = SETTINGS_FILE
+    # Priority:
+    # 1. Explicitly passed env_file
+    # 2. UUDEX_SETTINGS environment variable
+    # 3. .env-develop if DEV=True
+    # 4. .env
+    if env_file:
+        path = Path(env_file)
+    else:
+        path = Path(SETTINGS_FILE)
+
+    if not path.exists():
+        if IS_DEVELOPMENT and Path(".env-develop").exists():
+            path = Path(".env-develop")
+        elif Path(".env").exists():
+            path = Path(".env")
         else:
-            path = Path(str(path)).expanduser().resolve().as_posix()
+            raise ValueError(f"Settings file not found: {path}\n"
+                             "Ensure either UUDEX_SETTINGS points to a valid file, "
+                             "or .env-develop (in dev mode) or .env exists")
 
-        logger.debug(f"Loading settings from: {path}")
-
-        if not Path(path).exists():
-            raise ValueError(f"Settings file not found: {path}")
-
-        __settings__ = Settings(_env_file=path)    # type: ignore
-
-    return __settings__
+    logger.info(f"Loading settings from: {path}")
+    return Settings(_env_file=str(path), _secrets_dir="secrets")
 
 
 __settings__: Optional[Settings] = None
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    print(Settings(_env_file='.env-develop',
-                   _secrets_dir="secrets").model_dump())    # type: ignore
+    settings = get_settings()
+    print(settings.model_dump())
 
     print(f"ENV['DEV'] -> {os.environ.get('DEV')}")
