@@ -42,7 +42,10 @@ except Exception as e:
 from uudex_server.endpoints import add_routers
 
 # Create FastAPI app, don't define docs url here, we are going to use our own endpoint.
-app = FastAPI(title="UUDEX API", docs_url=None)
+app = FastAPI(title="UUDEX API",
+              version="1.0.0",
+              description="UUDEX Data Exchange API - Version 1",
+              docs_url=None)
 
 # Adds the endpoint routers to the FastAPI apphe FastAPI app
 add_routers(app)

@@ -22,13 +22,17 @@ class SessionAndUser:
         self.user = user
 
 
-from .participant_endpoints import participant_router, participants_router
-from .subject_endpoints import subject_router, subjects_router
-from .uudex_endpoints import endpoint_router
-from .subscription_endpoints import subscription_router, subscriptions_router
+from .participant_endpoints import participant_router, participants_router, v1_router as participant_v1_router
+from .subject_endpoints import subject_router, subjects_router, v1_router as subject_v1_router
+from .dataset_endpoints import dataset_router, datasets_router, v1_router as dataset_v1_router
+from .uudex_endpoints import endpoint_router, v1_router as endpoint_v1_router
+from .subscription_endpoints import subscription_router, subscriptions_router, v1_router as subscription_v1_router
 import uudex_server.repos as r
 
 tags_metadata = [{
+    "name": "v1",
+    "description": "API Version 1"
+}, {
     "name": "participants",
     "description": "Participants API"
 }, {
@@ -37,6 +41,9 @@ tags_metadata = [{
 }, {
     "name": "subjects",
     "description": "Subjects API"
+}, {
+    "name": "datasets",
+    "description": "Datasets API"
 }, {
     "name": "subscriptions",
     "description": "Subscriptions API"
@@ -75,11 +82,22 @@ def add_routers(app: FastAPI):
         app.openapi_tags = tags_metadata
     else:
         app.openapi_tags.extend(tags_metadata)
+
+    # Add v1 versioned routers
+    app.include_router(participant_v1_router)
+    app.include_router(subject_v1_router)
+    app.include_router(dataset_v1_router)
+    app.include_router(endpoint_v1_router)
+    app.include_router(subscription_v1_router)
+
+    # Keep original routers for backward compatibility (optional)
     app.include_router(participant_router, tags=["participants"])
     app.include_router(participants_router, tags=["participants"])
     app.include_router(endpoint_router, tags=["endpoints"])
     app.include_router(subject_router, tags=["subjects"])
     app.include_router(subjects_router, tags=["subjects"])
+    app.include_router(dataset_router, tags=["datasets"])
+    app.include_router(datasets_router, tags=["datasets"])
     app.include_router(subscription_router, tags=["subscriptions"])
     app.include_router(subscriptions_router, tags=["subscriptions"])
 

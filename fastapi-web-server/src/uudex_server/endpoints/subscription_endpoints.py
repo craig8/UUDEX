@@ -13,6 +13,11 @@ from uudex_server.repos import subscription_and_subject_repositories as ssr
 subscriptions_router = APIRouter(prefix="/subscriptions")
 subscription_router = APIRouter(prefix="/subscription")
 
+# Create v1 parent router
+v1_router = APIRouter(prefix="/v1", tags=["v1"])
+v1_router.include_router(subscriptions_router, tags=["v1", "subscriptions"])
+v1_router.include_router(subscription_router, tags=["v1", "subscriptions"])
+
 
 @subscription_router.get("/{subscription_uuid}/subjects")
 async def get_subscription_subjects(

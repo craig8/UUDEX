@@ -28,6 +28,11 @@ from ..models.core_datatypes import Message
 subjects_router = APIRouter(prefix="/subjects")
 subject_router = APIRouter(prefix="/subject")
 
+# Create v1 parent router
+v1_router = APIRouter(prefix="/v1", tags=["v1"])
+v1_router.include_router(subjects_router, tags=["v1", "subjects"])
+v1_router.include_router(subject_router, tags=["v1", "subjects"])
+
 # @subject_router.post("/", operation_id="create_subject")
 # async def create_subject(session: Annotated[Session, Depends(get_db_session)],
 #         user: Annotated[AuthenticatedUser, Depends(get_request_user)],

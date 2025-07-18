@@ -12,7 +12,7 @@ class DatasetBase(BaseModel):
     dataset_name: str
     description: str
     properties: str
-    payload: bytes
+    payload: str    # Base64 encoded string for API compatibility
     payload_size: int
     payload_md5_hash: str
     payload_compression_algorithm: str
@@ -28,8 +28,24 @@ class DatasetBase(BaseModel):
 #
 #
 class DatasetCreate(DatasetBase):
+    owner_participant_id: Optional[int] = None
+    subject_id: int
+
+
+class DatasetRead(BaseModel):
+    """Dataset metadata without payload for efficient listing/browsing"""
+    dataset_id: int
+    dataset_uuid: str
+    dataset_name: str
+    description: str
+    properties: Optional[str] = None
+    payload_size: int
+    payload_md5_hash: str
+    payload_compression_algorithm: str
+    version_number: int
     owner_participant_id: int
     subject_id: int
+    create_datetime: datetime
 
 
 class DatasetDelete(BaseModel):
@@ -39,9 +55,13 @@ class DatasetDelete(BaseModel):
 from typing import Optional
 from sqlmodel import SQLModel, Field, Relationship
 import uuid
+from .base import TimeStampMixin
 
 
-class Dataset(SQLModel, table=True):
+class Dataset(TimeStampMixin, table=True):
+    __tablename__ = "dataset"
+    __table_args__ = {"extend_existing": True}
+
     dataset_id: Optional[int] = Field(default=None, primary_key=True)
     dataset_uuid: str = Field(default_factory=lambda: str(uuid.uuid4()), nullable=False)
     dataset_name: str

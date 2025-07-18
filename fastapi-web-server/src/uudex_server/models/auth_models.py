@@ -13,6 +13,7 @@ class AuthGroupBase(BaseModel):
 
 class AuthGroup(AuthGroupBase, TimeStampMixin, table=True):
     __tablename__ = "auth_group"
+    __table_args__ = {"extend_existing": True}
 
     group_id: int | None = Field(default=None, primary_key=True)
     active_sw: str = Field(default='Y', max_length=1)    # 'Y' or 'N'
@@ -34,6 +35,7 @@ class AuthRoleBase(BaseModel):
 
 class AuthRole(AuthRoleBase, TimeStampMixin, table=True):
     __tablename__ = "auth_role"
+    __table_args__ = {"extend_existing": True}
 
     role_id: int | None = Field(default=None, primary_key=True)
     active_sw: str = Field(default='Y', max_length=1)    # 'Y' or 'N'
@@ -53,6 +55,7 @@ class PrivilegeBase(BaseModel):
 
 class Privilege(PrivilegeBase, TimeStampMixin, table=True):
     __tablename__ = "privilege"
+    __table_args__ = {"extend_existing": True}
 
     privilege_id: int | None = Field(default=None, primary_key=True)
 
@@ -71,6 +74,7 @@ class PrivilegeDelete(BaseModel):
 
 class PrivilegeAllowed(PrivilegeAllowedBase, table=True):
     __tablename__ = "privilege_allowed"
+    __table_args__ = {"extend_existing": True}
 
     privilege_allowed_id: int | None = Field(default=None, primary_key=True)
 
@@ -90,6 +94,7 @@ class ContactBase(BaseModel):
 
 class Contact(ContactBase, table=True):
     __tablename__ = "contact"
+    __table_args__ = {"extend_existing": True}
 
     contact_id: int | None = Field(default=None, primary_key=True)
     participant_id: int = Field(foreign_key="participant.participant_id")

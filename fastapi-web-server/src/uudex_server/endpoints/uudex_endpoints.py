@@ -6,6 +6,10 @@ import uudex_server.repos.endpoint_repository as ep
 
 endpoint_router = APIRouter(prefix="/endpoint")
 
+# Create v1 parent router
+v1_router = APIRouter(prefix="/v1", tags=["v1"])
+v1_router.include_router(endpoint_router, tags=["v1", "endpoints"])
+
 
 @endpoint_router.get("/me")
 async def get_endpoint_user(current_user: CurrentUserDep) -> EndPoint:

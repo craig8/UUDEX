@@ -1,6 +1,8 @@
 # Program specific ignores
 database-layer/db-init-us/03_uudex.sql
 generated-client-api/uudex-api-client/
+certs/
+infrastructure/caddy/certs/
 .vscode/
 .idea/
 

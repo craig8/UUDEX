@@ -31,24 +31,24 @@ class SubscriptionRepository(Repository[m.Subscription]):
 
 class SubscriptionSubjectRepository(Repository[m.SubscriptionSubject]):
 
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         super().__init__(m.SubscriptionSubject,
                          session=session,
                          id_field="subscription_subject_id")
 
     async def select_subjects_by_subscription_uuid(
-            self, session: Session, subscription_uuid: str) -> list[m.SubscriptionSubject]:
+            self, session: AsyncSession, subscription_uuid: str) -> list[m.SubscriptionSubject]:
         statement = select(m.SubscriptionSubject).join(m.Subscription, isouter=True).where(
             m.Subscription.subscription_uuid == subscription_uuid
         )    #.where(SubscriptionSubject.subscription.subscription_uuid == subscription_uuid)
-        res = session.exec(statement=statement)
-        return list(res)
+        res = await session.execute(statement)
+        return list(res.scalars().all())
 
-    async def select_subject_by_id(self, session: Session,
-                                   subject_id: int) -> Awaitable[m.Subject] | None:
+    async def select_subject_by_id(self, session: AsyncSession,
+                                   subject_id: int) -> m.Subject | None:
         statement = select(m.Subject).where(m.Subject.subject_id == subject_id)
-        res = session.exec(statement=statement)
-        return res.first()    # type: ignore
+        res = await session.execute(statement)
+        return res.scalar_one_or_none()
 
 
 class SubjectRepository(Repository[m.Subject]):
@@ -61,9 +61,16 @@ async def select_all_subjects(session: AsyncSession,
                               participant_id: int | None = None) -> List[m.Subject]:
     stmt = select(m.Subject)
     if participant_id is not None:
-        stmt = stmt.where(m.Subject.participant_id == participant_id)
+        stmt = stmt.where(m.Subject.owner_participant_id == participant_id)
     result = await session.execute(stmt)
     return list(result.scalars().all())
+
+
+async def select_subject_by_id(session: AsyncSession, subject_id: int) -> m.Subject | None:
+    """Select a subject by its ID."""
+    stmt = select(m.Subject).where(m.Subject.subject_id == subject_id)
+    result = await session.execute(stmt)
+    return result.scalar_one_or_none()
 
 
 if __name__ == '__main__':

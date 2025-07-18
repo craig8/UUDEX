@@ -1,0 +1,10 @@
+reflex
+python-dotenv
+cryptography
+-e uudex-api-client
+reflex
+click
+rich
+httpx
+pydantic
+pydantic-settings
