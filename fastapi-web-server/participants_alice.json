@@ -1,0 +1,212 @@
+[
+  {
+    "create_datetime": "2020-06-03T14:15:26",
+    "participant_uuid": "50581cb4-c786-4b53-9a3b-dad68962dffa",
+    "participant_long_name": "UUDEX _internal_participany",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "_internal_participant",
+    "description": "UUDEX _internal_participany",
+    "participant_id": 1
+  },
+  {
+    "create_datetime": "2020-06-03T16:09:57",
+    "participant_uuid": "e88c2757-3063-45d7-860e-66f2a83876d9",
+    "participant_long_name": "Utility 2",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "ICCP_Demo_2",
+    "description": "ICCP Demo-Publisher",
+    "participant_id": 2
+  },
+  {
+    "create_datetime": "2020-07-29T20:18:07",
+    "participant_uuid": "feea5be2-aeb0-4456-b3f4-cefcb521f8ae",
+    "participant_long_name": "Utility 1",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "ICCP_Demo_1",
+    "description": "ICCP Demo-Consumer",
+    "participant_id": 4
+  },
+  {
+    "create_datetime": "2020-09-28T19:41:43.605192",
+    "participant_uuid": "f2249976-e7cc-4777-9fac-350a4cec059f",
+    "participant_long_name": "NERC",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "NERC",
+    "description": "Test participant",
+    "participant_id": 17
+  },
+  {
+    "create_datetime": "2020-09-28T19:46:53.438718",
+    "participant_uuid": "a50978ed-143f-4b52-9deb-8361cf01962d",
+    "participant_long_name": "EISAC",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "EISAC",
+    "description": "Test participant",
+    "participant_id": 18
+  },
+  {
+    "create_datetime": "2020-09-28T19:48:25.087748",
+    "participant_uuid": "ad8464ac-c5ca-4ef5-a280-e0657eb10239",
+    "participant_long_name": "UTIL2",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "UTIL2",
+    "description": "Test participant",
+    "participant_id": 20
+  },
+  {
+    "create_datetime": "2020-09-28T19:47:41.727640",
+    "participant_uuid": "9043b2d2-a51c-4b55-a3d3-45f92d52d935",
+    "participant_long_name": "UTIL1",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "UTIL1",
+    "description": "Test utilty participant for oe417",
+    "participant_id": 19
+  },
+  {
+    "create_datetime": "2021-02-15T15:59:25",
+    "participant_uuid": "22341c17-c188-4ff1-ae69-452b644bb2b7",
+    "participant_long_name": "OATI",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "OATI",
+    "description": "oati.com",
+    "participant_id": 25
+  },
+  {
+    "create_datetime": "2021-02-15T15:59:58",
+    "participant_uuid": "3a8226e5-b687-4a46-b3a6-fa0950a4742e",
+    "participant_long_name": "MITRE",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "MITRE",
+    "description": "mitre.org",
+    "participant_id": 26
+  },
+  {
+    "create_datetime": "2021-02-15T16:00:26",
+    "participant_uuid": "acba8887-d965-4e3f-97aa-82e6d3b26709",
+    "participant_long_name": "PNNL",
+    "root_org_sw": "Y",
+    "active_sw": "Y",
+    "participant_short_name": "PNNL",
+    "description": "pnnl.gov",
+    "participant_id": 27
+  },
+  {
+    "create_datetime": "2021-03-10T04:35:44.167083",
+    "participant_uuid": "dfce9592-6892-4d98-840b-876fecef1f99",
+    "participant_long_name": "Alice",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Alice",
+    "description": "demo subj policy user",
+    "participant_id": 21
+  },
+  {
+    "create_datetime": "2021-03-10T04:35:44.266703",
+    "participant_uuid": "ca905ba5-238d-4824-bfc8-f793f7f33ba2",
+    "participant_long_name": "Bob",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Bob",
+    "description": "demo subj policy user",
+    "participant_id": 22
+  },
+  {
+    "create_datetime": "2021-03-10T04:35:44.327304",
+    "participant_uuid": "285a1b8e-c966-43d5-8a75-304d5667644f",
+    "participant_long_name": "Carol",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Carol",
+    "description": "demo subj policy user",
+    "participant_id": 23
+  },
+  {
+    "create_datetime": "2021-03-10T04:35:44.384055",
+    "participant_uuid": "d3631586-1031-4a1a-a9b0-d78bb0b02c09",
+    "participant_long_name": "David",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "David",
+    "description": "demo subj policy user",
+    "participant_id": 24
+  },
+  {
+    "create_datetime": "2021-03-10T04:45:39.621862",
+    "participant_uuid": "36da239e-31f7-4028-bceb-ab583b73a0c3",
+    "participant_long_name": "Eve",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Eve",
+    "description": "demo subj policy user",
+    "participant_id": 300
+  },
+  {
+    "create_datetime": "2021-03-10T04:45:39.683574",
+    "participant_uuid": "e5a5e8f4-9d75-4402-8445-fcfdd3db976a",
+    "participant_long_name": "Frank",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Frank",
+    "description": "demo subj policy user",
+    "participant_id": 301
+  },
+  {
+    "create_datetime": "2021-03-10T04:45:39.753878",
+    "participant_uuid": "69140cfd-6591-47a0-b977-cf7739185635",
+    "participant_long_name": "Jack",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Jack",
+    "description": "demo subj policy user",
+    "participant_id": 302
+  },
+  {
+    "create_datetime": "2021-03-10T04:45:39.811760",
+    "participant_uuid": "5ae97242-cb9f-46b3-9203-b4853a5fa0b1",
+    "participant_long_name": "Lyle",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Lyle",
+    "description": "demo subj policy user",
+    "participant_id": 303
+  },
+  {
+    "create_datetime": "2021-03-10T04:45:41.616437",
+    "participant_uuid": "50a1f44d-2756-4ca5-891d-52eb344ed4a9",
+    "participant_long_name": "Mallory",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "Mallory",
+    "description": "demo subj policy user",
+    "participant_id": 304
+  },
+  {
+    "create_datetime": "2021-03-10T05:07:18.611914",
+    "participant_uuid": "4bfc70f2-0ed7-4221-b107-8abb3c654bb0",
+    "participant_long_name": "Tester - ACL and Subj Policy demo",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "TESTER_ACL_Pol_Demo",
+    "description": "Driving Participant that is used to demostrate ACL and Subject Policy features",
+    "participant_id": 305
+  },
+  {
+    "create_datetime": "2021-03-23T20:46:25.241794",
+    "participant_uuid": "1fa7a7eb-b635-46db-aa75-08641eb0bde9",
+    "participant_long_name": "ACME-Org",
+    "root_org_sw": "N",
+    "active_sw": "Y",
+    "participant_short_name": "ACME-Org",
+    "description": "ACME Organization",
+    "participant_id": 308
+  }
+]

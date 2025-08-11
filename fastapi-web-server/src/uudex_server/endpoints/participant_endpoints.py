@@ -5,6 +5,7 @@ from uudex_server.models.participant_models import Participant, ParticipantCreat
 from uudex_server.services.database_service import get_db
 from uudex_server.repos import participant_repositories as pr
 from uudex_server.models.common_types import YNSwitch
+from uudex_server.core.dependencies import SessionDep
 
 participants_router = APIRouter(prefix="/participants")
 participant_router = APIRouter(prefix="/participant")
@@ -16,14 +17,16 @@ v1_router.include_router(participant_router, tags=["v1", "participants"])
 
 
 @participants_router.get("/")
-async def get_all_participants(session: AsyncSession = Depends(get_db)) -> list[Participant]:
-    repo = pr.ParticipantRepository(session)
-    return await repo.select_all()
+async def get_all_participants(session: SessionDep) -> list[Participant]:
+    # Use the standalone function for async operations
+    participants = await pr.select_all_participants(session=session)
+    return list(participants)
 
 
 @participants_router.post("/", operation_id="create_participant")
-async def create_participant(
-    participant_create: ParticipantCreate, session: AsyncSession = Depends(get_db)) -> Participant:
-    db_participant = Participant(**participant_create.model_dump())
-    repo = pr.ParticipantRepository(session)
-    return await repo.create(db_participant)
+async def create_participant(participant_create: ParticipantCreate,
+                             session: SessionDep) -> Participant:
+    # Use the standalone function for async operations
+    created_participant = await pr.create_participant(session=session,
+                                                      participant=participant_create)
+    return created_participant

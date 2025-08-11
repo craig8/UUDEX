@@ -1,0 +1,11 @@
+{
+  "dataset_name": "Test NERC Dataset",
+  "description": "A test dataset for NERC reporting",
+  "properties": "{\"type\": \"test\", \"category\": \"report\"}",
+  "payload": "VGVzdCBkYXRhIGZvciBORVJDIHJlcG9ydA==",
+  "payload_size": 28,
+  "payload_md5_hash": "abc123def456",
+  "payload_compression_algorithm": "none",
+  "version_number": 1,
+  "subject_id": 60
+}

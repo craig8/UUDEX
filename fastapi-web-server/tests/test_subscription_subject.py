@@ -4,8 +4,7 @@ import uudex_server.models as m
 import uudex_server.repos as r
 
 
-@pytest.fixture(name="participant", scope="function")
-@pytest.mark.asyncio
+@pytest.fixture
 async def participant_fixture(participant_repo: r.ParticipantRepository) -> m.Participant:
     participant_create = m.ParticipantCreate(participant_uuid=str(uuid.uuid4()),
                                              participant_short_name="short1",
@@ -17,8 +16,7 @@ async def participant_fixture(participant_repo: r.ParticipantRepository) -> m.Pa
     return created_participant
 
 
-@pytest.fixture(name="dataset", scope="function")
-@pytest.mark.asyncio
+@pytest.fixture
 async def dataset_fixture(participant: m.Participant, subject: m.Subject,
                           dataset_repo: r.DatasetRepository) -> m.Dataset:
     dataset_create = m.DatasetCreate(dataset_uuid=str(uuid.uuid4()),
@@ -36,8 +34,7 @@ async def dataset_fixture(participant: m.Participant, subject: m.Subject,
     return created_dataset
 
 
-@pytest.fixture(name="endpoint", scope="function")
-@pytest.mark.asyncio
+@pytest.fixture
 async def endpoint_fixture(participant: m.Participant,
                            endpoint_repo: r.EndpointRepository) -> m.EndPoint:
     endpoint = m.EndPointCreate(endpoint_uuid="uuid1",
@@ -51,8 +48,7 @@ async def endpoint_fixture(participant: m.Participant,
     return created_endpoint
 
 
-@pytest.fixture(name="subscription", scope="function")
-@pytest.mark.asyncio
+@pytest.fixture
 async def subscription_fixture(endpoint: m.EndPoint, subscription_repo: r.SubscriptionRepository):
     subscription_create = m.Subscription(subscription_uuid=str(uuid.uuid4()),
                                          subscription_name="Test Subscription",
@@ -63,10 +59,9 @@ async def subscription_fixture(endpoint: m.EndPoint, subscription_repo: r.Subscr
     return created_subscription
 
 
-@pytest.fixture(name="subject")
-@pytest.mark.asyncio
+@pytest.fixture
 async def subject_fixture(participant: m.Participant, dataset: m.Dataset,
-                          subject_repo: r.SubjectRepository):
+                          subject_repo: r.SubjectRepository) -> m.Subject:
     subject_create = m.SubjectCreate(
         subject_uuid="uuid1",
         subject_name="name1",

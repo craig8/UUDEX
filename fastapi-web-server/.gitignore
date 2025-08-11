@@ -4,7 +4,7 @@ generated-client-api/uudex-api-client/
 certs/
 infrastructure/caddy/certs/
 secrets/messagebus_connection
-secrets/postgres_dns
+secrets/postgres_dsn
 .vscode/
 .idea/
 

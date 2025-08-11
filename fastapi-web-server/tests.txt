@@ -1,0 +1,1555 @@
+# import os
+#
+# import pytest
+# from benedict import BeneDict
+#
+# from uudex_server.core.config import load_config
+# from uudex_server.services import create_services, get_services
+#
+#
+# def test_load_config():
+#     # Note ENV_FILE is specified in conftest.py in this directory or one above this.
+#     my_dict = load_config(os.environ.get("ENV_FILE"))
+#     assert my_dict
+#     assert isinstance(my_dict, BeneDict)
+#
+#     assert True == my_dict.DEV
+#     assert my_dict.X_SSL_CERT is not None
+#
+#
+# def test_create():
+#     my_dict = load_config(os.environ.get("ENV_FILE"))
+#
+#     with pytest.raises(RuntimeError):
+#         get_services()
+#
+#     resp = create_services(my_dict)
+#     resp2 = get_services()
+#     assert resp is resp2
+#     assert resp
+#     assert resp.db_service
+#     # assert resp.auth_service
+#     # assert resp.authz_service
+
+
+import pytest
+from sqlmodel import Session
+import uudex_server.models as m
+from uudex_server.repos import SubjectRepository
+
+
+@pytest.fixture(name="subject_repo")
+def subject_repository():
+    return SubjectRepository()
+
+
+# Subject Tests
+@pytest.mark.asyncio
+async def test_create_subject(session: Session, subject_repo: SubjectRepository):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    result = await subject_repo.create(session, subject)
+    assert result.subject_uuid == "uuid1"
+    assert result.subject_name == "name1"
+
+
+@pytest.mark.asyncio
+async def test_select_subject_by_id(session: Session, subject_repo: SubjectRepository):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    await subject_repo.create(session, subject)
+    result = await subject_repo.select_by_id(session, 1)
+    assert result is not None
+    assert result.subject_uuid == "uuid1"
+
+
+@pytest.mark.asyncio
+async def test_update_subject(session: Session, subject_repo: SubjectRepository):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    created_subject = await subject_repo.create(session, subject)
+    created_subject.subject_name = "updated_name"
+    result = await subject_repo.update(session, created_subject)
+    assert result.subject_name == "updated_name"
+
+
+@pytest.mark.asyncio
+async def test_delete_subject(session: Session, subject_repo: SubjectRepository):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    created_subject = await subject_repo.create(session, subject)
+    subject_remove = m.SubjectDelete(subject_id=created_subject.subject_id)
+    await subject_repo.delete(session, subject_remove)
+    result = await subject_repo.select_by_id(session, created_subject.subject_id)
+    assert result is None
+
+
+import pytest
+import uuid
+from sqlmodel import Session
+import uudex_server.models as m
+from uudex_server.repos import DatasetRepository, ParticipantRepository, SubjectRepository
+
+@pytest.mark.asyncio
+async def setup_participant_and_subject(session: Session, participant_repo: ParticipantRepository, subject_repo: SubjectRepository):
+    participant = m.ParticipantCreate(
+        participant_uuid=str(uuid.uuid4()),
+        participant_short_name="short1",
+        participant_long_name="long1",
+        description="desc1",
+        root_org_sw="Y",
+        active_sw="Y"
+    )
+    subject = m.SubjectCreate(
+        subject_uuid=str(uuid.uuid4()),
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1
+    )
+    created_participant = await participant_repo.create(session, participant)
+    created_subject = await subject_repo.create(session, subject)
+    return created_participant, created_subject
+
+# Dataset Tests
+@pytest.mark.asyncio
+async def test_create_dataset(session: Session, dataset_repo: DatasetRepository, participant_repo: ParticipantRepository, subject_repo: SubjectRepository):
+    created_participant, created_subject = await setup_participant_and_subject(session, participant_repo, subject_repo)
+    dataset_create = m.DatasetCreate(
+        dataset_uuid=str(uuid.uuid4()),
+        dataset_name="Test Dataset",
+        description="This is a test description",
+        properties="{}",
+        payload=b"",
+        payload_size=0,
+        payload_md5_hash="md5hash",
+        payload_compression_algorithm="algorithm",
+        version_number=1,
+        owner_participant_id=created_participant.participant_id,
+        subject_id=created_subject.subject_id
+    )
+    created_dataset = await dataset_repo.create(session, dataset_create)
+    assert created_dataset.dataset_name == "Test Dataset"
+    assert created_dataset.description == "This is a test description"
+
+@pytest.mark.asyncio
+async def test_select_all_datasets(session: Session, dataset_repo: DatasetRepository):
+    datasets = await dataset_repo.select_all(session)
+    assert isinstance(datasets, list)
+
+@pytest.mark.asyncio
+async def test_select_dataset_by_id(session: Session, dataset_repo: DatasetRepository, participant_repo: ParticipantRepository, subject_repo: SubjectRepository):
+    created_participant, created_subject = await setup_participant_and_subject(session, participant_repo, subject_repo)
+    dataset_create = m.DatasetCreate(
+        dataset_uuid=str(uuid.uuid4()),
+        dataset_name="Test Dataset for Select",
+        description="This is a test for select",
+        properties="{}",
+        payload=b"",
+        payload_size=0,
+        payload_md5_hash="md5hash",
+        payload_compression_algorithm="algorithm",
+        version_number=1,
+        owner_participant_id=created_participant.participant_id,
+        subject_id=created_subject.subject_id
+    )
+    created_dataset = await dataset_repo.create(session, dataset_create)
+    selected_dataset = await dataset_repo.select_by_id(session, created_dataset.dataset_id)
+    assert selected_dataset is not None
+    assert selected_dataset.dataset_name == "Test Dataset for Select"
+
+@pytest.mark.asyncio
+async def test_update_dataset(session: Session, dataset_repo: DatasetRepository, participant_repo: ParticipantRepository, subject_repo: SubjectRepository):
+    created_participant, created_subject = await setup_participant_and_subject(session, participant_repo, subject_repo)
+    dataset_create = m.DatasetCreate(
+        dataset_uuid=str(uuid.uuid4()),
+        dataset_name="Test Dataset for Update",
+        description="This is a test for update",
+        properties="{}",
+        payload=b"",
+        payload_size=0,
+        payload_md5_hash="md5hash",
+        payload_compression_algorithm="algorithm",
+        version_number=1,
+        owner_participant_id=created_participant.participant_id,
+        subject_id=created_subject.subject_id
+    )
+    created_dataset = await dataset_repo.create(session, dataset_create)
+    created_dataset.dataset_name = "Updated Dataset"
+    updated_dataset = await dataset_repo.update(session, created_dataset)
+    assert updated_dataset.dataset_name == "Updated Dataset"
+
+@pytest.mark.asyncio
+async def test_delete_dataset(session: Session, dataset_repo: DatasetRepository, participant_repo: ParticipantRepository, subject_repo: SubjectRepository):
+    created_participant, created_subject = await setup_participant_and_subject(session, participant_repo, subject_repo)
+    dataset_create = m.DatasetCreate(
+        dataset_uuid=str(uuid.uuid4()),
+        dataset_name="Test Dataset for Delete",
+        description="This is a test for delete",
+        properties="{}",
+        payload=b"",
+        payload_size=0,
+        payload_md5_hash="md5hash",
+        payload_compression_algorithm="algorithm",
+        version_number=1,
+        owner_participant_id=created_participant.participant_id,
+        subject_id=created_subject.subject_id
+    )
+    created_dataset = await dataset_repo.create(session, dataset_create)
+    dataset_remove = m.DatasetRemove(dataset_id=created_dataset.dataset_id)
+    await dataset_repo.delete(session, dataset_remove)
+    result = await dataset_repo.select_by_id(session, created_dataset.dataset_id)
+    assert result is None
+
+
+import pytest
+from sqlmodel import Session, SQLModel, create_engine
+from fastapi.testclient import TestClient
+import uudex_server.models as m
+from uudex_server.main import app  # Assuming main.py where FastAPI instance is created
+import uudex_server.repos as repo  # Updated import for repository functions
+from uudex_server.models.authenticated_user import AuthenticatedUser
+
+# Replace 'sqlite:///:memory:' with your actual database URL if required
+DATABASE_URL = 'sqlite:///:memory:'
+
+@pytest.fixture(name="client")
+def fixture_client():
+    return TestClient(app)
+
+@pytest.fixture(name="session")
+def fixture_session():
+    engine = create_engine(DATABASE_URL)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        yield session
+
+@pytest.fixture(name="authenticated_user")
+def fixture_authenticated_user():
+    return AuthenticatedUser(endpoint=m.EndPoint(participant_id=1))
+
+# Participant Tests
+@pytest.mark.asyncio
+async def test_create_participant(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y", active_sw="Y")
+    result = await repo.ParticipantRepo.create(session, participant)
+    assert result.participant_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_participant_by_id(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y")
+    await repo.ParticipantRepo.create(session, participant)
+    result = await repo.ParticipantRepo.select_by_id(session, 1)
+    assert result is not None
+    assert result.participant_uuid == "uuid1"
+
+def test_api_get_all_participants(client: TestClient):
+    response = client.get("/participants/")
+    assert response.status_code == 200
+
+def test_api_get_participant_by_id(client: TestClient):
+    response = client.get("/participant/1")
+    assert response.status_code == 200
+
+# EndPoint Tests
+@pytest.mark.asyncio
+async def test_create_endpoint(session: Session):
+    endpoint = m.EndPointBase(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    result = await repo.EndpointRepo.create(session, endpoint)
+    assert result.endpoint_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_endpoint_by_id(session: Session):
+    endpoint = m.EndPointBase(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    await repo.EndpointRepo.create(session, endpoint)
+    result = await repo.select_by_id(session, 1)
+    assert result is not None
+    assert result.endpoint_uuid == "uuid1"
+
+def test_api_get_endpoint_user(client: TestClient):
+    response = client.get("/endpoint/me")
+    assert response.status_code == 200
+
+# Subject Tests
+@pytest.mark.asyncio
+async def test_create_subject(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    result = await repo.SubjectRepo.create_subject(session, subject)
+    assert result.subject_uuid == "uuid1"
+    assert result.subject_name == "name1"
+
+@pytest.mark.asyncio
+async def test_select_subject_by_id(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    await repo.SubjectRepo.create_subject(session, subject)
+    result = await repo.SubjectRepo.select_subject_by_id(session, 1)
+    assert result is not None
+    assert result.subject_uuid == "uuid1"
+
+def test_api_get_all_subjects(client: TestClient):
+    response = client.get("/subjects/")
+    assert response.status_code == 200
+
+def test_api_get_subject_by_id(client: TestClient):
+    response = client.get("/subject/1")
+    assert response.status_code == 200
+
+def test_api_create_subject(client: TestClient):
+    data = {
+        "subject_uuid": "uuid1",
+        "subject_name": "name1",
+        "dataset_instance_key": "key1",
+        "subscription_type": "sub_type1",
+        "fulfillment_types_available": "fulfillment1",
+        "full_queue_behavior": "behavior1",
+        "max_queue_size_kb": 1000,
+        "max_message_count": 10,
+        "priority": 1,
+        "backing_exchange_name": "exchange1",
+        "owner_participant_id": 1,
+        "dataset_definition_id": 1,
+    }
+    response = client.post("/subjects/", json=data)
+    assert response.status_code == 200
+
+# Subscription Tests
+@pytest.mark.asyncio
+async def test_create_subscription(session: Session):
+    subscription = m.SubscriptionAdd(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    result = await repo.SubscriptionRepo.create_subscription(session, subscription)
+    assert result.subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_subscription_by_id(session: Session):
+    subscription = m.SubscriptionAdd(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    await repo.SubscriptionRepo.create_subscription(session, subscription)
+    result = await repo.SubscriptionRepo.select_by_id(session, 1)
+    assert result is not None
+    assert result.subscription_uuid == "uuid1"
+
+def test_api_get_all_subscriptions(client: TestClient):
+    response = client.get("/subscriptions/")
+    assert response.status_code == 200
+
+def test_api_get_subscription_by_id(client: TestClient):
+    response = client.get("/subscription/uuid1")
+    assert response.status_code == 200
+
+def test_api_create_subscription(client: TestClient):
+    data = {
+        "subscription_uuid": "uuid1",
+        "subscription_name": "name1",
+        "subscription_state": "active"
+    }
+    response = client.post("/subscription/", json=data)
+    assert response.status_code == 200
+
+# Run the tests
+if __name__ == '__main__':
+    pytest.main()
+
+
+import pytest
+import uudex_server.models as m
+import uudex_server.repos as repo
+from sqlmodel import Session
+
+@pytest.mark.asyncio
+async def test_create_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    result = await repo.SubscriptionRepo.create(session, subscription)
+    assert result.subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_subscription_by_id(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_by_id(session, created_subscription.subscription_id)
+    assert result is not None
+    assert result.subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    created_subscription.subscription_name = "updated_name"
+    result = await repo.SubscriptionRepo.update(session, created_subscription)
+    assert result.subscription_name == "updated_name"
+
+@pytest.mark.asyncio
+async def test_delete_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    subscription_remove = m.SubscriptionDelete(subscription_id=created_subscription.subscription_id)
+    await repo.SubscriptionRepo.delete(session, subscription_remove)
+    result = await repo.SubscriptionRepo.select_by_id(session, created_subscription.subscription_id)
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_select_user_subscriptions(session: Session, authenticated_user: m.AuthenticatedUser):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active",
+        owner_endpoint_id=authenticated_user.endpoint.endpoint_id
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_user_subscriptions(session, authenticated_user)
+    assert len(result) > 0
+    assert result[0].subscription_uuid == "uuid1"
+    assert result[0].owner_endpoint_id == authenticated_user.endpoint.endpoint_id
+
+@pytest.mark.asyncio
+async def test_select_admin_subscriptions(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_admin_subscriptions(session)
+    assert len(result) > 0
+    assert result[0].subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_subscription_by_uuid(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_subscription_by_uuid(session, "uuid1")
+    assert result is not None
+    assert result.subscription_uuid == "uuid1"
+
+
+import pytest
+import uudex_server.models as m
+import uudex_server.repos as repo
+from sqlmodel import Session
+
+@pytest.mark.asyncio
+async def test_create_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    result = await repo.EndpointRepo.create(session, endpoint)
+    assert result.endpoint_uuid == "uuid1"
+    assert result.endpoint_user_name == "user1"
+
+@pytest.mark.asyncio
+async def test_select_endpoint_by_id(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    result = await repo.EndpointRepo.select_by_id(session, created_endpoint.endpoint_id)
+    assert result is not None
+    assert result.endpoint_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    created_endpoint.endpoint_user_name = "updated_user"
+    result = await repo.EndpointRepo.update(session, created_endpoint)
+    assert result.endpoint_user_name == "updated_user"
+
+@pytest.mark.asyncio
+async def test_delete_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    endpoint_remove = m.EndPointRemove(endpoint_id=created_endpoint.endpoint_id)
+    await repo.EndpointRepo.delete(session, endpoint_remove)
+    result = await repo.EndpointRepo.select_by_id(session, created_endpoint.endpoint_id)
+    assert result is None
+
+
+import pytest
+from sqlmodel import Session, SQLModel, create_engine
+import uudex_server.models as m
+import uudex_server.repos as repo  # Updated import for repository functions
+
+# Replace 'sqlite:///:memory:' with your actual database URL if required
+DATABASE_URL = 'sqlite:///:memory:'
+
+@pytest.fixture(name="session")
+def fixture_session():
+    engine = create_engine(DATABASE_URL)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        yield session
+
+@pytest.fixture(name="authenticated_user")
+def fixture_authenticated_user():
+    # Mock authenticated user, adjust accordingly
+    return m.AuthenticatedUser(endpoint=m.EndPoint(participant_id=1, endpoint_id=1))
+
+# Setup DataType and DatasetDefinition
+@pytest.mark.asyncio
+async def setup_data_type_and_dataset_definition(session: Session):
+    data_type = m.DataTypeCreate(
+        data_type_uuid="uuid1",
+        data_type_name="type1",
+        description="desc1",
+        schema_definition="schema1",
+        specification_reference="spec1"
+    )
+    dataset_definition = m.DatasetDefinitionCreate(
+        dataset_definition_uuid="uuid2",
+        dataset_definition_name="definition1",
+        description="desc2"
+    )
+    created_data_type = await repo.DataTypeRepo.create(session, data_type)
+    created_dataset_definition = await repo.DatasetDefinitionRepo.create(session, dataset_definition)
+    return created_data_type, created_dataset_definition
+
+# Tests for AttachedDataType
+@pytest.mark.asyncio
+async def test_create_attached_data_type(session: Session):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(session)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id
+    )
+    result = await repo.AttachedDataTypeRepo.create(session, attached_data_type)
+    assert result.dataset_definition_id == created_dataset_definition.dataset_definition_id
+    assert result.data_type_id == created_data_type.data_type_id
+
+@pytest.mark.asyncio
+async def test_select_attached_data_type_by_ids(session: Session):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(session)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id
+    )
+    await repo.AttachedDataTypeRepo.create(session, attached_data_type)
+    result = await repo.AttachedDataTypeRepo.select_by_ids(
+        session,
+        created_dataset_definition.dataset_definition_id,
+        created_data_type.data_type_id
+    )
+    assert result is not None
+    assert result.dataset_definition_id == created_dataset_definition.dataset_definition_id
+    assert result.data_type_id == created_data_type.data_type_id
+
+@pytest.mark.asyncio
+async def test_update_attached_data_type(session: Session):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(session)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id
+    )
+    await repo.AttachedDataTypeRepo.create(session, attached_data_type)
+    result = await repo.AttachedDataTypeRepo.select_by_ids(
+        session,
+        created_dataset_definition.dataset_definition_id,
+        created_data_type.data_type_id
+    )
+    result.dataset_definition_id = 2
+    updated_result = await repo.AttachedDataTypeRepo.update(session, result)
+    assert updated_result.dataset_definition_id == 2
+
+@pytest.mark.asyncio
+async def test_delete_attached_data_type(session: Session):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(session)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id
+    )
+    await repo.AttachedDataTypeRepo.create(session, attached_data_type)
+    attached_data_type_remove = m.AttachedDataTypeDelete(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id
+    )
+    await repo.AttachedDataTypeRepo.delete(session, attached_data_type_remove)
+    result = await repo.AttachedDataTypeRepo.select_by_ids(
+        session,
+        created_dataset_definition.dataset_definition_id,
+        created_data_type.data_type_id
+    )
+    assert result is None
+
+# Tests for DataType
+@pytest.mark.asyncio
+async def test_create_data_type(session: Session):
+    data_type = m.DataTypeCreate(data_type_uuid="uuid1", data_type_name="type1", description="desc1", schema_definition="schema1", specification_reference="spec1")
+    result = await repo.DataTypeRepo.create(session, data_type)
+    assert result.data_type_uuid == "uuid1"
+    assert result.data_type_name == "type1"
+
+@pytest.mark.asyncio
+async def test_select_data_type_by_id(session: Session):
+    data_type = m.DataTypeCreate(data_type_uuid="uuid1", data_type_name="type1", description="desc1", schema_definition="schema1", specification_reference="spec1")
+    created_data_type = await repo.DataTypeRepo.create(session, data_type)
+    result = await repo.DataTypeRepo.select_by_id(session, created_data_type.data_type_id)
+    assert result is not None
+    assert result.data_type_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_data_type(session: Session):
+    data_type = m.DataTypeCreate(data_type_uuid="uuid1", data_type_name="type1", description="desc1", schema_definition="schema1", specification_reference="spec1")
+    created_data_type = await repo.DataTypeRepo.create(session, data_type)
+    created_data_type.data_type_name = "updated_type"
+    result = await repo.DataTypeRepo.update(session, created_data_type)
+    assert result.data_type_name == "updated_type"
+
+@pytest.mark.asyncio
+async def test_delete_data_type(session: Session):
+    data_type = m.DataTypeCreate(data_type_uuid="uuid1", data_type_name="type1", description="desc1", schema_definition="schema1", specification_reference="spec1")
+    created_data_type = await repo.DataTypeRepo.create(session, data_type)
+    data_type_remove = m.DataTypeRemove(data_type_id=created_data_type.data_type_id)
+    await repo.DataTypeRepo.delete(session, data_type_remove)
+    result = await repo.DataTypeRepo.select_by_id(session, created_data_type.data_type_id)
+    assert result is None
+
+# Tests for DatasetDefinition
+@pytest.mark.asyncio
+async def test_create_dataset_definition(session: Session):
+    dataset_definition = m.DatasetDefinitionCreate(dataset_definition_uuid="uuid1", dataset_definition_name="name1", description="desc1")
+    result = await repo.DatasetDefinitionRepo.create(session, dataset_definition)
+    assert result.dataset_definition_uuid == "uuid1"
+    assert result.dataset_definition_name == "name1"
+
+@pytest.mark.asyncio
+async def test_select_dataset_definition_by_id(session: Session):
+    dataset_definition = m.DatasetDefinitionCreate(dataset_definition_uuid="uuid1", dataset_definition_name="name1", description="desc1")
+    created_dataset_definition = await repo.DatasetDefinitionRepo.create(session, dataset_definition)
+    result = await repo.DatasetDefinitionRepo.select_by_id(session, created_dataset_definition.dataset_definition_id)
+    assert result is not None
+    assert result.dataset_definition_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_dataset_definition(session: Session):
+    dataset_definition = m.DatasetDefinitionCreate(dataset_definition_uuid="uuid1", dataset_definition_name="name1", description="desc1")
+    created_dataset_definition = await repo.DatasetDefinitionRepo.create(session, dataset_definition)
+    created_dataset_definition.dataset_definition_name = "updated_name"
+    result = await repo.DatasetDefinitionRepo.update(session, created_dataset_definition)
+    assert result.dataset_definition_name == "updated_name"
+
+@pytest.mark.asyncio
+async def test_delete_dataset_definition(session: Session):
+    dataset_definition = m.DatasetDefinitionCreate(dataset_definition_uuid="uuid1", dataset_definition_name="name1", description="desc1")
+    created_dataset_definition = await repo.DatasetDefinitionRepo.create(session, dataset_definition)
+    dataset_definition_remove = m.DatasetDefinitionRemove(dataset_definition_id=created_dataset_definition.dataset_definition_id)
+    await repo.DatasetDefinitionRepo.delete(session, dataset_definition_remove)
+    result = await repo.DatasetDefinitionRepo.select_by_id(session, created_dataset_definition.dataset_definition_id)
+    assert result is None
+
+# Tests for Dataset
+@pytest.mark.asyncio
+async def test_create_dataset(session: Session):
+    dataset = m.DatasetCreate(
+        dataset_uuid="uuid1",
+        dataset_name="name1",
+        description="desc1",
+        properties="props",
+        payload=b"payload",
+        payload_size=8,
+        payload_md5_hash="hash",
+        payload_compression_algorithm="alg",
+        version_number=1,
+    )
+    result = await repo.DatasetRepo.create(session, dataset)
+    assert result.dataset_uuid == "uuid1"
+    assert result.dataset_name == "name1"
+
+@pytest.mark.asyncio
+async def test_select_dataset_by_id(session: Session):
+    dataset = m.DatasetCreate(
+        dataset_uuid="uuid1",
+        dataset_name="name1",
+        description="desc1",
+        properties="props",
+        payload=b"payload",
+        payload_size=8,
+        payload_md5_hash="hash",
+        payload_compression_algorithm="alg",
+        version_number=1,
+    )
+    created_dataset = await repo.DatasetRepo.create(session, dataset)
+    result = await repo.DatasetRepo.select_by_id(session, created_dataset.dataset_id)
+    assert result is not None
+    assert result.dataset_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_dataset(session: Session):
+    dataset = m.DatasetCreate(
+        dataset_uuid="uuid1",
+        dataset_name="name1",
+        description="desc1",
+        properties="props",
+        payload=b"payload",
+        payload_size=8,
+        payload_md5_hash="hash",
+        payload_compression_algorithm="alg",
+        version_number=1,
+    )
+    created_dataset = await repo.DatasetRepo.create(session, dataset)
+    created_dataset.dataset_name = "updated_name"
+    result = await repo.DatasetRepo.update(session, created_dataset)
+    assert result.dataset_name == "updated_name"
+
+@pytest.mark.asyncio
+async def test_delete_dataset(session: Session):
+    dataset = m.DatasetCreate(
+        dataset_uuid="uuid1",
+        dataset_name="name1",
+        description="desc1",
+        properties="props",
+        payload=b"payload",
+        payload_size=8,
+        payload_md5_hash="hash",
+        payload_compression_algorithm="alg",
+        version_number=1,
+    )
+    created_dataset = await repo.DatasetRepo.create(session, dataset)
+    dataset_remove = m.DatasetRemove(dataset_id=created_dataset.dataset_id)
+    await repo.DatasetRepo.delete(session, dataset_remove)
+    result = await repo.DatasetRepo.select_by_id(session, created_dataset.dataset_id)
+    assert result is None
+
+# Tests for EndPoint
+@pytest.mark.asyncio
+async def test_create_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    result = await repo.EndpointRepo.create(session, endpoint)
+    assert result.endpoint_uuid == "uuid1"
+    assert result.endpoint_user_name == "user1"
+
+@pytest.mark.asyncio
+async def test_select_endpoint_by_id(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    result = await repo.EndpointRepo.select_by_id(session, created_endpoint.endpoint_id)
+    assert result is not None
+    assert result.endpoint_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    created_endpoint.endpoint_user_name = "updated_user"
+    result = await repo.EndpointRepo.update(session, created_endpoint)
+    assert result.endpoint_user_name == "updated_user"
+
+@pytest.mark.asyncio
+async def test_delete_endpoint(session: Session):
+    endpoint = m.EndPointCreate(
+        endpoint_uuid="uuid1",
+        endpoint_user_name="user1",
+        certificate_dn="dn1",
+        description="desc1",
+        uudex_administrator_sw="Y",
+        participant_administrator_sw="Y",
+    )
+    created_endpoint = await repo.EndpointRepo.create(session, endpoint)
+    endpoint_remove = m.EndPointRemove(endpoint_id=created_endpoint.endpoint_id)
+    await repo.EndpointRepo.delete(session, endpoint_remove)
+    result = await repo.EndpointRepo.select_by_id(session, created_endpoint.endpoint_id)
+    assert result is None
+
+# Tests for Participant
+@pytest.mark.asyncio
+async def test_create_participant(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y")
+    result = await repo.ParticipantRepo.create(session, participant)
+    assert result.participant_uuid == "uuid1"
+    assert result.participant_short_name == "short1"
+
+@pytest.mark.asyncio
+async def test_select_participant_by_id(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y")
+    created_participant = await repo.ParticipantRepo.create(session, participant)
+    result = await repo.ParticipantRepo.select_by_id(session, created_participant.participant_id)
+    assert result is not None
+    assert result.participant_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_participant(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y")
+    created_participant = await repo.ParticipantRepo.create(session, participant)
+    created_participant.participant_short_name = "updated_short"
+    result = await repo.ParticipantRepo.update(session, created_participant)
+    assert result.participant_short_name == "updated_short"
+
+@pytest.mark.asyncio
+async def test_delete_participant(session: Session):
+    participant = m.ParticipantCreate(participant_uuid="uuid1", participant_short_name="short1", participant_long_name="long1", description="desc1", root_org_sw="Y")
+    created_participant = await repo.ParticipantRepo.create(session, participant)
+    participant_remove = m.ParticipantRemove(participant_id=created_participant.participant_id)
+    await repo.ParticipantRepo.delete(session, participant_remove)
+    result = await repo.ParticipantRepo.select_by_id(session, created_participant.participant_id)
+    assert result is None
+
+# Tests for Subject
+@pytest.mark.asyncio
+async def test_create_subject(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    result = await repo.SubjectRepo.create(session, subject)
+    assert result.subject_uuid == "uuid1"
+    assert result.subject_name == "name1"
+
+@pytest.mark.asyncio
+async def test_select_subject_by_id(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    created_subject = await repo.SubjectRepo.create(session, subject)
+    result = await repo.SubjectRepo.select_by_id(session, created_subject.subject_id)
+    assert result is not None
+    assert result.subject_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_subject(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    created_subject = await repo.SubjectRepo.create(session, subject)
+    created_subject.subject_name = "updated_name"
+    result = await repo.SubjectRepo.update(session, created_subject)
+    assert result.subject_name == "updated_name"
+
+@pytest.mark.asyncio
+async def test_delete_subject(session: Session):
+    subject = m.SubjectCreate(
+        subject_uuid="uuid1",
+        subject_name="name1",
+        dataset_instance_key="key1",
+        subscription_type="sub_type1",
+        fulfillment_types_available="fulfillment1",
+        full_queue_behavior="behavior1",
+        max_queue_size_kb=1000,
+        max_message_count=10,
+        priority=1,
+        backing_exchange_name="exchange1",
+        owner_participant_id=1,
+        dataset_definition_id=1,
+    )
+    created_subject = await repo.SubjectRepo.create(session, subject)
+    subject_remove = m.SubjectRemove(subject_id=created_subject.subject_id)
+    await repo.SubjectRepo.delete(session, subject_remove)
+    result = await repo.SubjectRepo.select_by_id(session, created_subject.subject_id)
+    assert result is None
+
+# Tests for Subscription
+@pytest.mark.asyncio
+async def test_create_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    result = await repo.SubscriptionRepo.create(session, subscription)
+    assert result.subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_subscription_by_id(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_by_id(session, created_subscription.subscription_id)
+    assert result is not None
+    assert result.subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_update_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    created_subscription.subscription_name = "updated_name"
+    result = await repo.SubscriptionRepo.update(session, created_subscription)
+    assert result.subscription_name == "updated_name"
+
+@pytest.mark.asyncio
+async def test_delete_subscription(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    created_subscription = await repo.SubscriptionRepo.create(session, subscription)
+    subscription_remove = m.SubscriptionDelete(subscription_id=created_subscription.subscription_id)
+    await repo.SubscriptionRepo.delete(session, subscription_remove)
+    result = await repo.SubscriptionRepo.select_by_id(session, created_subscription.subscription_id)
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_select_user_subscriptions(session: Session, authenticated_user: m.AuthenticatedUser):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active",
+        owner_endpoint_id=authenticated_user.endpoint.endpoint_id
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_user_subscriptions(session, authenticated_user)
+    assert len(result) > 0
+    assert result[0].subscription_uuid == "uuid1"
+    assert result[0].owner_endpoint_id == authenticated_user.endpoint.endpoint_id
+
+@pytest.mark.asyncio
+async def test_select_admin_subscriptions(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_admin_subscriptions(session)
+    assert len(result) > 0
+    assert result[0].subscription_uuid == "uuid1"
+
+@pytest.mark.asyncio
+async def test_select_subscription_by_uuid(session: Session):
+    subscription = m.SubscriptionCreate(
+        subscription_uuid="uuid1",
+        subscription_name="name1",
+        subscription_state="active"
+    )
+    await repo.SubscriptionRepo.create(session, subscription)
+    result = await repo.SubscriptionRepo.select_subscription_by_uuid(session, "uuid1")
+    assert result is not None
+    assert result.subscription_uuid == "uuid1"
+
+
+import pytest
+from sqlmodel import Session, SQLModel, create_engine
+from uudex_server.models.data_type_models import DataType, DataTypeCreate, DataTypeDelete
+from uudex_server.repos import DataTypeRepository
+
+
+@pytest.fixture(name="datatype_repo")
+def datatype_repo_fixture():
+    return DataTypeRepository()
+
+
+@pytest.mark.asyncio
+async def test_create_data_type(datatype_repo: DataTypeRepository, session: Session):
+    data_type_create = DataTypeCreate(data_type_uuid="Myuuid1",
+                                      data_type_name="Test DataType",
+                                      description="This is a test description",
+                                      schema_definition="{}",
+                                      specification_reference="http://example.com")
+    created_data_type = await datatype_repo.create(session, data_type_create)
+    assert created_data_type.data_type_name == "Test DataType"
+    assert created_data_type.description == "This is a test description"
+    assert created_data_type.schema_definition == "{}"
+    assert created_data_type.specification_reference == "http://example.com"
+
+
+@pytest.mark.asyncio
+async def test_select_all_data_types(datatype_repo: DataTypeRepository, session: Session):
+    data_types = await datatype_repo.select_all(session)
+    assert isinstance(data_types, list)
+
+
+@pytest.mark.asyncio
+async def test_select_by_id(datatype_repo: DataTypeRepository, session: Session):
+    data_type_create = DataTypeCreate(data_type_uuid="Myuuid2",
+                                      data_type_name="Test DataType for Select",
+                                      description="This is a test for select",
+                                      schema_definition="{}",
+                                      specification_reference="http://example.com")
+    created_data_type = await datatype_repo.create(session, data_type_create)
+    selected_data_type = await datatype_repo.select_by_id(session, created_data_type.data_type_id)
+    assert selected_data_type is not None
+    assert selected_data_type.data_type_name == "Test DataType for Select"
+
+
+@pytest.mark.asyncio
+async def test_update_data_type(datatype_repo: DataTypeRepository, session: Session):
+    data_type_create = DataTypeCreate(data_type_uuid="Myuuid3",
+                                      data_type_name="Test DataType for Update",
+                                      description="This is a test for update",
+                                      schema_definition="{}",
+                                      specification_reference="http://example.com")
+    created_data_type = await datatype_repo.create(session, data_type_create)
+    created_data_type.data_type_name = "Updated DataType"
+    updated_data_type = await datatype_repo.update(session, created_data_type)
+    assert updated_data_type.data_type_name == "Updated DataType"
+
+
+@pytest.mark.asyncio
+async def test_delete_data_type(datatype_repo: DataTypeRepository, session: Session):
+
+    data_type_create = DataTypeCreate(data_type_uuid="Myuuid4",
+                                      data_type_name="Test DataType for Delete",
+                                      description="This is a test for delete",
+                                      schema_definition="{}",
+                                      specification_reference="http://example.com")
+    created_data_type = await datatype_repo.create(session, data_type_create)
+    data_type_remove = DataTypeDelete(data_type_id=created_data_type.data_type_id)
+    await datatype_repo.delete(session, data_type_remove)
+    deleted_data_type = await datatype_repo.select_by_id(session, created_data_type.data_type_id)
+    assert deleted_data_type is None
+
+
+import pytest
+import uuid
+from sqlmodel import Session
+from uudex_server.models import Participant, ParticipantCreate, ParticipantDelete
+from uudex_server.repos import ParticipantRepository
+
+
+@pytest.fixture(name="participant_repo")
+def participant_repo_fixture():
+    return ParticipantRepository()
+
+
+@pytest.mark.asyncio
+async def test_create_participant(participant_repo: ParticipantRepository, session: Session):
+    participant_create = ParticipantCreate(participant_uuid=str(uuid.uuid4()),
+                                           participant_short_name="Test Participant",
+                                           participant_long_name="Test Participant Long",
+                                           description="This is a test participant",
+                                           root_org_sw="Y",
+                                           active_sw="Y")
+    created_participant = await participant_repo.create(session, participant_create)
+    assert created_participant.participant_short_name == "Test Participant"
+    assert created_participant.participant_long_name == "Test Participant Long"
+    assert created_participant.description == "This is a test participant"
+    assert created_participant.root_org_sw == "Y"
+    assert created_participant.active_sw == "Y"
+
+
+@pytest.mark.asyncio
+async def test_select_all_participants(participant_repo: ParticipantRepository, session: Session):
+    participants = await participant_repo.select_all(session)
+    assert isinstance(participants, list)
+
+
+@pytest.mark.asyncio
+async def test_select_by_id(participant_repo: ParticipantRepository, session: Session):
+    participant_create = ParticipantCreate(
+        participant_uuid=str(uuid.uuid4()),
+        participant_short_name="Test Participant for Select",
+        participant_long_name="Test Participant Long for Select",
+        description="This is a test participant for select",
+        root_org_sw="Y",
+        active_sw="Y")
+    created_participant = await participant_repo.create(session, participant_create)
+    selected_participant = await participant_repo.select_by_id(session,
+                                                               created_participant.participant_id)
+    assert selected_participant is not None
+    assert selected_participant.participant_short_name == "Test Participant for Select"
+
+
+@pytest.mark.asyncio
+async def test_update_participant(participant_repo: ParticipantRepository, session: Session):
+    participant_create = ParticipantCreate(
+        participant_uuid=str(uuid.uuid4()),
+        participant_short_name="Test Participant for Update",
+        participant_long_name="Test Participant Long for Update",
+        description="This is a test participant for update",
+        root_org_sw="Y",
+        active_sw="Y")
+    created_participant = await participant_repo.create(session, participant_create)
+    created_participant.participant_short_name = "Updated Participant"
+    updated_participant = await participant_repo.update(session, created_participant)
+    assert updated_participant.participant_short_name == "Updated Participant"
+
+
+@pytest.mark.asyncio
+async def test_delete_participant(participant_repo: ParticipantRepository, session: Session):
+    participant_create = ParticipantCreate(
+        participant_uuid=str(uuid.uuid4()),
+        participant_short_name="Test Participant for Delete",
+        participant_long_name="Test Participant Long for Delete",
+        description="This is a test participant for delete",
+        root_org_sw="Y",
+        active_sw="Y")
+    created_participant = await participant_repo.create(session, participant_create)
+    participant_remove = ParticipantDelete(participant_id=created_participant.participant_id)
+    await participant_repo.delete(session, participant_remove)
+    deleted_participant = await participant_repo.select_by_id(session,
+                                                              created_participant.participant_id)
+    assert deleted_participant is None
+
+
+import pytest
+from sqlmodel import Session
+from uudex_server.models.dataset_definition_models import DatasetDefinitionCreate, DatasetDefinitionDelete
+from uudex_server.repos.dataset_definition_repository import DatasetDefinitionRepository
+import uuid
+
+
+@pytest.fixture(name="dataset_definition_repo")
+def dataset_definition_repo_fixture():
+    return DatasetDefinitionRepository()
+
+
+@pytest.mark.asyncio
+async def test_create_dataset_definition(dataset_definition_repo: DatasetDefinitionRepository,
+                                         session: Session):
+    dataset_definition_create = DatasetDefinitionCreate(
+        dataset_definition_uuid=str(uuid.uuid4()),
+        dataset_definition_name="Test Dataset Definition",
+        description="This is a test description")
+    created_dataset_definition = await dataset_definition_repo.create(
+        session, dataset_definition_create)
+    assert created_dataset_definition.dataset_definition_name == "Test Dataset Definition"
+    assert created_dataset_definition.description == "This is a test description"
+
+
+@pytest.mark.asyncio
+async def test_select_all_dataset_definitions(dataset_definition_repo: DatasetDefinitionRepository,
+                                              session: Session):
+    dataset_definitions = await dataset_definition_repo.select_all(session)
+    assert isinstance(dataset_definitions, list)
+
+
+@pytest.mark.asyncio
+async def test_select_by_id(dataset_definition_repo: DatasetDefinitionRepository,
+                            session: Session):
+    dataset_definition_create = DatasetDefinitionCreate(
+        dataset_definition_uuid=str(uuid.uuid4()),
+        dataset_definition_name="Test Dataset Definition for Select",
+        description="This is a test for select")
+    created_dataset_definition = await dataset_definition_repo.create(
+        session, dataset_definition_create)
+    selected_dataset_definition = await dataset_definition_repo.select_by_id(
+        session, created_dataset_definition.dataset_definition_id)
+    assert selected_dataset_definition is not None
+    assert selected_dataset_definition.dataset_definition_name == "Test Dataset Definition for Select"
+
+
+@pytest.mark.asyncio
+async def test_update_dataset_definition(dataset_definition_repo: DatasetDefinitionRepository,
+                                         session: Session):
+    dataset_definition_create = DatasetDefinitionCreate(
+        dataset_definition_uuid=str(uuid.uuid4()),
+        dataset_definition_name="Test Dataset Definition for Update",
+        description="This is a test for update")
+    created_dataset_definition = await dataset_definition_repo.create(
+        session, dataset_definition_create)
+    created_dataset_definition.dataset_definition_name = "Updated Dataset Definition"
+    updated_dataset_definition = await dataset_definition_repo.update(
+        session, created_dataset_definition)
+    assert updated_dataset_definition.dataset_definition_name == "Updated Dataset Definition"
+
+
+@pytest.mark.asyncio
+async def test_delete_dataset_definition(dataset_definition_repo: DatasetDefinitionRepository,
+                                         session: Session):
+    dataset_definition_create = DatasetDefinitionCreate(
+        dataset_definition_uuid=str(uuid.uuid4()),
+        dataset_definition_name="Test Dataset Definition for Delete",
+        description="This is a test for delete")
+    created_dataset_definition = await dataset_definition_repo.create(
+        session, dataset_definition_create)
+    dataset_definition_remove = DatasetDefinitionDelete(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id)
+    await dataset_definition_repo.delete(session, dataset_definition_remove)
+    deleted_dataset_definition = await dataset_definition_repo.select_by_id(
+        session, created_dataset_definition.dataset_definition_id)
+    assert deleted_dataset_definition is None
+
+
+import os
+from pathlib import Path
+
+import pytest
+
+pth = Path(__file__).parent
+os.environ["FIXTURE_DIR"] = str(pth / "fixtures")
+os.environ["ENV_FILE"] = str(pth / "fixtures/dev_env_file")
+
+
+@pytest.fixture(scope="session")
+def db():
+    from uudex_server.app.db import get_db
+
+    yield get_db()
+
+
+import pytest
+from sqlmodel import Session, SQLModel, create_engine
+import uudex_server.models as m
+import uudex_server.repos as repo    # Import for repository functions
+from pathlib import Path
+
+# Replace 'sqlite:///:memory:' with your actual database URL if required
+DATABASE_URL = 'sqlite:///:memory:'
+
+#DB_PATH='/home/os2204/repos/UUDEX/fastapi-web-server/test-db.sqlite'
+#Path(DB_PATH).unlink(missing_ok=True)
+#DATABASE_URL = f'sqlite:///{DB_PATH}'
+
+
+@pytest.fixture(name="subject_repo")
+def subject_repo_fixture():
+    return repo.SubjectRepository()
+
+
+@pytest.fixture(name="participant_repo")
+def participant_repo_fixture():
+    return repo.ParticipantRepository()
+
+
+@pytest.fixture(name="dataset_repo")
+def dataset_repo_fixture():
+    return repo.DatasetRepository()
+
+
+@pytest.fixture(name="dataset_definition_repo")
+def dataset_definition_repo_fixture():
+    return repo.DatasetDefinitionRepository()
+
+
+@pytest.fixture(name="data_type_repo")
+def data_type_repo_fixture():
+    return repo.DataTypeRepository()
+
+
+@pytest.fixture(name="attached_data_type_repo")
+def attached_data_type_repo_fixture():
+    return repo.AttachedDataTypeRepository()
+
+
+@pytest.fixture(name="endpoint_repo")
+def endpoint_repo_fixture():
+    return repo.EndpointRepository()
+
+
+@pytest.fixture(name="subscription_repo")
+def subscription_repo_fixture():
+    return repo.SubscriptionRepository()
+
+
+@pytest.fixture(name="subject_policy_repo")
+def subject_policy_repo_fixture():
+    return repo.SubjectPolicyRepository()
+
+
+@pytest.fixture(name="subscription_subject_repo")
+def subscription_subject_repo_fixture():
+    return repo.SubscriptionSubjectRepository()
+
+
+@pytest.fixture(name="session")
+def fixture_session():
+    engine = create_engine(DATABASE_URL)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        yield session
+
+
+@pytest.fixture(name="authenticated_user")
+def fixture_authenticated_user():
+    # Mock authenticated user, adjust accordingly
+    return m.AuthenticatedUser(endpoint=m.EndPoint(participant_id=1, endpoint_id=1))
+
+
+import pytest
+from sqlmodel import Session
+import uudex_server.models as m
+from uudex_server.repos import AttachedDataTypeRepository, DataTypeRepository, DatasetDefinitionRepository
+
+
+@pytest.mark.asyncio
+async def setup_data_type_and_dataset_definition(
+        session: Session, data_type_repo: DataTypeRepository,
+        dataset_definition_repo: DatasetDefinitionRepository):
+    data_type = m.DataTypeCreate(data_type_uuid="uuid1",
+                                 data_type_name="type1",
+                                 description="desc1",
+                                 schema_definition="schema1",
+                                 specification_reference="spec1")
+    dataset_definition = m.DatasetDefinitionCreate(dataset_definition_uuid="uuid2",
+                                                   dataset_definition_name="definition1",
+                                                   description="desc2")
+    created_data_type = await data_type_repo.create(session, data_type)
+    created_dataset_definition = await dataset_definition_repo.create(session, dataset_definition)
+    return created_data_type, created_dataset_definition
+
+
+# Tests for AttachedDataType
+@pytest.mark.asyncio
+async def test_create_attached_data_type(session: Session,
+                                         attached_data_type_repo: AttachedDataTypeRepository,
+                                         data_type_repo: DataTypeRepository,
+                                         dataset_definition_repo: DatasetDefinitionRepository):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(
+        session, data_type_repo, dataset_definition_repo)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    result = await attached_data_type_repo.create(session, attached_data_type)
+    assert result.dataset_definition_id == created_dataset_definition.dataset_definition_id
+    assert result.data_type_id == created_data_type.data_type_id
+
+
+@pytest.mark.asyncio
+async def test_select_attached_data_type_by_ids(
+        session: Session, attached_data_type_repo: AttachedDataTypeRepository,
+        data_type_repo: DataTypeRepository, dataset_definition_repo: DatasetDefinitionRepository):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(
+        session, data_type_repo, dataset_definition_repo)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    await attached_data_type_repo.create(session, attached_data_type)
+    result = await attached_data_type_repo.select_by_ids(
+        session,
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    assert result is not None
+    assert result.dataset_definition_id == created_dataset_definition.dataset_definition_id
+    assert result.data_type_id == created_data_type.data_type_id
+
+
+@pytest.mark.asyncio
+async def test_update_attached_data_type(session: Session,
+                                         attached_data_type_repo: AttachedDataTypeRepository,
+                                         data_type_repo: DataTypeRepository,
+                                         dataset_definition_repo: DatasetDefinitionRepository):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(
+        session, data_type_repo, dataset_definition_repo)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    await attached_data_type_repo.create(session, attached_data_type)
+    result = await attached_data_type_repo.select_by_ids(
+        session,
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    result.dataset_definition_id = 2
+    updated_result = await attached_data_type_repo.update(session, result)
+    assert updated_result.dataset_definition_id == 2
+
+
+@pytest.mark.asyncio
+async def test_delete_attached_data_type(session: Session,
+                                         attached_data_type_repo: AttachedDataTypeRepository,
+                                         data_type_repo: DataTypeRepository,
+                                         dataset_definition_repo: DatasetDefinitionRepository):
+    created_data_type, created_dataset_definition = await setup_data_type_and_dataset_definition(
+        session, data_type_repo, dataset_definition_repo)
+
+    attached_data_type = m.AttachedDataTypeCreate(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    await attached_data_type_repo.create(session, attached_data_type)
+    attached_data_type_remove = m.AttachedDataTypeDelete(
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    await attached_data_type_repo.delete(session, attached_data_type_remove)
+    result = await attached_data_type_repo.select_by_ids(
+        session,
+        dataset_definition_id=created_dataset_definition.dataset_definition_id,
+        data_type_id=created_data_type.data_type_id)
+    assert result is None

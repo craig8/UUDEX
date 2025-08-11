@@ -1,0 +1,81 @@
+{
+    "participants": [
+        {
+            "participant_id": "4b3b819e-94bd-4adf-b461-17ccb58ac870",
+            "participant_name": "App RT 1",
+            "participant_description": "Application Runtime 1",
+            "participant_contact": "app_rt_1@example.com",
+            "certificate_dn": "CN=4b3b819e-94bd-4adf-b461-17ccb58ac870__app_rt_1,OU=UUDEX,O=UUDEX,L=Richland,ST=Washington,C=US"
+        },
+        {
+            "participant_id": "8f026ebe-c71e-4fa1-8d66-82d3d85b72a4",
+            "participant_name": "MITRE Client",
+            "participant_description": "MITRE Test Client",
+            "participant_contact": "mitre_client@example.com",
+            "certificate_dn": "CN=8f026ebe-c71e-4fa1-8d66-82d3d85b72a4-mitre-client,OU=UUDEX,O=UUDEX,L=Richland,ST=Washington,C=US"
+        }
+    ],
+    "subjects": [
+        {
+            "subject_id": "test/mitre/1",
+            "description": "MITRE Test Subject 1",
+            "owner_participant_id": "8f026ebe-c71e-4fa1-8d66-82d3d85b72a4",
+            "subject_specification": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "message": {"type": "string"}
+                    }
+                }
+            }
+        },
+        {
+            "subject_id": "test/app_rt/1",
+            "description": "App RT Test Subject 1",
+            "owner_participant_id": "4b3b819e-94bd-4adf-b461-17ccb58ac870",
+            "subject_specification": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "data": {"type": "object"}
+                    }
+                }
+            }
+        }
+    ],
+    "subscriptions": [
+        {
+            "id": "sub1",
+            "subject_id": "test/mitre/1",
+            "participant_id": "4b3b819e-94bd-4adf-b461-17ccb58ac870",
+            "callback_url": "https://app-rt-1.example.com/callback"
+        },
+        {
+            "id": "sub2",
+            "subject_id": "test/app_rt/1",
+            "participant_id": "8f026ebe-c71e-4fa1-8d66-82d3d85b72a4",
+            "callback_url": "https://mitre-client.example.com/callback"
+        }
+    ],
+    "messages": [
+        {
+            "subject_id": "test/mitre/1",
+            "message_id": "msg1",
+            "content": {
+                "message": "Test message from MITRE"
+            },
+            "timestamp": "2024-05-05T12:00:00Z"
+        },
+        {
+            "subject_id": "test/app_rt/1",
+            "message_id": "msg2",
+            "content": {
+                "data": {
+                    "value": 42,
+                    "unit": "MW"
+                }
+            },
+            "timestamp": "2024-05-05T12:01:00Z"
+        }
+    ]
+}
