@@ -12,6 +12,7 @@ from uudex_server.services.database_service import get_db
 from uudex_server.core.dependencies import get_current_user
 from uudex_server.repos import subscription_and_subject_repositories as pr
 from uudex_server.repos.dataset_repositories import DatasetRepository
+from uudex_server.core.dependencies import SessionDep, CurrentUserDep
 
 _log = logging.getLogger(__name__)
 

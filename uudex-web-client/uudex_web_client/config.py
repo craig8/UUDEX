@@ -30,7 +30,7 @@ class Config:
 
     def get_uudex_url(self) -> str:
         """Get the UUDEX server URL."""
-        return f"http://localhost:{self.UUDEX_PORT}"
+        return f"https://localhost"
 
     def get_available_certs(self) -> List[str]:
         """Get a list of available certificate names in the certs directory."""
