@@ -36,6 +36,13 @@ from .dataset_definition_models import (
 )
 from .dataset_models import Dataset, DatasetCreate, DatasetDelete
 from .endpoint_models import EndPoint, EndPointCreate, EndPointDelete
+from .message_models import (
+    MessageContent,
+    MessageConsumeRequest,
+    MessageConsumeResponse,
+    MessagePublishRequest,
+    MessagePublishResponse,
+)
 from .participant_models import Participant, ParticipantCreate, ParticipantDelete
 from .subject_models import Subject, SubjectCreate, SubjectDelete
 from .subject_policy_models import (
@@ -69,6 +76,9 @@ __all__ = [
     "PrivilegeAllowed", "PrivilegeAllowedCreate", "PrivilegeAllowedDelete",
     # User models
     "AuthenticatedUser",
+    # Message models
+    "MessageContent", "MessageConsumeRequest", "MessageConsumeResponse",
+    "MessagePublishRequest", "MessagePublishResponse",
     # Core models  
     "Participant", "ParticipantCreate", "ParticipantDelete",
     "EndPoint", "EndPointCreate", "EndPointDelete",

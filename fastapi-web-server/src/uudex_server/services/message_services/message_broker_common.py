@@ -34,8 +34,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
-from services.message_services.kafka_mq import KafkaService
-from services.message_services.rabbit_mq import RabbitMqService
+# from uudex_server.services.message_services.kafka_mq import KafkaService
+from uudex_server.services.message_services.rabbit_mq import RabbitMqService
 
 
 # TODO: make this a shared resource pool, where the objects persist their connections and states
@@ -46,6 +46,7 @@ def message_broker_factory(url: str, **kwargs):
         url = url.replace("rabbitmq://", "amqp://")
         return RabbitMqService(url, **kwargs)
     if provider == "kafka":
-        return KafkaService(url, **kwargs)
+        # Kafka support temporarily disabled due to library compatibility issues
+        raise ValueError("Kafka support is temporarily disabled")
 
     raise ValueError(f"Invalid provider [{provider}] passed to MessageBroker factory")
