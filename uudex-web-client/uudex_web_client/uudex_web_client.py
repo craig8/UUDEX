@@ -3,6 +3,7 @@ import reflex as rx
 from .certificate_state import CertificateState
 from .sender import sender
 from .receiver import receiver
+from .landing import landing
 
 # Configure and create the app
 app = rx.App(
@@ -17,8 +18,13 @@ app = rx.App(
     ),
 )
 
-app.add_page(sender,
+app.add_page(landing,
              route="/",
+             title="UUDEX Sample App",
+             description="Choose between sending or receiving files")
+
+app.add_page(sender,
+             route="/sender",
              title="UUDEX - File Sender",
              description="Secure file transfer sender interface",
              on_load=CertificateState.load_entities_from_certs)
