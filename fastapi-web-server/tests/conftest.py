@@ -37,8 +37,11 @@ async def setup_test_env(event_loop: asyncio.AbstractEventLoop) -> AsyncGenerato
 
 @pytest.fixture(scope="session")
 async def client(setup_test_env) -> AsyncGenerator[AsyncClient, None]:
-    """Get async HTTP client"""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    """Get async HTTP client for FastAPI testing"""
+    # Use the transport parameter to connect to FastAPI app
+    from httpx import ASGITransport
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
 
 

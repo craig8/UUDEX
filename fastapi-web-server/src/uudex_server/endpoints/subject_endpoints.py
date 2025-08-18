@@ -63,6 +63,31 @@ async def get_subject_by_id(subject_id: int, session: SessionDep) -> Subject:
     return subject
 
 
+@subjects_router.get("/discover", operation_id="discover_subjects")
+async def discover_subjects(session: SessionDep, user: UserDep) -> list[Subject]:
+    """
+    Discover subjects that the authenticated user is authorized to view.
+
+    Returns subjects based on:
+    - Admin users: All subjects
+    - Regular users: Only subjects owned by their participant
+    """
+    repo = pr.SubjectRepository(session)
+
+    if user.is_admin():
+        # Admin users can see all subjects
+        return await repo.select_all()
+    else:
+        # Regular users can only see subjects owned by their participant
+        # Access participant_id safely by merging the endpoint into current session
+        endpoint = await session.merge(user.endpoint)
+        participant_id = endpoint.participant_id
+
+        # Get subjects owned by the user's participant
+        subjects = await pr.select_all_subjects(session=session, participant_id=participant_id)
+        return subjects
+
+
 @subjects_router.post("/{subject_uuid}/publish", operation_id="publish_messages_to_subject")
 async def publish_messages_to_subject(subject_uuid: str, messages: list[str], session: SessionDep,
                                       user: UserDep) -> None:
