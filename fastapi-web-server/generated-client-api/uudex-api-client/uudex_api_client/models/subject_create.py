@@ -9,10 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from typing import Union
-from dateutil.parser import isoparse
-from typing import cast
 from ..types import UNSET, Unset
-import datetime
 from typing import cast, Union
 
 
@@ -20,15 +17,14 @@ from typing import cast, Union
 
 
 
-T = TypeVar("T", bound="Subject")
+T = TypeVar("T", bound="SubjectCreate")
 
 
 @_attrs_define
-class Subject:
-    """ 
+class SubjectCreate:
+    """ Model for creating a new subject
+
         Attributes:
-            create_datetime (Union[None, datetime.datetime]):
-            subject_uuid (str):
             subject_name (str):
             dataset_instance_key (str):
             subscription_type (str):
@@ -38,13 +34,11 @@ class Subject:
             max_message_count (Union[None, int]):
             priority (Union[None, int]):
             backing_exchange_name (str):
-            owner_participant_id (int):
-            dataset_definition_id (int):
-            subject_id (Union[None, Unset, int]):
+            subject_uuid (Union[None, Unset, str]):
+            owner_participant_id (Union[None, Unset, int]):
+            dataset_definition_id (Union[None, Unset, int]):
      """
 
-    create_datetime: Union[None, datetime.datetime]
-    subject_uuid: str
     subject_name: str
     dataset_instance_key: str
     subscription_type: str
@@ -54,21 +48,13 @@ class Subject:
     max_message_count: Union[None, int]
     priority: Union[None, int]
     backing_exchange_name: str
-    owner_participant_id: int
-    dataset_definition_id: int
-    subject_id: Union[None, Unset, int] = UNSET
+    subject_uuid: Union[None, Unset, str] = UNSET
+    owner_participant_id: Union[None, Unset, int] = UNSET
+    dataset_definition_id: Union[None, Unset, int] = UNSET
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
     def to_dict(self) -> Dict[str, Any]:
-        create_datetime: Union[None, str]
-        if isinstance(self.create_datetime, datetime.datetime):
-            create_datetime = self.create_datetime.isoformat()
-        else:
-            create_datetime = self.create_datetime
-
-        subject_uuid = self.subject_uuid
-
         subject_name = self.subject_name
 
         dataset_instance_key = self.dataset_instance_key
@@ -91,22 +77,28 @@ class Subject:
 
         backing_exchange_name = self.backing_exchange_name
 
-        owner_participant_id = self.owner_participant_id
-
-        dataset_definition_id = self.dataset_definition_id
-
-        subject_id: Union[None, Unset, int]
-        if isinstance(self.subject_id, Unset):
-            subject_id = UNSET
+        subject_uuid: Union[None, Unset, str]
+        if isinstance(self.subject_uuid, Unset):
+            subject_uuid = UNSET
         else:
-            subject_id = self.subject_id
+            subject_uuid = self.subject_uuid
+
+        owner_participant_id: Union[None, Unset, int]
+        if isinstance(self.owner_participant_id, Unset):
+            owner_participant_id = UNSET
+        else:
+            owner_participant_id = self.owner_participant_id
+
+        dataset_definition_id: Union[None, Unset, int]
+        if isinstance(self.dataset_definition_id, Unset):
+            dataset_definition_id = UNSET
+        else:
+            dataset_definition_id = self.dataset_definition_id
 
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({
-            "create_datetime": create_datetime,
-            "subject_uuid": subject_uuid,
             "subject_name": subject_name,
             "dataset_instance_key": dataset_instance_key,
             "subscription_type": subscription_type,
@@ -116,11 +108,13 @@ class Subject:
             "max_message_count": max_message_count,
             "priority": priority,
             "backing_exchange_name": backing_exchange_name,
-            "owner_participant_id": owner_participant_id,
-            "dataset_definition_id": dataset_definition_id,
         })
-        if subject_id is not UNSET:
-            field_dict["subject_id"] = subject_id
+        if subject_uuid is not UNSET:
+            field_dict["subject_uuid"] = subject_uuid
+        if owner_participant_id is not UNSET:
+            field_dict["owner_participant_id"] = owner_participant_id
+        if dataset_definition_id is not UNSET:
+            field_dict["dataset_definition_id"] = dataset_definition_id
 
         return field_dict
 
@@ -129,26 +123,6 @@ class Subject:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        def _parse_create_datetime(data: object) -> Union[None, datetime.datetime]:
-            if data is None:
-                return data
-            try:
-                if not isinstance(data, str):
-                    raise TypeError()
-                create_datetime_type_0 = isoparse(data)
-
-
-
-                return create_datetime_type_0
-            except: # noqa: E722
-                pass
-            return cast(Union[None, datetime.datetime], data)
-
-        create_datetime = _parse_create_datetime(d.pop("create_datetime"))
-
-
-        subject_uuid = d.pop("subject_uuid")
-
         subject_name = d.pop("subject_name")
 
         dataset_instance_key = d.pop("dataset_instance_key")
@@ -191,23 +165,37 @@ class Subject:
 
         backing_exchange_name = d.pop("backing_exchange_name")
 
-        owner_participant_id = d.pop("owner_participant_id")
+        def _parse_subject_uuid(data: object) -> Union[None, Unset, str]:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(Union[None, Unset, str], data)
 
-        dataset_definition_id = d.pop("dataset_definition_id")
+        subject_uuid = _parse_subject_uuid(d.pop("subject_uuid", UNSET))
 
-        def _parse_subject_id(data: object) -> Union[None, Unset, int]:
+
+        def _parse_owner_participant_id(data: object) -> Union[None, Unset, int]:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
             return cast(Union[None, Unset, int], data)
 
-        subject_id = _parse_subject_id(d.pop("subject_id", UNSET))
+        owner_participant_id = _parse_owner_participant_id(d.pop("owner_participant_id", UNSET))
 
 
-        subject = cls(
-            create_datetime=create_datetime,
-            subject_uuid=subject_uuid,
+        def _parse_dataset_definition_id(data: object) -> Union[None, Unset, int]:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(Union[None, Unset, int], data)
+
+        dataset_definition_id = _parse_dataset_definition_id(d.pop("dataset_definition_id", UNSET))
+
+
+        subject_create = cls(
             subject_name=subject_name,
             dataset_instance_key=dataset_instance_key,
             subscription_type=subscription_type,
@@ -217,13 +205,13 @@ class Subject:
             max_message_count=max_message_count,
             priority=priority,
             backing_exchange_name=backing_exchange_name,
+            subject_uuid=subject_uuid,
             owner_participant_id=owner_participant_id,
             dataset_definition_id=dataset_definition_id,
-            subject_id=subject_id,
         )
 
-        subject.additional_properties = d
-        return subject
+        subject_create.additional_properties = d
+        return subject_create
 
     @property
     def additional_keys(self) -> List[str]:

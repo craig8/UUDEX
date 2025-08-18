@@ -8,16 +8,17 @@ from ...types import Response, UNSET
 from ... import errors
 
 from typing import cast
-from ...models.subscription import Subscription
-from ...models.subscription_create import SubscriptionCreate
+from ...models.message_consume_request import MessageConsumeRequest
 from typing import Dict
+from ...models.message_consume_response import MessageConsumeResponse
 from ...models.http_validation_error import HTTPValidationError
 
 
 
 def _get_kwargs(
+    subscription_uuid: str,
     *,
-    body: SubscriptionCreate,
+    body: MessageConsumeRequest,
 
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
@@ -29,7 +30,7 @@ def _get_kwargs(
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
-        "url": "/subscription/",
+        "url": "/subscription/{subscription_uuid}/consume".format(subscription_uuid=subscription_uuid,),
     }
 
     _body = body.to_dict()
@@ -42,9 +43,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Union[HTTPValidationError, Subscription]]:
+def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Union[HTTPValidationError, MessageConsumeResponse]]:
     if response.status_code == HTTPStatus.OK:
-        response_200 = Subscription.from_dict(response.json())
+        response_200 = MessageConsumeResponse.from_dict(response.json())
 
 
 
@@ -61,7 +62,7 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client], response: htt
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Union[HTTPValidationError, Subscription]]:
+def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Union[HTTPValidationError, MessageConsumeResponse]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -71,27 +72,34 @@ def _build_response(*, client: Union[AuthenticatedClient, Client], response: htt
 
 
 def sync_detailed(
+    subscription_uuid: str,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
+    body: MessageConsumeRequest,
 
-) -> Response[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Response[Union[HTTPValidationError, MessageConsumeResponse]]:
+    """ Consume Messages
+
+     Consume messages from a subscription's queue.
+
+    Users can only consume messages from their own subscriptions unless they are admin.
 
     Args:
-        body (SubscriptionCreate):
+        subscription_uuid (str):
+        body (MessageConsumeRequest): Request model for consuming messages from a subscription.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[HTTPValidationError, Subscription]]
+        Response[Union[HTTPValidationError, MessageConsumeResponse]]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
+        subscription_uuid=subscription_uuid,
+body=body,
 
     )
 
@@ -102,53 +110,67 @@ def sync_detailed(
     return _build_response(client=client, response=response)
 
 def sync(
+    subscription_uuid: str,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
+    body: MessageConsumeRequest,
 
-) -> Optional[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Optional[Union[HTTPValidationError, MessageConsumeResponse]]:
+    """ Consume Messages
+
+     Consume messages from a subscription's queue.
+
+    Users can only consume messages from their own subscriptions unless they are admin.
 
     Args:
-        body (SubscriptionCreate):
+        subscription_uuid (str):
+        body (MessageConsumeRequest): Request model for consuming messages from a subscription.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[HTTPValidationError, Subscription]
+        Union[HTTPValidationError, MessageConsumeResponse]
      """
 
 
     return sync_detailed(
-        client=client,
+        subscription_uuid=subscription_uuid,
+client=client,
 body=body,
 
     ).parsed
 
 async def asyncio_detailed(
+    subscription_uuid: str,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
+    body: MessageConsumeRequest,
 
-) -> Response[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Response[Union[HTTPValidationError, MessageConsumeResponse]]:
+    """ Consume Messages
+
+     Consume messages from a subscription's queue.
+
+    Users can only consume messages from their own subscriptions unless they are admin.
 
     Args:
-        body (SubscriptionCreate):
+        subscription_uuid (str):
+        body (MessageConsumeRequest): Request model for consuming messages from a subscription.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[HTTPValidationError, Subscription]]
+        Response[Union[HTTPValidationError, MessageConsumeResponse]]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
+        subscription_uuid=subscription_uuid,
+body=body,
 
     )
 
@@ -159,27 +181,34 @@ async def asyncio_detailed(
     return _build_response(client=client, response=response)
 
 async def asyncio(
+    subscription_uuid: str,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
+    body: MessageConsumeRequest,
 
-) -> Optional[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Optional[Union[HTTPValidationError, MessageConsumeResponse]]:
+    """ Consume Messages
+
+     Consume messages from a subscription's queue.
+
+    Users can only consume messages from their own subscriptions unless they are admin.
 
     Args:
-        body (SubscriptionCreate):
+        subscription_uuid (str):
+        body (MessageConsumeRequest): Request model for consuming messages from a subscription.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[HTTPValidationError, Subscription]
+        Union[HTTPValidationError, MessageConsumeResponse]
      """
 
 
     return (await asyncio_detailed(
-        client=client,
+        subscription_uuid=subscription_uuid,
+client=client,
 body=body,
 
     )).parsed

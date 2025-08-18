@@ -8,53 +8,46 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from typing import Union
 from typing import cast, List
-from typing import cast
-from ..types import UNSET, Unset
-from typing import Dict
-
-if TYPE_CHECKING:
-  from ..models.validation_error import ValidationError
 
 
 
 
 
-T = TypeVar("T", bound="HTTPValidationError")
+
+T = TypeVar("T", bound="BulkSubjectOperation")
 
 
 @_attrs_define
-class HTTPValidationError:
-    """ 
+class BulkSubjectOperation:
+    """ Model for bulk operations on multiple subjects
+
         Attributes:
-            detail (Union[Unset, List['ValidationError']]):
+            subject_uuids (List[str]): List of subject UUIDs to operate on
+            operation (str): Operation to perform: delete, activate, deactivate, purge_queues
      """
 
-    detail: Union[Unset, List['ValidationError']] = UNSET
+    subject_uuids: List[str]
+    operation: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
     def to_dict(self) -> Dict[str, Any]:
-        from ..models.validation_error import ValidationError
-        detail: Union[Unset, List[Dict[str, Any]]] = UNSET
-        if not isinstance(self.detail, Unset):
-            detail = []
-            for detail_item_data in self.detail:
-                detail_item = detail_item_data.to_dict()
-                detail.append(detail_item)
+        subject_uuids = self.subject_uuids
 
 
 
 
+
+        operation = self.operation
 
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({
+            "subject_uuids": subject_uuids,
+            "operation": operation,
         })
-        if detail is not UNSET:
-            field_dict["detail"] = detail
 
         return field_dict
 
@@ -62,24 +55,19 @@ class HTTPValidationError:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.validation_error import ValidationError
         d = src_dict.copy()
-        detail = []
-        _detail = d.pop("detail", UNSET)
-        for detail_item_data in (_detail or []):
-            detail_item = ValidationError.from_dict(detail_item_data)
+        subject_uuids = cast(List[str], d.pop("subject_uuids"))
 
 
+        operation = d.pop("operation")
 
-            detail.append(detail_item)
-
-
-        http_validation_error = cls(
-            detail=detail,
+        bulk_subject_operation = cls(
+            subject_uuids=subject_uuids,
+            operation=operation,
         )
 
-        http_validation_error.additional_properties = d
-        return http_validation_error
+        bulk_subject_operation.additional_properties = d
+        return bulk_subject_operation
 
     @property
     def additional_keys(self) -> List[str]:

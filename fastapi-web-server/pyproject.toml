@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uudex-fastapi-server"
-version = "0.1.0"
+version = "1.1.0"
 description = ""
 authors = ["C. Allwardt <3979063+craig8@users.noreply.github.com>"]
 readme = "README.md"

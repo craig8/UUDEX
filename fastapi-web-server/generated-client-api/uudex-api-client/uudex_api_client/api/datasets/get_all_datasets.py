@@ -7,61 +7,50 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from typing import cast
-from ...models.subscription import Subscription
-from ...models.subscription_create import SubscriptionCreate
 from typing import Dict
-from ...models.http_validation_error import HTTPValidationError
+from typing import cast, List
+from ...models.dataset_read import DatasetRead
+from typing import cast
 
 
 
 def _get_kwargs(
-    *,
-    body: SubscriptionCreate,
-
+    
 ) -> Dict[str, Any]:
-    headers: Dict[str, Any] = {}
-
+    
 
     
 
     
 
     _kwargs: Dict[str, Any] = {
-        "method": "post",
-        "url": "/subscription/",
+        "method": "get",
+        "url": "/datasets/",
     }
 
-    _body = body.to_dict()
 
-
-    _kwargs["json"] = _body
-    headers["Content-Type"] = "application/json"
-
-    _kwargs["headers"] = headers
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Union[HTTPValidationError, Subscription]]:
+def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[List['DatasetRead']]:
     if response.status_code == HTTPStatus.OK:
-        response_200 = Subscription.from_dict(response.json())
+        response_200 = []
+        _response_200 = response.json()
+        for response_200_item_data in (_response_200):
+            response_200_item = DatasetRead.from_dict(response_200_item_data)
 
 
+
+            response_200.append(response_200_item)
 
         return response_200
-    if response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY:
-        response_422 = HTTPValidationError.from_dict(response.json())
-
-
-
-        return response_422
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Union[HTTPValidationError, Subscription]]:
+def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[List['DatasetRead']]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -73,26 +62,24 @@ def _build_response(*, client: Union[AuthenticatedClient, Client], response: htt
 def sync_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
 
-) -> Response[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Response[List['DatasetRead']]:
+    """ Get All Datasets
 
-    Args:
-        body (SubscriptionCreate):
+     Get all datasets owned by the authenticated user's participant.
+    Returns metadata only, use download endpoint for payload.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[HTTPValidationError, Subscription]]
+        Response[List['DatasetRead']]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
-
+        
     )
 
     response = client.get_httpx_client().request(
@@ -104,52 +91,48 @@ def sync_detailed(
 def sync(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
 
-) -> Optional[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Optional[List['DatasetRead']]:
+    """ Get All Datasets
 
-    Args:
-        body (SubscriptionCreate):
+     Get all datasets owned by the authenticated user's participant.
+    Returns metadata only, use download endpoint for payload.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[HTTPValidationError, Subscription]
+        List['DatasetRead']
      """
 
 
     return sync_detailed(
         client=client,
-body=body,
 
     ).parsed
 
 async def asyncio_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
 
-) -> Response[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Response[List['DatasetRead']]:
+    """ Get All Datasets
 
-    Args:
-        body (SubscriptionCreate):
+     Get all datasets owned by the authenticated user's participant.
+    Returns metadata only, use download endpoint for payload.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[HTTPValidationError, Subscription]]
+        Response[List['DatasetRead']]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
-
+        
     )
 
     response = await client.get_async_httpx_client().request(
@@ -161,25 +144,23 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: Union[AuthenticatedClient, Client],
-    body: SubscriptionCreate,
 
-) -> Optional[Union[HTTPValidationError, Subscription]]:
-    """ Create Subscription
+) -> Optional[List['DatasetRead']]:
+    """ Get All Datasets
 
-    Args:
-        body (SubscriptionCreate):
+     Get all datasets owned by the authenticated user's participant.
+    Returns metadata only, use download endpoint for payload.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[HTTPValidationError, Subscription]
+        List['DatasetRead']
      """
 
 
     return (await asyncio_detailed(
         client=client,
-body=body,
 
     )).parsed

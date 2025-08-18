@@ -1,8 +1,8 @@
 import ssl
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union, Optional
 
+from attrs import define, field, evolve
 import httpx
-from attrs import define, evolve, field
 
 
 @define
@@ -33,7 +33,6 @@ class Client:
             status code that was not documented in the source OpenAPI document. Can also be provided as a keyword
             argument to the constructor.
     """
-
     raise_on_unexpected_status: bool = field(default=False, kw_only=True)
     _base_url: str
     _cookies: Dict[str, str] = field(factory=dict, kw_only=True)

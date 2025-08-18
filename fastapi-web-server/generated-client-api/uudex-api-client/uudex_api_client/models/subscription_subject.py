@@ -1,23 +1,35 @@
-from typing import Any, Dict, List, Type, TypeVar, Union, cast
+from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+
+from typing import List
+
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from typing import Union
+from ..types import UNSET, Unset
+from typing import cast, Union
+
+
+
+
+
+
 T = TypeVar("T", bound="SubscriptionSubject")
 
 
 @_attrs_define
 class SubscriptionSubject:
-    """
-    Attributes:
-        preferred_fulfillment_type (str):
-        backing_queue_name (str):
-        subject_id (int):
-        subscription_id (int):
-        subscription_subject_id (Union[None, Unset, int]):
-    """
+    """ 
+        Attributes:
+            preferred_fulfillment_type (str):
+            backing_queue_name (str):
+            subject_id (int):
+            subscription_id (int):
+            subscription_subject_id (Union[None, Unset, int]):
+     """
 
     preferred_fulfillment_type: str
     backing_queue_name: str
@@ -25,6 +37,7 @@ class SubscriptionSubject:
     subscription_id: int
     subscription_subject_id: Union[None, Unset, int] = UNSET
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
+
 
     def to_dict(self) -> Dict[str, Any]:
         preferred_fulfillment_type = self.preferred_fulfillment_type
@@ -41,20 +54,21 @@ class SubscriptionSubject:
         else:
             subscription_subject_id = self.subscription_subject_id
 
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "preferred_fulfillment_type": preferred_fulfillment_type,
-                "backing_queue_name": backing_queue_name,
-                "subject_id": subject_id,
-                "subscription_id": subscription_id,
-            }
-        )
+        field_dict.update({
+            "preferred_fulfillment_type": preferred_fulfillment_type,
+            "backing_queue_name": backing_queue_name,
+            "subject_id": subject_id,
+            "subscription_id": subscription_id,
+        })
         if subscription_subject_id is not UNSET:
             field_dict["subscription_subject_id"] = subscription_subject_id
 
         return field_dict
+
+
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
@@ -75,6 +89,7 @@ class SubscriptionSubject:
             return cast(Union[None, Unset, int], data)
 
         subscription_subject_id = _parse_subscription_subject_id(d.pop("subscription_subject_id", UNSET))
+
 
         subscription_subject = cls(
             preferred_fulfillment_type=preferred_fulfillment_type,

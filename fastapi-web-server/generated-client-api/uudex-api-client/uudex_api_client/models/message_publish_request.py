@@ -9,52 +9,48 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from typing import Union
-from typing import cast, List
-from typing import cast
 from ..types import UNSET, Unset
-from typing import Dict
-
-if TYPE_CHECKING:
-  from ..models.validation_error import ValidationError
+from typing import cast, List
 
 
 
 
 
-T = TypeVar("T", bound="HTTPValidationError")
+
+T = TypeVar("T", bound="MessagePublishRequest")
 
 
 @_attrs_define
-class HTTPValidationError:
-    """ 
+class MessagePublishRequest:
+    """ Request model for publishing messages to a subject.
+
         Attributes:
-            detail (Union[Unset, List['ValidationError']]):
+            messages (List[str]): List of message payloads to publish
+            payload_encoding (Union[Unset, str]): Encoding type for payloads Default: 'string'.
      """
 
-    detail: Union[Unset, List['ValidationError']] = UNSET
+    messages: List[str]
+    payload_encoding: Union[Unset, str] = 'string'
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
     def to_dict(self) -> Dict[str, Any]:
-        from ..models.validation_error import ValidationError
-        detail: Union[Unset, List[Dict[str, Any]]] = UNSET
-        if not isinstance(self.detail, Unset):
-            detail = []
-            for detail_item_data in self.detail:
-                detail_item = detail_item_data.to_dict()
-                detail.append(detail_item)
+        messages = self.messages
 
 
 
 
+
+        payload_encoding = self.payload_encoding
 
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({
+            "messages": messages,
         })
-        if detail is not UNSET:
-            field_dict["detail"] = detail
+        if payload_encoding is not UNSET:
+            field_dict["payload_encoding"] = payload_encoding
 
         return field_dict
 
@@ -62,24 +58,19 @@ class HTTPValidationError:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.validation_error import ValidationError
         d = src_dict.copy()
-        detail = []
-        _detail = d.pop("detail", UNSET)
-        for detail_item_data in (_detail or []):
-            detail_item = ValidationError.from_dict(detail_item_data)
+        messages = cast(List[str], d.pop("messages"))
 
 
+        payload_encoding = d.pop("payload_encoding", UNSET)
 
-            detail.append(detail_item)
-
-
-        http_validation_error = cls(
-            detail=detail,
+        message_publish_request = cls(
+            messages=messages,
+            payload_encoding=payload_encoding,
         )
 
-        http_validation_error.additional_properties = d
-        return http_validation_error
+        message_publish_request.additional_properties = d
+        return message_publish_request
 
     @property
     def additional_keys(self) -> List[str]:
