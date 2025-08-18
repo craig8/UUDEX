@@ -39,6 +39,7 @@ tags_metadata = [
     {"name": "v1", "description": "API Version 1"},
     {"name": "participants", "description": "Participants API"},
     {"name": "endpoints", "description": "Endpoints API"},
+    {"name": "certificates", "description": "Certificates/Admin API"},
     {"name": "subjects", "description": "Subjects API"},
     {"name": "datasets", "description": "Datasets API"},
     {"name": "subscriptions", "description": "Subscriptions API"},

@@ -37,8 +37,8 @@ from uudex_server.endpoints import add_routers
 # Create FastAPI app, don't define docs url here, we are going to use our own endpoint.
 app = FastAPI(
     title="UUDEX API",
-    version="1.0.0",
-    description="UUDEX Data Exchange API - Version 1",
+    version="1.1.0",
+    description="UUDEX Data Exchange API - Version 1.1",
     docs_url=None,
 )
 

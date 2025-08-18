@@ -7,44 +7,35 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from typing import cast
-from typing import Dict
 from ...models.http_validation_error import HTTPValidationError
-from ...models.bulk_operation_result import BulkOperationResult
-from ...models.bulk_subject_operation import BulkSubjectOperation
+from ...models.end_point import EndPoint
+from typing import Dict
+from typing import cast
 
 
 
 def _get_kwargs(
-    *,
-    body: BulkSubjectOperation,
+    endpoint_id: int,
 
 ) -> Dict[str, Any]:
-    headers: Dict[str, Any] = {}
-
+    
 
     
 
     
 
     _kwargs: Dict[str, Any] = {
-        "method": "post",
-        "url": "/subjects/bulk-operations",
+        "method": "get",
+        "url": "/endpoint/{endpoint_id}".format(endpoint_id=endpoint_id,),
     }
 
-    _body = body.to_dict()
 
-
-    _kwargs["json"] = _body
-    headers["Content-Type"] = "application/json"
-
-    _kwargs["headers"] = headers
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Union[BulkOperationResult, HTTPValidationError]]:
+def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Union[EndPoint, HTTPValidationError]]:
     if response.status_code == HTTPStatus.OK:
-        response_200 = BulkOperationResult.from_dict(response.json())
+        response_200 = EndPoint.from_dict(response.json())
 
 
 
@@ -61,7 +52,7 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client], response: htt
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Union[BulkOperationResult, HTTPValidationError]]:
+def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Union[EndPoint, HTTPValidationError]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -71,33 +62,29 @@ def _build_response(*, client: Union[AuthenticatedClient, Client], response: htt
 
 
 def sync_detailed(
+    endpoint_id: int,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: BulkSubjectOperation,
 
-) -> Response[Union[BulkOperationResult, HTTPValidationError]]:
-    """ Bulk Subject Operations
+) -> Response[Union[EndPoint, HTTPValidationError]]:
+    """ Get Endpoint By Id
 
-     Perform bulk operations on multiple subjects.
-
-    Supported operations:
-    - delete: Delete multiple subjects
-    - purge_queues: Purge queues for multiple subjects
+     Get a specific endpoint by ID with authorization checks.
 
     Args:
-        body (BulkSubjectOperation): Model for bulk operations on multiple subjects
+        endpoint_id (int):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BulkOperationResult, HTTPValidationError]]
+        Response[Union[EndPoint, HTTPValidationError]]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
+        endpoint_id=endpoint_id,
 
     )
 
@@ -108,65 +95,57 @@ def sync_detailed(
     return _build_response(client=client, response=response)
 
 def sync(
+    endpoint_id: int,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: BulkSubjectOperation,
 
-) -> Optional[Union[BulkOperationResult, HTTPValidationError]]:
-    """ Bulk Subject Operations
+) -> Optional[Union[EndPoint, HTTPValidationError]]:
+    """ Get Endpoint By Id
 
-     Perform bulk operations on multiple subjects.
-
-    Supported operations:
-    - delete: Delete multiple subjects
-    - purge_queues: Purge queues for multiple subjects
+     Get a specific endpoint by ID with authorization checks.
 
     Args:
-        body (BulkSubjectOperation): Model for bulk operations on multiple subjects
+        endpoint_id (int):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BulkOperationResult, HTTPValidationError]
+        Union[EndPoint, HTTPValidationError]
      """
 
 
     return sync_detailed(
-        client=client,
-body=body,
+        endpoint_id=endpoint_id,
+client=client,
 
     ).parsed
 
 async def asyncio_detailed(
+    endpoint_id: int,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: BulkSubjectOperation,
 
-) -> Response[Union[BulkOperationResult, HTTPValidationError]]:
-    """ Bulk Subject Operations
+) -> Response[Union[EndPoint, HTTPValidationError]]:
+    """ Get Endpoint By Id
 
-     Perform bulk operations on multiple subjects.
-
-    Supported operations:
-    - delete: Delete multiple subjects
-    - purge_queues: Purge queues for multiple subjects
+     Get a specific endpoint by ID with authorization checks.
 
     Args:
-        body (BulkSubjectOperation): Model for bulk operations on multiple subjects
+        endpoint_id (int):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[BulkOperationResult, HTTPValidationError]]
+        Response[Union[EndPoint, HTTPValidationError]]
      """
 
 
     kwargs = _get_kwargs(
-        body=body,
+        endpoint_id=endpoint_id,
 
     )
 
@@ -177,33 +156,29 @@ async def asyncio_detailed(
     return _build_response(client=client, response=response)
 
 async def asyncio(
+    endpoint_id: int,
     *,
     client: Union[AuthenticatedClient, Client],
-    body: BulkSubjectOperation,
 
-) -> Optional[Union[BulkOperationResult, HTTPValidationError]]:
-    """ Bulk Subject Operations
+) -> Optional[Union[EndPoint, HTTPValidationError]]:
+    """ Get Endpoint By Id
 
-     Perform bulk operations on multiple subjects.
-
-    Supported operations:
-    - delete: Delete multiple subjects
-    - purge_queues: Purge queues for multiple subjects
+     Get a specific endpoint by ID with authorization checks.
 
     Args:
-        body (BulkSubjectOperation): Model for bulk operations on multiple subjects
+        endpoint_id (int):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[BulkOperationResult, HTTPValidationError]
+        Union[EndPoint, HTTPValidationError]
      """
 
 
     return (await asyncio_detailed(
-        client=client,
-body=body,
+        endpoint_id=endpoint_id,
+client=client,
 
     )).parsed

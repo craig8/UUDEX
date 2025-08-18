@@ -9,9 +9,9 @@ from ... import errors
 
 from ...models.participant import Participant
 from typing import cast
-from ...models.participant_create import ParticipantCreate
 from typing import Dict
 from ...models.http_validation_error import HTTPValidationError
+from ...models.participant_create import ParticipantCreate
 
 
 

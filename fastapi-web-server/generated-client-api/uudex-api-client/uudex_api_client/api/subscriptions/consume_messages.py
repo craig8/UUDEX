@@ -10,8 +10,8 @@ from ... import errors
 from typing import cast
 from ...models.message_consume_request import MessageConsumeRequest
 from typing import Dict
-from ...models.message_consume_response import MessageConsumeResponse
 from ...models.http_validation_error import HTTPValidationError
+from ...models.message_consume_response import MessageConsumeResponse
 
 
 

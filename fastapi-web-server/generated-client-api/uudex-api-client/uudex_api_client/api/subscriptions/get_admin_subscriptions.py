@@ -7,9 +7,9 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from typing import Dict
-from typing import cast, List
 from ...models.subscription import Subscription
+from typing import cast, List
+from typing import Dict
 from typing import cast
 
 

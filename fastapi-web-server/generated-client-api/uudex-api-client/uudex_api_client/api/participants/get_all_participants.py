@@ -7,10 +7,10 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from typing import Dict
-from typing import cast, List
-from ...models.participant import Participant
 from typing import cast
+from typing import cast, List
+from typing import Dict
+from ...models.participant import Participant
 
 
 

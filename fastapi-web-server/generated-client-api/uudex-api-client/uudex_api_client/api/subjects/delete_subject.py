@@ -7,9 +7,9 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from typing import Dict
 from ...models.http_validation_error import HTTPValidationError
 from ...models.delete_subject_response_delete_subject import DeleteSubjectResponseDeleteSubject
+from typing import Dict
 from typing import cast
 
 

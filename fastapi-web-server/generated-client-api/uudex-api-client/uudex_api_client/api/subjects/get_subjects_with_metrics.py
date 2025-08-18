@@ -9,8 +9,8 @@ from ... import errors
 
 from ...models.subject_with_metrics import SubjectWithMetrics
 from typing import Dict
-from typing import cast, List
 from typing import cast
+from typing import cast, List
 
 
 

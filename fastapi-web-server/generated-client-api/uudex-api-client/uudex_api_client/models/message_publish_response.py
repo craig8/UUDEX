@@ -8,12 +8,12 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from typing import Union
 from typing import cast, List
-from dateutil.parser import isoparse
 from typing import cast
-from ..types import UNSET, Unset
 import datetime
+from typing import Union
+from dateutil.parser import isoparse
+from ..types import UNSET, Unset
 
 
 

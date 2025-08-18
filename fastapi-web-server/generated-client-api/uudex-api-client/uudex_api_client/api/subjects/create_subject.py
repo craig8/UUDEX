@@ -8,10 +8,10 @@ from ...types import Response, UNSET
 from ... import errors
 
 from typing import cast
-from ...models.subject_create import SubjectCreate
 from ...models.subject import Subject
 from typing import Dict
 from ...models.http_validation_error import HTTPValidationError
+from ...models.subject_create import SubjectCreate
 
 
 

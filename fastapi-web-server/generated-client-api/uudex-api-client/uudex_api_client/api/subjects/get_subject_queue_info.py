@@ -7,9 +7,9 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.subject_queue_info import SubjectQueueInfo
 from ...models.http_validation_error import HTTPValidationError
 from typing import Dict
+from ...models.subject_queue_info import SubjectQueueInfo
 from typing import cast
 
 

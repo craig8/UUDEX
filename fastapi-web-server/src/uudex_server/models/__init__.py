@@ -35,7 +35,18 @@ from .dataset_definition_models import (
     DatasetDefinitionDelete,
 )
 from .dataset_models import Dataset, DatasetCreate, DatasetDelete
-from .endpoint_models import EndPoint, EndPointCreate, EndPointDelete
+from .endpoint_models import (
+    EndPoint, 
+    EndPointCreate, 
+    EndPointUpdate,
+    EndPointDelete,
+    CertificateCreateRequest,
+    CertificateResponse,
+    BulkCertificateOperation,
+    BulkCertificateResult,
+    CertificateDownloadRequest,
+    CertificateFileInfo
+)
 from .message_models import (
     MessageContent,
     MessageConsumeRequest,
@@ -92,7 +103,9 @@ __all__ = [
     "MessagePublishRequest", "MessagePublishResponse",
     # Core models  
     "Participant", "ParticipantCreate", "ParticipantDelete",
-    "EndPoint", "EndPointCreate", "EndPointDelete",
+    "EndPoint", "EndPointCreate", "EndPointUpdate", "EndPointDelete",
+    "CertificateCreateRequest", "CertificateResponse", "BulkCertificateOperation", "BulkCertificateResult",
+    "CertificateDownloadRequest", "CertificateFileInfo",
     "Subject", "SubjectCreate", "SubjectDelete", "SubjectUpdate",
     "SubjectQueueInfo", "QueueManagementRequest", "QueueManagementResponse",
     "SubjectWithMetrics", "BulkSubjectOperation", "BulkOperationResult",
