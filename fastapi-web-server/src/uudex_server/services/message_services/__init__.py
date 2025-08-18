@@ -40,7 +40,10 @@ from .base import UUDEXBrokerService
 # from . import kafka_mq
 
 
-def create_broker_service(url, **kwargs):
+from typing import Any
+
+
+def create_broker_service(url: str, **kwargs: Any) -> UUDEXBrokerService:
     provider = url.partition(":")[0]
 
     if provider in ("rabbitmq", "amqp"):

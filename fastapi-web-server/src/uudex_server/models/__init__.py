@@ -44,7 +44,18 @@ from .message_models import (
     MessagePublishResponse,
 )
 from .participant_models import Participant, ParticipantCreate, ParticipantDelete
-from .subject_models import Subject, SubjectCreate, SubjectDelete
+from .subject_models import (
+    Subject, 
+    SubjectCreate, 
+    SubjectDelete, 
+    SubjectUpdate, 
+    SubjectQueueInfo, 
+    QueueManagementRequest, 
+    QueueManagementResponse,
+    SubjectWithMetrics,
+    BulkSubjectOperation,
+    BulkOperationResult
+)
 from .subject_policy_models import (
     GrantScope,
     SubjectAcl,
@@ -82,7 +93,9 @@ __all__ = [
     # Core models  
     "Participant", "ParticipantCreate", "ParticipantDelete",
     "EndPoint", "EndPointCreate", "EndPointDelete",
-    "Subject", "SubjectCreate", "SubjectDelete",
+    "Subject", "SubjectCreate", "SubjectDelete", "SubjectUpdate",
+    "SubjectQueueInfo", "QueueManagementRequest", "QueueManagementResponse",
+    "SubjectWithMetrics", "BulkSubjectOperation", "BulkOperationResult",
     "Subscription", "SubscriptionCreate", "SubscriptionDelete",
     "SubscriptionSubject", "SubscriptionSubjectCreate", "SubscriptionSubjectDelete",
     "Dataset", "DatasetCreate", "DatasetDelete",

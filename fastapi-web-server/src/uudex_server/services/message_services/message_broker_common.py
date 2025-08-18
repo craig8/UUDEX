@@ -35,11 +35,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 # from uudex_server.services.message_services.kafka_mq import KafkaService
+from uudex_server.services.message_services.base import UUDEXBrokerService
 from uudex_server.services.message_services.rabbit_mq import RabbitMqService
+from typing import Any
 
 
 # TODO: make this a shared resource pool, where the objects persist their connections and states
-def message_broker_factory(url: str, **kwargs):
+def message_broker_factory(url: str, **kwargs: Any) -> UUDEXBrokerService:
     provider = url.partition(":")[0]
 
     if provider in ("rabbitmq", "amqp"):
