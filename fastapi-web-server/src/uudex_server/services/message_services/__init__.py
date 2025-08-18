@@ -35,6 +35,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 from . import rabbit_mq
+from .base import UUDEXBrokerService
 
 # from . import kafka_mq
 
