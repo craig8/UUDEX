@@ -43,12 +43,14 @@ class SubscriptionSubject:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "preferred_fulfillment_type": preferred_fulfillment_type,
-            "backing_queue_name": backing_queue_name,
-            "subject_id": subject_id,
-            "subscription_id": subscription_id,
-        })
+        field_dict.update(
+            {
+                "preferred_fulfillment_type": preferred_fulfillment_type,
+                "backing_queue_name": backing_queue_name,
+                "subject_id": subject_id,
+                "subscription_id": subscription_id,
+            }
+        )
         if subscription_subject_id is not UNSET:
             field_dict["subscription_subject_id"] = subscription_subject_id
 
@@ -72,8 +74,7 @@ class SubscriptionSubject:
                 return data
             return cast(Union[None, Unset, int], data)
 
-        subscription_subject_id = _parse_subscription_subject_id(
-            d.pop("subscription_subject_id", UNSET))
+        subscription_subject_id = _parse_subscription_subject_id(d.pop("subscription_subject_id", UNSET))
 
         subscription_subject = cls(
             preferred_fulfillment_type=preferred_fulfillment_type,

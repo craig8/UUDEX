@@ -3,6 +3,7 @@ import reflex as rx
 
 class LandingState(rx.State):
     """State for the landing page."""
+
     pass
 
 
@@ -19,7 +20,6 @@ def landing():
             background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             z_index="-1",
         ),
-
         # Main content
         rx.center(
             rx.vstack(
@@ -41,7 +41,6 @@ def landing():
                     align_items="center",
                     margin_bottom="8",
                 ),
-
                 # Instruction text
                 rx.text(
                     "Select your role to begin secure data transfer",
@@ -49,7 +48,6 @@ def landing():
                     font_size="lg",
                     margin_bottom="6",
                 ),
-
                 # Selection cards
                 rx.hstack(
                     # Sender card
@@ -107,7 +105,6 @@ def landing():
                         target="_blank",
                         text_decoration="none",
                     ),
-
                     # Receiver card
                     rx.link(
                         rx.box(

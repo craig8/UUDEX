@@ -18,8 +18,9 @@ def _get_kwargs() -> Dict[str, Any]:
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client],
-                    response: httpx.Response) -> Optional[List["Subscription"]]:
+def _parse_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Optional[List["Subscription"]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
         _response_200 = response.json()
@@ -35,8 +36,9 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client],
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client],
-                    response: httpx.Response) -> Response[List["Subscription"]]:
+def _build_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Response[List["Subscription"]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -61,7 +63,9 @@ def sync_detailed(
 
     kwargs = _get_kwargs()
 
-    response = client.get_httpx_client().request(**kwargs, )
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
 
     return _build_response(client=client, response=response)
 
@@ -80,7 +84,9 @@ def sync(
         List['Subscription']
     """
 
-    return sync_detailed(client=client, ).parsed
+    return sync_detailed(
+        client=client,
+    ).parsed
 
 
 async def asyncio_detailed(
@@ -118,4 +124,8 @@ async def asyncio(
         List['Subscription']
     """
 
-    return (await asyncio_detailed(client=client, )).parsed
+    return (
+        await asyncio_detailed(
+            client=client,
+        )
+    ).parsed

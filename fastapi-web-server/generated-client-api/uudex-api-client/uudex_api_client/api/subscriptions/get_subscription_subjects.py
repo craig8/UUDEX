@@ -10,7 +10,9 @@ from ...models.subscription_subject import SubscriptionSubject
 from ...types import Response
 
 
-def _get_kwargs(subscription_uuid: str, ) -> Dict[str, Any]:
+def _get_kwargs(
+    subscription_uuid: str,
+) -> Dict[str, Any]:
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/subscription/{subscription_uuid}/subjects",
@@ -20,7 +22,7 @@ def _get_kwargs(subscription_uuid: str, ) -> Dict[str, Any]:
 
 
 def _parse_response(
-        *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[HTTPValidationError, List["SubscriptionSubject"]]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
@@ -42,7 +44,7 @@ def _parse_response(
 
 
 def _build_response(
-        *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[HTTPValidationError, List["SubscriptionSubject"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
@@ -70,9 +72,13 @@ def sync_detailed(
         Response[Union[HTTPValidationError, List['SubscriptionSubject']]]
     """
 
-    kwargs = _get_kwargs(subscription_uuid=subscription_uuid, )
+    kwargs = _get_kwargs(
+        subscription_uuid=subscription_uuid,
+    )
 
-    response = client.get_httpx_client().request(**kwargs, )
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
 
     return _build_response(client=client, response=response)
 
@@ -119,7 +125,9 @@ async def asyncio_detailed(
         Response[Union[HTTPValidationError, List['SubscriptionSubject']]]
     """
 
-    kwargs = _get_kwargs(subscription_uuid=subscription_uuid, )
+    kwargs = _get_kwargs(
+        subscription_uuid=subscription_uuid,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -144,7 +152,9 @@ async def asyncio(
         Union[HTTPValidationError, List['SubscriptionSubject']]
     """
 
-    return (await asyncio_detailed(
-        subscription_uuid=subscription_uuid,
-        client=client,
-    )).parsed
+    return (
+        await asyncio_detailed(
+            subscription_uuid=subscription_uuid,
+            client=client,
+        )
+    ).parsed

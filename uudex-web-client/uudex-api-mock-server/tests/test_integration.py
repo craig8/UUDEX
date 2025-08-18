@@ -5,7 +5,6 @@ from typing import AsyncGenerator, Dict, Any
 import uvicorn
 import asyncio
 import threading
-from fastapi.testclient import TestClient
 from uudex_api_mock_server import app as mock_app
 import httpx
 import json
@@ -13,7 +12,6 @@ from pathlib import Path
 
 
 class ServerThread(threading.Thread):
-
     def __init__(self, host: str = "127.0.0.1", port: int = 8004):
         super().__init__()
         self.host = host
@@ -21,10 +19,9 @@ class ServerThread(threading.Thread):
         self.should_exit = threading.Event()
 
     def run(self):
-        config = uvicorn.Config(mock_app,
-                                host=self.host,
-                                port=self.port,
-                                log_level="error")
+        config = uvicorn.Config(
+            mock_app, host=self.host, port=self.port, log_level="error"
+        )
         self.server = uvicorn.Server(config)
         self.server.run()
 
@@ -57,24 +54,19 @@ class UUDEXTestClient:
     """Test client for UUDEX API"""
 
     def __init__(self, base_url: str):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self.client = httpx.AsyncClient(base_url=base_url)
         # Test participant credentials
         self.app_rt_id = "4b3b819e-94bd-4adf-b461-17ccb58ac870"
         self.mitre_client_id = "8f026ebe-c71e-4fa1-8d66-82d3d85b72a4"
 
-    async def configure_mock(self,
-                             path: str,
-                             response: dict,
-                             status_code: int = 200):
+    async def configure_mock(self, path: str, response: dict, status_code: int = 200):
         """Configure mock response"""
-        path = path.lstrip('/')
-        response = await self.client.post("/mock/configure",
-                                          json={
-                                              "path": path,
-                                              "response": response,
-                                              "status_code": status_code
-                                          })
+        path = path.lstrip("/")
+        response = await self.client.post(
+            "/mock/configure",
+            json={"path": path, "response": response, "status_code": status_code},
+        )
         response.raise_for_status()
 
     async def get_participants(self):
@@ -85,8 +77,7 @@ class UUDEXTestClient:
 
     async def get_participant(self, participant_id: str):
         """Get specific participant"""
-        response = await self.client.get(
-            f"api/v1/participants/{participant_id}")
+        response = await self.client.get(f"api/v1/participants/{participant_id}")
         response.raise_for_status()
         return response.json()
 
@@ -102,20 +93,21 @@ class UUDEXTestClient:
         response.raise_for_status()
         return response.json()
 
-    async def create_subscription(self,
-                                  subject_id: str,
-                                  callback_url: str,
-                                  participant_id: str = None):
+    async def create_subscription(
+        self, subject_id: str, callback_url: str, participant_id: str = None
+    ):
         """Create a subscription"""
         if participant_id is None:
             participant_id = self.app_rt_id
 
-        response = await self.client.post("api/v1/subscriptions",
-                                          json={
-                                              "subject_id": subject_id,
-                                              "participant_id": participant_id,
-                                              "callback_url": callback_url
-                                          })
+        response = await self.client.post(
+            "api/v1/subscriptions",
+            json={
+                "subject_id": subject_id,
+                "participant_id": participant_id,
+                "callback_url": callback_url,
+            },
+        )
         response.raise_for_status()
         return response.json()
 
@@ -131,14 +123,14 @@ class UUDEXTestClient:
     async def publish_message(self, subject_id: str, message: Dict[str, Any]):
         """Publish message to a subject"""
         response = await self.client.post(
-            f"api/v1/subjects/{subject_id}/messages", json=message)
+            f"api/v1/subjects/{subject_id}/messages", json=message
+        )
         response.raise_for_status()
         return response.json()
 
     async def get_messages(self, subject_id: str):
         """Get messages for a subject"""
-        response = await self.client.get(
-            f"api/v1/subjects/{subject_id}/messages")
+        response = await self.client.get(f"api/v1/subjects/{subject_id}/messages")
         response.raise_for_status()
         return response.json()
 
@@ -163,16 +155,14 @@ async def api_client(mock_server) -> AsyncGenerator:
 
         # Configure initial state
         for endpoint, data in {
-                "api/v1/participants": mock_data["participants"],
-                "api/v1/subjects": mock_data["subjects"],
-                "api/v1/subscriptions": mock_data["subscriptions"]
+            "api/v1/participants": mock_data["participants"],
+            "api/v1/subjects": mock_data["subjects"],
+            "api/v1/subscriptions": mock_data["subscriptions"],
         }.items():
-            await http_client.post(f"{base_url}/mock/configure",
-                                   json={
-                                       "path": endpoint,
-                                       "response": data,
-                                       "status_code": 200
-                                   })
+            await http_client.post(
+                f"{base_url}/mock/configure",
+                json={"path": endpoint, "response": data, "status_code": 200},
+            )
 
     yield client
     await client.close()
@@ -203,13 +193,12 @@ async def test_subscriptions_workflow(api_client):
     """Test subscription creation and retrieval"""
     # Create new subscription
     new_sub = await api_client.create_subscription(
-        subject_id="test/mitre/1",
-        callback_url="https://new-app.example.com/callback")
+        subject_id="test/mitre/1", callback_url="https://new-app.example.com/callback"
+    )
     assert new_sub["subject_id"] == "test/mitre/1"
 
     # Get subscriptions
-    subs = await api_client.get_subscriptions(
-        participant_id=api_client.app_rt_id)
+    subs = await api_client.get_subscriptions(participant_id=api_client.app_rt_id)
     assert len(subs) >= 1
     assert any(s["subject_id"] == "test/mitre/1" for s in subs)
 
@@ -234,10 +223,9 @@ async def test_mock_configuration(api_client):
     # Configure custom response
     custom_response = {
         "participant_id": "custom-id",
-        "participant_name": "Custom Participant"
+        "participant_name": "Custom Participant",
     }
-    await api_client.configure_mock("api/v1/participants/custom-id",
-                                    custom_response)
+    await api_client.configure_mock("api/v1/participants/custom-id", custom_response)
 
     # Verify custom response
     response = await api_client.client.get("api/v1/participants/custom-id")

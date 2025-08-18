@@ -89,21 +89,23 @@ class Subject:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "create_datetime": create_datetime,
-            "subject_uuid": subject_uuid,
-            "subject_name": subject_name,
-            "dataset_instance_key": dataset_instance_key,
-            "subscription_type": subscription_type,
-            "fulfillment_types_available": fulfillment_types_available,
-            "full_queue_behavior": full_queue_behavior,
-            "max_queue_size_kb": max_queue_size_kb,
-            "max_message_count": max_message_count,
-            "priority": priority,
-            "backing_exchange_name": backing_exchange_name,
-            "owner_participant_id": owner_participant_id,
-            "dataset_definition_id": dataset_definition_id,
-        })
+        field_dict.update(
+            {
+                "create_datetime": create_datetime,
+                "subject_uuid": subject_uuid,
+                "subject_name": subject_name,
+                "dataset_instance_key": dataset_instance_key,
+                "subscription_type": subscription_type,
+                "fulfillment_types_available": fulfillment_types_available,
+                "full_queue_behavior": full_queue_behavior,
+                "max_queue_size_kb": max_queue_size_kb,
+                "max_message_count": max_message_count,
+                "priority": priority,
+                "backing_exchange_name": backing_exchange_name,
+                "owner_participant_id": owner_participant_id,
+                "dataset_definition_id": dataset_definition_id,
+            }
+        )
         if subject_id is not UNSET:
             field_dict["subject_id"] = subject_id
 
@@ -122,7 +124,7 @@ class Subject:
                 create_datetime_type_0 = isoparse(data)
 
                 return create_datetime_type_0
-            except:    # noqa: E722
+            except:  # noqa: E722
                 pass
             return cast(Union[None, datetime.datetime], data)
 

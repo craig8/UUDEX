@@ -20,14 +20,14 @@ class Config:
         self.UUDEX_PORT = int(os.getenv("UUDEX_PORT", "8004"))
 
         # Certificate configuration
-        self.CERTS_DIR = os.getenv("CERTS_DIR",
-                                   os.path.join(os.getcwd(), "certs"))
+        self.CERTS_DIR = os.getenv("CERTS_DIR", os.path.join(os.getcwd(), "certs"))
         self.DEFAULT_CERT_NAME = os.getenv("DEFAULT_CERT_NAME", "default")
 
         # Debug mode
         self.DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
-        self.BYPASS_SSL_HEADER = os.getenv("BYPASS_SSL_HEADER",
-                                           "false").lower() == "true"
+        self.BYPASS_SSL_HEADER = (
+            os.getenv("BYPASS_SSL_HEADER", "false").lower() == "true"
+        )
 
         # API configuration
         self.BASE_URL = os.getenv("UUDEX_BASE_URL", "https://localhost")
@@ -52,8 +52,7 @@ class Config:
             return []
 
         # Look for .pem or .crt files
-        cert_files = list(certs_dir.glob("*.pem")) + list(
-            certs_dir.glob("*.crt"))
+        cert_files = list(certs_dir.glob("*.pem")) + list(certs_dir.glob("*.crt"))
         return [cert.stem for cert in cert_files]
 
     def get_cert_path(self, cert_name: str) -> Optional[str]:
@@ -61,7 +60,7 @@ class Config:
         certs_dir = Path(self.CERTS_DIR)
 
         # Check for both .pem and .crt extensions
-        for ext in ['.pem', '.crt']:
+        for ext in [".pem", ".crt"]:
             cert_path = certs_dir / f"{cert_name}{ext}"
             if cert_path.exists():
                 return str(cert_path)
@@ -85,8 +84,7 @@ class Config:
 
         # Check if certificates directory exists
         if not Path(self.CERTS_DIR).exists():
-            issues.append(
-                f"Certificates directory does not exist: {self.CERTS_DIR}")
+            issues.append(f"Certificates directory does not exist: {self.CERTS_DIR}")
 
         # Check if any certificates are available
         if not self.get_available_certs():
@@ -110,6 +108,4 @@ class Config:
         print(f"  UUDEX Port: {self.UUDEX_PORT}")
         print(f"  Debug Mode: {self.DEBUG_MODE}")
         print(f"  Server Mode: {self.SERVER_MODE}")
-        print(
-            f"  Available Certificates: {', '.join(self.get_available_certs())}"
-        )
+        print(f"  Available Certificates: {', '.join(self.get_available_certs())}")

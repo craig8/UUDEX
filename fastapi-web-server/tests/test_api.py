@@ -1,9 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
-from uudex_server.main import app    # Assuming main.py where FastAPI instance is created
+
+from uudex_server.main import app  # Assuming main.py where FastAPI instance is created
 
 # Replace 'sqlite:///:memory:' with your actual database URL if required
-DATABASE_URL = 'sqlite:///:memory:'
+DATABASE_URL = "sqlite:///:memory:"
 
 
 @pytest.fixture(name="client")
@@ -69,7 +70,7 @@ def test_api_create_subscription(client: TestClient):
     data = {
         "subscription_uuid": "uuid1",
         "subscription_name": "name1",
-        "subscription_state": "active"
+        "subscription_state": "active",
     }
     response = client.post("/subscription/", json=data)
     assert response.status_code == 200
@@ -94,5 +95,5 @@ def test_api_discover_subjects_v1(client: TestClient):
 
 
 # Run the tests
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

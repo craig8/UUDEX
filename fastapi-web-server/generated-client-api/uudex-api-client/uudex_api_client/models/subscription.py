@@ -53,13 +53,15 @@ class Subscription:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "create_datetime": create_datetime,
-            "subscription_uuid": subscription_uuid,
-            "subscription_name": subscription_name,
-            "subscription_state": subscription_state,
-            "owner_endpoint_id": owner_endpoint_id,
-        })
+        field_dict.update(
+            {
+                "create_datetime": create_datetime,
+                "subscription_uuid": subscription_uuid,
+                "subscription_name": subscription_name,
+                "subscription_state": subscription_state,
+                "owner_endpoint_id": owner_endpoint_id,
+            }
+        )
         if subscription_id is not UNSET:
             field_dict["subscription_id"] = subscription_id
 
@@ -78,7 +80,7 @@ class Subscription:
                 create_datetime_type_0 = isoparse(data)
 
                 return create_datetime_type_0
-            except:    # noqa: E722
+            except:  # noqa: E722
                 pass
             return cast(Union[None, datetime.datetime], data)
 

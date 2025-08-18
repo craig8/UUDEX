@@ -3,12 +3,32 @@ from sqlalchemy.orm import Session
 from sqlmodel import select
 
 import uudex_server.models as m
-from uudex_server.models import Participant, EndPoint, AuthGroup, AuthRole, Privilege, PrivilegeAllowed, DataType, \
-    DatasetDefinition, Contact, DataTypeHistory, Dataset, Subscription, SubscriptionSubject, Subject, AttachedDataType, \
-    SubjectPolicy, SubjectPolicyGrantAllowed, SubjectAcl, SubjectAclGrant, GrantScope, SubjectPolicyAclConstraint
+from uudex_server.models import (
+    AttachedDataType,
+    AuthGroup,
+    AuthRole,
+    Contact,
+    Dataset,
+    DatasetDefinition,
+    DataType,
+    DataTypeHistory,
+    EndPoint,
+    GrantScope,
+    Participant,
+    Privilege,
+    PrivilegeAllowed,
+    Subject,
+    SubjectAcl,
+    SubjectAclGrant,
+    SubjectPolicy,
+    SubjectPolicyAclConstraint,
+    SubjectPolicyGrantAllowed,
+    Subscription,
+    SubscriptionSubject,
+)
 
 
-def test_full_database_seeding(api_session: Session):    # SQLAlchemy ORM session type
+def test_full_database_seeding(api_session: Session):  # SQLAlchemy ORM session type
     # Check each model to verify the database seeding
     participants = api_session.query(Participant).all()
     assert len(participants) > 0, "Participants should be loaded"
@@ -77,12 +97,16 @@ def test_full_database_seeding(api_session: Session):    # SQLAlchemy ORM sessio
 @pytest.mark.parametrize(
     "model_class, relationship, expected_count",
     [
-    # Correct the reference to relationships, use 'endpoints'
+        # Correct the reference to relationships, use 'endpoints'
         (m.Participant, lambda p: p.endpoints, 1),
-        (m.DataType, lambda dt: dt.data_type_history,
-         1),    # Ensure valid relationship definitions exist
-        (m.Subject, lambda s: s.attached_data_types, 1),    # Assuming such a relationship
-    ])
+        (
+            m.DataType,
+            lambda dt: dt.data_type_history,
+            1,
+        ),  # Ensure valid relationship definitions exist
+        (m.Subject, lambda s: s.attached_data_types, 1),  # Assuming such a relationship
+    ],
+)
 @pytest.mark.xfail(reason="This needs to be re-evaluated!")
 def test_database_relationships(api_session: Session, model_class, relationship, expected_count):
     stmt = select(model_class)
@@ -90,6 +114,6 @@ def test_database_relationships(api_session: Session, model_class, relationship,
     # If instance is None, it means the test data is missing; check setup
     assert instance is not None, f"No data found for {model_class.__name__}"
     related_data = relationship(instance)
-    assert len(
-        related_data
-    ) == expected_count, f"Expected {expected_count} related records in for relationship in {model_class.__name__}"
+    assert (
+        len(related_data) == expected_count
+    ), f"Expected {expected_count} related records in for relationship in {model_class.__name__}"

@@ -1,15 +1,13 @@
-import os
-import sys
-import logging
 import asyncio
-from pathlib import Path
-from typing import AsyncGenerator, Generator
+import os
+from collections.abc import AsyncGenerator, Generator
+
 import pytest
 from httpx import AsyncClient
 
 from uudex_server.core.settings import Settings, get_settings
-from uudex_server.services.database_service import init_db, shutdown_db
 from uudex_server.main import app
+from uudex_server.services.database_service import init_db, shutdown_db
 
 
 @pytest.fixture(scope="session")
@@ -23,7 +21,7 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
 @pytest.fixture(scope="session")
 async def setup_test_env(event_loop: asyncio.AbstractEventLoop) -> AsyncGenerator[None, None]:
     """Setup test environment before any tests run"""
-    get_settings.cache_clear()    # Force settings reload
+    get_settings.cache_clear()  # Force settings reload
 
     # Create SQLite database
     await init_db()
@@ -40,6 +38,7 @@ async def client(setup_test_env) -> AsyncGenerator[AsyncClient, None]:
     """Get async HTTP client for FastAPI testing"""
     # Use the transport parameter to connect to FastAPI app
     from httpx import ASGITransport
+
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
@@ -54,24 +53,22 @@ def test_settings() -> Settings:
 @pytest.fixture(autouse=True)
 async def cleanup_after_test():
     """Reset database to known state after each test"""
-    yield    # Test runs here
-    await init_db()    # Recreate tables after each test
+    yield  # Test runs here
+    await init_db()  # Recreate tables after each test
 
 
 # Certificate fixtures
 def read_cert_file(filename: str) -> str:
     """Read certificate from certs directory"""
-    cert_path = os.path.join('certs', filename)
-    with open(cert_path, 'r') as f:
+    cert_path = os.path.join("certs", filename)
+    with open(cert_path) as f:
         return f.read().strip()
 
 
 @pytest.fixture
 async def admin_headers():
     """Headers for admin user"""
-    return {
-        "x-ssl-cert": "-----BEGIN CERTIFICATE-----\nADMIN_TEST_CERT\n-----END CERTIFICATE-----"
-    }
+    return {"x-ssl-cert": "-----BEGIN CERTIFICATE-----\nADMIN_TEST_CERT\n-----END CERTIFICATE-----"}
 
 
 @pytest.fixture

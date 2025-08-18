@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from uudex_api_mock_server import UUDEXMockServer, app
+from uudex_api_mock_server import app
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def test_subscription_operations(client):
     subscription_data = {
         "id": "sub1",
         "subject_id": "subject1",
-        "callback_url": "http://example.com/callback"
+        "callback_url": "http://example.com/callback",
     }
 
     response = client.post("/api/v1/subscriptions", json=subscription_data)
@@ -46,8 +46,7 @@ def test_message_operations(client):
     # Publish message
     message_data = {"content": "test message", "metadata": {"key": "value"}}
 
-    response = client.post("/api/v1/subjects/subject1/messages",
-                           json=message_data)
+    response = client.post("/api/v1/subjects/subject1/messages", json=message_data)
     assert response.status_code == 200
     assert "message_id" in response.json()
 
@@ -64,10 +63,8 @@ def test_configure_custom_response(client):
     # Configure custom response
     mock_config = {
         "path": "/api/v1/custom",
-        "response": {
-            "message": "Custom response"
-        },
-        "status_code": 200
+        "response": {"message": "Custom response"},
+        "status_code": 200,
     }
 
     response = client.post("/mock/configure", json=mock_config)
@@ -100,10 +97,8 @@ def test_configure_and_use_mock(client):
     # Configure mock response
     mock_config = {
         "path": "/api/test",
-        "response": {
-            "message": "Hello, World!"
-        },
-        "status_code": 200
+        "response": {"message": "Hello, World!"},
+        "status_code": 200,
     }
 
     response = client.post("/mock/configure", json=mock_config)
@@ -131,12 +126,8 @@ def test_error_response(client):
     # Configure error response
     mock_config = {
         "path": "/api/error",
-        "response": {
-            "detail": {
-                "error": "Bad Request"
-            }
-        },
-        "status_code": 400
+        "response": {"detail": {"error": "Bad Request"}},
+        "status_code": 400,
     }
 
     client.post("/mock/configure", json=mock_config)

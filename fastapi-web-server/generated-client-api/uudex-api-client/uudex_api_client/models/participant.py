@@ -65,13 +65,15 @@ class Participant:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "create_datetime": create_datetime,
-            "participant_uuid": participant_uuid,
-            "participant_short_name": participant_short_name,
-            "participant_long_name": participant_long_name,
-            "root_org_sw": root_org_sw,
-        })
+        field_dict.update(
+            {
+                "create_datetime": create_datetime,
+                "participant_uuid": participant_uuid,
+                "participant_short_name": participant_short_name,
+                "participant_long_name": participant_long_name,
+                "root_org_sw": root_org_sw,
+            }
+        )
         if active_sw is not UNSET:
             field_dict["active_sw"] = active_sw
         if description is not UNSET:
@@ -94,7 +96,7 @@ class Participant:
                 create_datetime_type_0 = isoparse(data)
 
                 return create_datetime_type_0
-            except:    # noqa: E722
+            except:  # noqa: E722
                 pass
             return cast(Union[None, datetime.datetime], data)
 

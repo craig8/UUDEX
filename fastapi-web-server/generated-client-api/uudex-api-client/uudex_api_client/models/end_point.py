@@ -69,16 +69,18 @@ class EndPoint:
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "create_datetime": create_datetime,
-            "endpoint_uuid": endpoint_uuid,
-            "endpoint_user_name": endpoint_user_name,
-            "certificate_dn": certificate_dn,
-            "description": description,
-            "uudex_administrator_sw": uudex_administrator_sw,
-            "participant_administrator_sw": participant_administrator_sw,
-            "participant_id": participant_id,
-        })
+        field_dict.update(
+            {
+                "create_datetime": create_datetime,
+                "endpoint_uuid": endpoint_uuid,
+                "endpoint_user_name": endpoint_user_name,
+                "certificate_dn": certificate_dn,
+                "description": description,
+                "uudex_administrator_sw": uudex_administrator_sw,
+                "participant_administrator_sw": participant_administrator_sw,
+                "participant_id": participant_id,
+            }
+        )
         if active_sw is not UNSET:
             field_dict["active_sw"] = active_sw
         if endpoint_id is not UNSET:
@@ -99,7 +101,7 @@ class EndPoint:
                 create_datetime_type_0 = isoparse(data)
 
                 return create_datetime_type_0
-            except:    # noqa: E722
+            except:  # noqa: E722
                 pass
             return cast(Union[None, datetime.datetime], data)
 

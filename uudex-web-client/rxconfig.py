@@ -20,4 +20,6 @@ else:
         print("No environment file found, using defaults")
 
 # Create config with app name only - environment vars will override defaults
-config = rx.Config(app_name="uudex_web_client", )
+config = rx.Config(
+    app_name="uudex_web_client",
+)

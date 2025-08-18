@@ -6,8 +6,6 @@ A colorful and feature-rich standalone CLI for interacting with the UUDEX API.
 Supports certificate-based authentication, table output, and various API operations.
 """
 
-import asyncio
-import os
 import sys
 from pathlib import Path
 from typing import List, Dict, Optional, Any
@@ -15,16 +13,9 @@ import json
 import click
 from rich.console import Console
 from rich.table import Table
-from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.prompt import Prompt, Confirm
+from rich.prompt import Prompt
 from rich.panel import Panel
-from rich.text import Text
 from rich.syntax import Syntax
-from rich.tree import Tree
-from rich.columns import Columns
-from rich.markdown import Markdown
-from rich import print as rprint
-from rich.live import Live
 
 # Add current directory to path for local imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -34,7 +25,6 @@ from config import Config
 
 # Add parent directory to path for uudex_api_client
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from uudex_api_client import Client
 
 # Initialize rich console
 console = Console()
@@ -45,6 +35,7 @@ config = Config()
 
 class UUDEXCLIError(Exception):
     """Custom exception for UUDEX CLI errors"""
+
     pass
 
 
@@ -64,7 +55,8 @@ class UUDEXClient:
 
         if self.entity_name:
             self.client = self.cert_manager.build_client(
-                self.entity_name, self.config.get_api_base_url())
+                self.entity_name, self.config.get_api_base_url()
+            )
         else:
             raise UUDEXCLIError("No entity selected or available")
 
@@ -83,8 +75,11 @@ class UUDEXClient:
 
         for i, entity in enumerate(self.cert_manager.available_entities):
             # Test authentication status
-            status = "✓ Valid" if self.cert_manager.test_client_authentication(
-                entity) else "✗ Invalid"
+            status = (
+                "✓ Valid"
+                if self.cert_manager.test_client_authentication(entity)
+                else "✗ Invalid"
+            )
             table.add_row(str(i + 1), entity, status)
 
         console.print(table)
@@ -94,20 +89,20 @@ class UUDEXClient:
                 choice = Prompt.ask(
                     "Select an entity",
                     choices=[
-                        str(i + 1) for i in range(
-                            len(self.cert_manager.available_entities))
+                        str(i + 1)
+                        for i in range(len(self.cert_manager.available_entities))
                     ],
-                    default="1")
-                self.entity_name = self.cert_manager.available_entities[
-                    int(choice) - 1]
+                    default="1",
+                )
+                self.entity_name = self.cert_manager.available_entities[int(choice) - 1]
                 break
             except (ValueError, IndexError):
                 console.print("[red]Invalid choice. Please try again.[/red]")
 
 
-def create_table(title: str,
-                 data: List[Dict],
-                 columns: Optional[List[str]] = None) -> Table:
+def create_table(
+    title: str, data: List[Dict], columns: Optional[List[str]] = None
+) -> Table:
     """Create a rich table from data"""
     table = Table(title=title, show_header=True, header_style="bold magenta")
 
@@ -123,12 +118,11 @@ def create_table(title: str,
     # Add columns with alternating colors
     colors = ["cyan", "green", "yellow", "blue", "red", "magenta"]
     for i, col in enumerate(columns):
-        table.add_column(col.replace('_', ' ').title(),
-                         style=colors[i % len(colors)])
+        table.add_column(col.replace("_", " ").title(), style=colors[i % len(colors)])
 
     # Add rows
     for row in data:
-        table.add_row(*[str(row.get(col, '')) for col in columns])
+        table.add_row(*[str(row.get(col, "")) for col in columns])
 
     return table
 
@@ -144,20 +138,22 @@ def format_json_output(data: Any, title: str = "JSON Output") -> None:
 
 
 @click.group(invoke_without_command=True)
-@click.option('--entity', '-e', help='Entity name to use for authentication')
-@click.option('--output',
-              '-o',
-              type=click.Choice(['table', 'json', 'tree']),
-              default='table',
-              help='Output format')
-@click.option('--verbose', '-v', is_flag=True, help='Verbose output')
+@click.option("--entity", "-e", help="Entity name to use for authentication")
+@click.option(
+    "--output",
+    "-o",
+    type=click.Choice(["table", "json", "tree"]),
+    default="table",
+    help="Output format",
+)
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
 @click.pass_context
 def cli(ctx, entity, output, verbose):
     """UUDEX Standalone CLI - A colorful command-line interface for the UUDEX API"""
     ctx.ensure_object(dict)
-    ctx.obj['entity'] = entity
-    ctx.obj['output'] = output
-    ctx.obj['verbose'] = verbose
+    ctx.obj["entity"] = entity
+    ctx.obj["output"] = output
+    ctx.obj["verbose"] = verbose
 
     # Print welcome banner if no subcommand is provided
     if ctx.invoked_subcommand is None:
@@ -197,19 +193,19 @@ def cli(ctx, entity, output, verbose):
 
         # Show certificate setup info if no certs found
         from cert_manager import CertificateManager
+
         cert_manager = CertificateManager(config.CERTS_DIR)
         cert_manager.load_entities_from_certs()
         if not cert_manager.available_entities:
             console.print(
                 "[bold yellow]💡 Tip:[/bold yellow] Place your X.509 certificates in the 'certs' directory to get started"
             )
-            console.print(
-                f"[dim]Certificate directory: {config.CERTS_DIR}[/dim]")
+            console.print(f"[dim]Certificate directory: {config.CERTS_DIR}[/dim]")
 
 
 def get_client(ctx) -> UUDEXClient:
     """Get authenticated UUDEX client"""
-    client = UUDEXClient(ctx.obj['entity'])
+    client = UUDEXClient(ctx.obj["entity"])
 
     with console.status("[bold green]Initializing authentication..."):
         client.initialize()
@@ -239,24 +235,21 @@ def list_endpoints(ctx):
             if response.status_code == 200:
                 endpoints_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(endpoints_data, "Endpoints")
                 else:
                     # Convert to table format
                     table_data = []
                     for endpoint in endpoints_data:
-                        table_data.append({
-                            'UUID':
-                            endpoint.get('uuid', ''),
-                            'Name':
-                            endpoint.get('name', ''),
-                            'Status':
-                            endpoint.get('status', ''),
-                            'Created':
-                            endpoint.get('created_at', ''),
-                            'Updated':
-                            endpoint.get('updated_at', '')
-                        })
+                        table_data.append(
+                            {
+                                "UUID": endpoint.get("uuid", ""),
+                                "Name": endpoint.get("name", ""),
+                                "Status": endpoint.get("status", ""),
+                                "Created": endpoint.get("created_at", ""),
+                                "Updated": endpoint.get("updated_at", ""),
+                            }
+                        )
 
                     table = create_table("Endpoints", table_data)
                     console.print(table)
@@ -270,24 +263,22 @@ def list_endpoints(ctx):
 
 
 @endpoints.command(name="get")
-@click.argument('endpoint_uuid')
+@click.argument("endpoint_uuid")
 @click.pass_context
 def get_endpoint(ctx, endpoint_uuid):
     """Get details of a specific endpoint"""
     try:
         client = get_client(ctx)
 
-        with console.status(
-                f"[bold green]Fetching endpoint {endpoint_uuid}..."):
+        with console.status(f"[bold green]Fetching endpoint {endpoint_uuid}..."):
             httpx_client = client.client.get_httpx_client()
             response = httpx_client.get(f"/auth/endpoints/{endpoint_uuid}")
 
             if response.status_code == 200:
                 endpoint_data = response.json()
 
-                if ctx.obj['output'] == 'json':
-                    format_json_output(endpoint_data,
-                                       f"Endpoint {endpoint_uuid}")
+                if ctx.obj["output"] == "json":
+                    format_json_output(endpoint_data, f"Endpoint {endpoint_uuid}")
                 else:
                     # Display as key-value pairs
                     table = Table(title=f"Endpoint Details: {endpoint_uuid}")
@@ -295,8 +286,7 @@ def get_endpoint(ctx, endpoint_uuid):
                     table.add_column("Value", style="green")
 
                     for key, value in endpoint_data.items():
-                        table.add_row(
-                            key.replace('_', ' ').title(), str(value))
+                        table.add_row(key.replace("_", " ").title(), str(value))
 
                     console.print(table)
             else:
@@ -322,23 +312,20 @@ def peers(ctx):
             if response.status_code == 200:
                 peers_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(peers_data, "Peer Endpoints")
                 else:
                     table_data = []
                     for peer in peers_data:
-                        table_data.append({
-                            'UUID':
-                            peer.get('uuid', ''),
-                            'Name':
-                            peer.get('name', ''),
-                            'Organization':
-                            peer.get('organization', ''),
-                            'Status':
-                            peer.get('status', ''),
-                            'Last Seen':
-                            peer.get('last_seen', '')
-                        })
+                        table_data.append(
+                            {
+                                "UUID": peer.get("uuid", ""),
+                                "Name": peer.get("name", ""),
+                                "Organization": peer.get("organization", ""),
+                                "Status": peer.get("status", ""),
+                                "Last Seen": peer.get("last_seen", ""),
+                            }
+                        )
 
                     table = create_table("Peer Endpoints", table_data)
                     console.print(table)
@@ -365,7 +352,7 @@ def me(ctx):
             if response.status_code == 200:
                 me_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(me_data, "Current Endpoint")
                 else:
                     # Create an info panel
@@ -378,9 +365,12 @@ def me(ctx):
 [bold red]Updated:[/bold red] {me_data.get('updated_at', 'N/A')}
                     """
                     console.print(
-                        Panel(info_text,
-                              title="Current Endpoint Information",
-                              border_style="green"))
+                        Panel(
+                            info_text,
+                            title="Current Endpoint Information",
+                            border_style="green",
+                        )
+                    )
             else:
                 console.print(
                     f"[red]Error: {response.status_code} - {response.text}[/red]"
@@ -399,22 +389,22 @@ def datasets(ctx):
 
 
 @datasets.command(name="list")
-@click.argument('subject_uuid')
-@click.option('--search', '-s', help='Search expression to filter datasets')
-@click.option('--participant',
-              '-p',
-              help='Limit search to datasets owned by this participant')
+@click.argument("subject_uuid")
+@click.option("--search", "-s", help="Search expression to filter datasets")
+@click.option(
+    "--participant", "-p", help="Limit search to datasets owned by this participant"
+)
 @click.pass_context
 def list_datasets(ctx, subject_uuid, search, participant):
     """List datasets for a subject"""
     try:
         client = get_client(ctx)
 
-        params = {'subject_uuid': subject_uuid}
+        params = {"subject_uuid": subject_uuid}
         if search:
-            params['search_expression'] = search
+            params["search_expression"] = search
         if participant:
-            params['participant_uuid'] = participant
+            params["participant_uuid"] = participant
 
         with console.status("[bold green]Fetching datasets..."):
             httpx_client = client.client.get_httpx_client()
@@ -423,28 +413,25 @@ def list_datasets(ctx, subject_uuid, search, participant):
             if response.status_code == 200:
                 datasets_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(datasets_data, "Datasets")
                 else:
                     table_data = []
                     for dataset in datasets_data:
-                        table_data.append({
-                            'UUID':
-                            dataset.get('uuid', ''),
-                            'Name':
-                            dataset.get('name', ''),
-                            'Subject':
-                            dataset.get('subject_name', ''),
-                            'Owner':
-                            dataset.get('owner_name', ''),
-                            'Size':
-                            dataset.get('size', ''),
-                            'Created':
-                            dataset.get('created_at', '')
-                        })
+                        table_data.append(
+                            {
+                                "UUID": dataset.get("uuid", ""),
+                                "Name": dataset.get("name", ""),
+                                "Subject": dataset.get("subject_name", ""),
+                                "Owner": dataset.get("owner_name", ""),
+                                "Size": dataset.get("size", ""),
+                                "Created": dataset.get("created_at", ""),
+                            }
+                        )
 
-                    table = create_table(f"Datasets (Subject: {subject_uuid})",
-                                         table_data)
+                    table = create_table(
+                        f"Datasets (Subject: {subject_uuid})", table_data
+                    )
                     console.print(table)
             else:
                 console.print(
@@ -456,7 +443,7 @@ def list_datasets(ctx, subject_uuid, search, participant):
 
 
 @datasets.command(name="get")
-@click.argument('dataset_uuid')
+@click.argument("dataset_uuid")
 @click.pass_context
 def get_dataset(ctx, dataset_uuid):
     """Get details of a specific dataset"""
@@ -470,7 +457,7 @@ def get_dataset(ctx, dataset_uuid):
             if response.status_code == 200:
                 dataset_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(dataset_data, f"Dataset {dataset_uuid}")
                 else:
                     # Create dataset info panel
@@ -486,17 +473,18 @@ def get_dataset(ctx, dataset_uuid):
                     console.print(
                         Panel(
                             info_text,
-                            title=
-                            f"Dataset: {dataset_data.get('name', 'Unknown')}",
-                            border_style="blue"))
+                            title=f"Dataset: {dataset_data.get('name', 'Unknown')}",
+                            border_style="blue",
+                        )
+                    )
 
                     # Show metadata if available
-                    if 'metadata' in dataset_data and dataset_data['metadata']:
+                    if "metadata" in dataset_data and dataset_data["metadata"]:
                         metadata_table = Table(title="Metadata")
                         metadata_table.add_column("Key", style="cyan")
                         metadata_table.add_column("Value", style="green")
 
-                        for key, value in dataset_data['metadata'].items():
+                        for key, value in dataset_data["metadata"].items():
                             metadata_table.add_row(key, str(value))
 
                         console.print(metadata_table)
@@ -518,7 +506,7 @@ def subjects(ctx):
 
 
 @subjects.command()
-@click.option('--name', '-n', help='Filter by subject name')
+@click.option("--name", "-n", help="Filter by subject name")
 @click.pass_context
 def discover(ctx, name):
     """Discover available subjects"""
@@ -527,7 +515,7 @@ def discover(ctx, name):
 
         params = {}
         if name:
-            params['name'] = name
+            params["name"] = name
 
         with console.status("[bold green]Discovering subjects..."):
             httpx_client = client.client.get_httpx_client()
@@ -536,23 +524,20 @@ def discover(ctx, name):
             if response.status_code == 200:
                 subjects_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(subjects_data, "Subjects")
                 else:
                     table_data = []
                     for subject in subjects_data:
-                        table_data.append({
-                            'UUID':
-                            subject.get('uuid', ''),
-                            'Name':
-                            subject.get('name', ''),
-                            'Type':
-                            subject.get('type', ''),
-                            'Access':
-                            subject.get('access_level', ''),
-                            'Created':
-                            subject.get('created_at', '')
-                        })
+                        table_data.append(
+                            {
+                                "UUID": subject.get("uuid", ""),
+                                "Name": subject.get("name", ""),
+                                "Type": subject.get("type", ""),
+                                "Access": subject.get("access_level", ""),
+                                "Created": subject.get("created_at", ""),
+                            }
+                        )
 
                     table = create_table("Available Subjects", table_data)
                     console.print(table)
@@ -566,7 +551,7 @@ def discover(ctx, name):
 
 
 @subjects.command(name="get")
-@click.argument('subject_uuid')
+@click.argument("subject_uuid")
 @click.pass_context
 def get_subject(ctx, subject_uuid):
     """Get details of a specific subject"""
@@ -580,7 +565,7 @@ def get_subject(ctx, subject_uuid):
             if response.status_code == 200:
                 subject_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(subject_data, f"Subject {subject_uuid}")
                 else:
                     # Create subject info panel
@@ -596,9 +581,10 @@ def get_subject(ctx, subject_uuid):
                     console.print(
                         Panel(
                             info_text,
-                            title=
-                            f"Subject: {subject_data.get('name', 'Unknown')}",
-                            border_style="yellow"))
+                            title=f"Subject: {subject_data.get('name', 'Unknown')}",
+                            border_style="yellow",
+                        )
+                    )
             else:
                 console.print(
                     f"[red]Error: {response.status_code} - {response.text}[/red]"
@@ -630,23 +616,20 @@ def list_subscriptions(ctx):
             if response.status_code == 200:
                 subscriptions_data = response.json()
 
-                if ctx.obj['output'] == 'json':
+                if ctx.obj["output"] == "json":
                     format_json_output(subscriptions_data, "Subscriptions")
                 else:
                     table_data = []
                     for subscription in subscriptions_data:
-                        table_data.append({
-                            'UUID':
-                            subscription.get('uuid', ''),
-                            'Name':
-                            subscription.get('name', ''),
-                            'Status':
-                            subscription.get('status', ''),
-                            'Subject Count':
-                            subscription.get('subject_count', 0),
-                            'Created':
-                            subscription.get('created_at', '')
-                        })
+                        table_data.append(
+                            {
+                                "UUID": subscription.get("uuid", ""),
+                                "Name": subscription.get("name", ""),
+                                "Status": subscription.get("status", ""),
+                                "Subject Count": subscription.get("subject_count", 0),
+                                "Created": subscription.get("created_at", ""),
+                            }
+                        )
 
                     table = create_table("Subscriptions", table_data)
                     console.print(table)
@@ -660,12 +643,14 @@ def list_subscriptions(ctx):
 
 
 @subscriptions.command()
-@click.argument('subscription_uuid')
-@click.option('--max-messages',
-              '-m',
-              type=int,
-              default=10,
-              help='Maximum number of messages to consume')
+@click.argument("subscription_uuid")
+@click.option(
+    "--max-messages",
+    "-m",
+    type=int,
+    default=10,
+    help="Maximum number of messages to consume",
+)
 @click.pass_context
 def consume(ctx, subscription_uuid, max_messages):
     """Consume messages from a subscription"""
@@ -673,40 +658,39 @@ def consume(ctx, subscription_uuid, max_messages):
         client = get_client(ctx)
 
         with console.status(
-                f"[bold green]Consuming messages from subscription {subscription_uuid}..."
+            f"[bold green]Consuming messages from subscription {subscription_uuid}..."
         ):
             httpx_client = client.client.get_httpx_client()
-            params = {'max_messages': max_messages}
+            params = {"max_messages": max_messages}
             response = httpx_client.get(
-                f"/subscriptions/{subscription_uuid}/consume", params=params)
+                f"/subscriptions/{subscription_uuid}/consume", params=params
+            )
 
             if response.status_code == 200:
                 messages_data = response.json()
 
-                if ctx.obj['output'] == 'json':
-                    format_json_output(messages_data,
-                                       f"Messages from {subscription_uuid}")
+                if ctx.obj["output"] == "json":
+                    format_json_output(
+                        messages_data, f"Messages from {subscription_uuid}"
+                    )
                 else:
-                    if 'messages' in messages_data and messages_data[
-                            'messages']:
+                    if "messages" in messages_data and messages_data["messages"]:
                         table_data = []
-                        for msg in messages_data['messages']:
-                            table_data.append({
-                                'ID':
-                                msg.get('id', ''),
-                                'Subject':
-                                msg.get('subject', ''),
-                                'Timestamp':
-                                msg.get('timestamp', ''),
-                                'Size':
-                                msg.get('size', ''),
-                                'Type':
-                                msg.get('type', '')
-                            })
+                        for msg in messages_data["messages"]:
+                            table_data.append(
+                                {
+                                    "ID": msg.get("id", ""),
+                                    "Subject": msg.get("subject", ""),
+                                    "Timestamp": msg.get("timestamp", ""),
+                                    "Size": msg.get("size", ""),
+                                    "Type": msg.get("type", ""),
+                                }
+                            )
 
                         table = create_table(
                             f"Messages from Subscription {subscription_uuid}",
-                            table_data)
+                            table_data,
+                        )
                         console.print(table)
                     else:
                         console.print("[yellow]No messages available[/yellow]")
@@ -746,9 +730,8 @@ def status(ctx):
 [bold magenta]Status:[/bold magenta] {me_data.get('status', 'Unknown')}
                 """
                 console.print(
-                    Panel(status_text,
-                          title="UUDEX API Status",
-                          border_style="green"))
+                    Panel(status_text, title="UUDEX API Status", border_style="green")
+                )
             else:
                 console.print(
                     f"[red]✗ API Error: {response.status_code} - {response.text}[/red]"
@@ -775,10 +758,12 @@ def entities(ctx):
             table.add_column("Auth Status", style="yellow")
 
             for entity in cert_manager.available_entities:
-                cert_path = cert_manager.entity_cert_mapping.get(
-                    entity, "Unknown")
-                auth_status = "✓ Valid" if cert_manager.test_client_authentication(
-                    entity) else "✗ Invalid"
+                cert_path = cert_manager.entity_cert_mapping.get(entity, "Unknown")
+                auth_status = (
+                    "✓ Valid"
+                    if cert_manager.test_client_authentication(entity)
+                    else "✗ Invalid"
+                )
                 table.add_row(entity, cert_path, auth_status)
 
             console.print(table)
@@ -803,9 +788,8 @@ def config_info(ctx):
 [bold white]Server Mode:[/bold white] {config.SERVER_MODE}
 [bold green]Available Certificates:[/bold green] {', '.join(config.get_available_certs())}
     """
-    console.print(
-        Panel(config_text, title="Configuration", border_style="blue"))
+    console.print(Panel(config_text, title="Configuration", border_style="blue"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

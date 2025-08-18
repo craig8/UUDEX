@@ -1,7 +1,7 @@
 # uudex_web_client/config.py
 import os
 from pathlib import Path
-from typing import Optional, Dict, List
+from typing import Optional, List
 
 
 class Config:
@@ -16,13 +16,15 @@ class Config:
         # Certificate configuration
         self.CERTS_DIR = os.getenv(
             "CERTS_DIR",
-            os.path.join(os.path.dirname(os.path.dirname(__file__)), "certs"))
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "certs"),
+        )
         self.DEFAULT_CERT_NAME = os.getenv("DEFAULT_CERT_NAME", "default")
 
         # Debug mode - only send x-ssl-cert header in debug mode
         self.DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
-        self.BYPASS_SSL_HEADER = os.getenv("BYPASS_SSL_HEADER",
-                                           "false").lower() == "true"
+        self.BYPASS_SSL_HEADER = (
+            os.getenv("BYPASS_SSL_HEADER", "false").lower() == "true"
+        )
 
     def get_server_url(self) -> str:
         """Get the backend server URL."""
@@ -30,7 +32,7 @@ class Config:
 
     def get_uudex_url(self) -> str:
         """Get the UUDEX server URL."""
-        return f"https://localhost"
+        return "https://localhost"
 
     def get_available_certs(self) -> List[str]:
         """Get a list of available certificate names in the certs directory."""
@@ -39,8 +41,7 @@ class Config:
             return []
 
         # Look for .pem or .crt files
-        cert_files = list(certs_dir.glob("*.pem")) + list(
-            certs_dir.glob("*.crt"))
+        cert_files = list(certs_dir.glob("*.pem")) + list(certs_dir.glob("*.crt"))
         return [cert.stem for cert in cert_files]
 
     def get_cert_path(self, cert_name: str) -> Optional[str]:

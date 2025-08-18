@@ -10,7 +10,9 @@ from ...models.subscription import Subscription
 from ...types import Response
 
 
-def _get_kwargs(subscription_uuid: str, ) -> Dict[str, Any]:
+def _get_kwargs(
+    subscription_uuid: str,
+) -> Dict[str, Any]:
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/subscription/{subscription_uuid}",
@@ -20,7 +22,7 @@ def _get_kwargs(subscription_uuid: str, ) -> Dict[str, Any]:
 
 
 def _parse_response(
-        *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Optional[Union[HTTPValidationError, Union["Subscription", None]]]:
     if response.status_code == HTTPStatus.OK:
 
@@ -33,7 +35,7 @@ def _parse_response(
                 response_200_type_0 = Subscription.from_dict(data)
 
                 return response_200_type_0
-            except:    # noqa: E722
+            except:  # noqa: E722
                 pass
             return cast(Union["Subscription", None], data)
 
@@ -51,7 +53,7 @@ def _parse_response(
 
 
 def _build_response(
-        *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
 ) -> Response[Union[HTTPValidationError, Union["Subscription", None]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
@@ -79,9 +81,13 @@ def sync_detailed(
         Response[Union[HTTPValidationError, Union['Subscription', None]]]
     """
 
-    kwargs = _get_kwargs(subscription_uuid=subscription_uuid, )
+    kwargs = _get_kwargs(
+        subscription_uuid=subscription_uuid,
+    )
 
-    response = client.get_httpx_client().request(**kwargs, )
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
 
     return _build_response(client=client, response=response)
 
@@ -128,7 +134,9 @@ async def asyncio_detailed(
         Response[Union[HTTPValidationError, Union['Subscription', None]]]
     """
 
-    kwargs = _get_kwargs(subscription_uuid=subscription_uuid, )
+    kwargs = _get_kwargs(
+        subscription_uuid=subscription_uuid,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -153,7 +161,9 @@ async def asyncio(
         Union[HTTPValidationError, Union['Subscription', None]]
     """
 
-    return (await asyncio_detailed(
-        subscription_uuid=subscription_uuid,
-        client=client,
-    )).parsed
+    return (
+        await asyncio_detailed(
+            subscription_uuid=subscription_uuid,
+            client=client,
+        )
+    ).parsed

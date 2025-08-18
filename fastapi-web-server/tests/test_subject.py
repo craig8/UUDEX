@@ -1,4 +1,5 @@
 import pytest
+
 import uudex_server.models as m
 from uudex_server.repos import SubjectRepository
 

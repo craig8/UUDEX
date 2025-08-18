@@ -1,17 +1,17 @@
 # uudex_web_client/state.py
 import logging
 import reflex as rx
-from typing import Any, Dict, List, ClassVar, Optional
+from typing import Any, Dict, List
 
 from .config import uudex_config
 from .services import UudexAPIService
-import rxconfig
 
 logger = logging.getLogger(__name__)
 
 
 class State(rx.State):
     """The app state."""
+
     # Store list of participants as dictionaries
     participants: List[Dict[str, Any]] = []
     loading: bool = False
@@ -52,7 +52,7 @@ class State(rx.State):
         self.api_url = uudex_config.get_uudex_url()
 
         # Trigger loading of participants
-        #return rx.event(self.get_participants)
+        # return rx.event(self.get_participants)
 
     # Handle settings form submission
     def handle_settings_submit(self, form_data: Dict):
@@ -83,8 +83,7 @@ class State(rx.State):
         """Handle participant form submission."""
         # Extract values from form data
         self.participant_uuid = form_data.get("participant_uuid", "")
-        self.participant_short_name = form_data.get("participant_short_name",
-                                                    "")
+        self.participant_short_name = form_data.get("participant_short_name", "")
         self.participant_long_name = form_data.get("participant_long_name", "")
         self.root_org_sw = form_data.get("root_org_sw", "Y")
         self.description = form_data.get("description", "")
@@ -95,7 +94,7 @@ class State(rx.State):
             "participant_short_name": self.participant_short_name,
             "participant_long_name": self.participant_long_name,
             "root_org_sw": self.root_org_sw,
-            "description": self.description
+            "description": self.description,
         }
 
         # Add the participant
@@ -116,8 +115,8 @@ class State(rx.State):
         base_url = self.api_url or uudex_config.get_uudex_url()
 
         # Ensure URL has the correct format with /api prefix
-        if not base_url.endswith('/api'):
-            if base_url.endswith('/'):
+        if not base_url.endswith("/api"):
+            if base_url.endswith("/"):
                 base_url = f"{base_url}api"
             else:
                 base_url = f"{base_url}/api"
@@ -135,7 +134,8 @@ class State(rx.State):
             cert_path=cert_path,
             verify_ssl=True,
             debug_mode=uudex_config.DEBUG_MODE,
-            bypass_ssl_header=uudex_config.BYPASS_SSL_HEADER)
+            bypass_ssl_header=uudex_config.BYPASS_SSL_HEADER,
+        )
 
     async def get_participants(self):
         """Fetch all participants from the API."""
@@ -208,7 +208,8 @@ class State(rx.State):
             if result.success:
                 # Remove the participant from the list
                 self.participants = [
-                    p for p in self.participants
+                    p
+                    for p in self.participants
                     if p["participant_uuid"] != participant_id
                 ]
                 logger.info(f"Deleted participant: {participant_id}")

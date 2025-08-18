@@ -1,34 +1,34 @@
-from typing import Dict, Any, Optional, List, Union
-from fastapi import FastAPI, HTTPException, Request, Response
+from typing import Dict, Any, List, Union
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import json
 from pathlib import Path
-from fastapi.openapi.utils import get_openapi
 from datetime import datetime, timezone
 
 
 class MockConfigRequest(BaseModel):
     path: str
-    response: Union[Dict[str, Any],
-                    List[Dict[str, Any]]]  # Allow both dict and list of dicts
+    response: Union[
+        Dict[str, Any], List[Dict[str, Any]]
+    ]  # Allow both dict and list of dicts
     status_code: int = 200
 
 
 class UUDEXMockServer:
-
     def __init__(self):
         self.app = FastAPI()
         self.responses = {}
         self.requests_history = []
-        self.server_id = "mock-server-" + datetime.now(
-            timezone.utc).strftime("%Y%m%d-%H%M%S")
+        self.server_id = "mock-server-" + datetime.now(timezone.utc).strftime(
+            "%Y%m%d-%H%M%S"
+        )
         self.start_time = datetime.now(timezone.utc)
 
         @self.app.middleware("http")
         async def capture_request(request: Request, call_next):
             # Capture request before processing
-            if not request.url.path.startswith('/mock/'):
+            if not request.url.path.startswith("/mock/"):
                 body = None
                 if request.method in ["POST", "PUT", "PATCH"]:
                     body_bytes = await request.body()
@@ -39,18 +39,17 @@ class UUDEXMockServer:
                     # Reset body for other handlers
                     request._body = body_bytes
 
-                self.requests_history.append({
-                    "path": request.url.path,
-                    "method": request.method,
-                    "body": body
-                })
+                self.requests_history.append(
+                    {"path": request.url.path, "method": request.method, "body": body}
+                )
 
             response = await call_next(request)
             return response
 
         # Load mock data
-        fixtures_path = Path(
-            __file__).parent.parent / "tests" / "fixtures" / "mock_data.json"
+        fixtures_path = (
+            Path(__file__).parent.parent / "tests" / "fixtures" / "mock_data.json"
+        )
         if fixtures_path.exists():
             with open(fixtures_path) as f:
                 mock_data = json.load(f)
@@ -58,15 +57,15 @@ class UUDEXMockServer:
                 self.responses = {
                     "api/v1/participants": {
                         "response": mock_data["participants"],
-                        "status_code": 200
+                        "status_code": 200,
                     },
                     "api/v1/subjects": {
                         "response": mock_data["subjects"],
-                        "status_code": 200
+                        "status_code": 200,
                     },
                     "api/v1/subscriptions": {
                         "response": mock_data["subscriptions"],
-                        "status_code": 200
+                        "status_code": 200,
                     },
                 }
                 # Store messages for lookup
@@ -92,7 +91,6 @@ class UUDEXMockServer:
         self._setup_routes()
 
     def _setup_routes(self):
-
         @self.app.get("/health")
         async def health_check():
             """Health check endpoint"""
@@ -100,26 +98,27 @@ class UUDEXMockServer:
                 "status": "healthy",
                 "server": {
                     "id": self.server_id,
-                    "uptime":
-                    str(datetime.now(timezone.utc) - self.start_time),
+                    "uptime": str(datetime.now(timezone.utc) - self.start_time),
                     "fixtures_loaded": bool(self.responses),
                     "endpoints": {
-                        "participants":
-                        len(
-                            self.responses.get("api/v1/participants",
-                                               {}).get("response", [])),
-                        "subjects":
-                        len(
-                            self.responses.get("api/v1/subjects",
-                                               {}).get("response", [])),
-                        "subscriptions":
-                        len(
-                            self.responses.get("api/v1/subscriptions",
-                                               {}).get("response", [])),
-                        "messages":
-                        len(self.messages)
-                    }
-                }
+                        "participants": len(
+                            self.responses.get("api/v1/participants", {}).get(
+                                "response", []
+                            )
+                        ),
+                        "subjects": len(
+                            self.responses.get("api/v1/subjects", {}).get(
+                                "response", []
+                            )
+                        ),
+                        "subscriptions": len(
+                            self.responses.get("api/v1/subscriptions", {}).get(
+                                "response", []
+                            )
+                        ),
+                        "messages": len(self.messages),
+                    },
+                },
             }
 
         @self.app.post("/mock/reset")
@@ -131,10 +130,10 @@ class UUDEXMockServer:
         @self.app.post("/mock/configure")
         async def configure_mock(config: MockConfigRequest):
             """Configure mock response for a specific path"""
-            path = config.path.lstrip('/')
+            path = config.path.lstrip("/")
             self.responses[path] = {
                 "response": config.response,
-                "status_code": config.status_code
+                "status_code": config.status_code,
             }
             return {"status": "configured"}
 
@@ -150,26 +149,25 @@ class UUDEXMockServer:
             # Add an ID if not provided
             if "id" not in data:
                 data[
-                    "id"] = f"sub_{len(self.responses.get('api/v1/subscriptions', {}).get('response', []))}"
+                    "id"
+                ] = f"sub_{len(self.responses.get('api/v1/subscriptions', {}).get('response', []))}"
             # Add to existing subscriptions
-            subs = self.responses.get('api/v1/subscriptions',
-                                      {}).get('response', [])
+            subs = self.responses.get("api/v1/subscriptions", {}).get("response", [])
             subs.append(data)
-            self.responses['api/v1/subscriptions'] = {
+            self.responses["api/v1/subscriptions"] = {
                 "response": subs,
-                "status_code": 200
+                "status_code": 200,
             }
             return data
 
         @self.app.delete("/api/v1/subscriptions/{subscription_id}")
         async def delete_subscription(subscription_id: str):
             """Delete a subscription"""
-            subs = self.responses.get('api/v1/subscriptions',
-                                      {}).get('response', [])
+            subs = self.responses.get("api/v1/subscriptions", {}).get("response", [])
             subs = [s for s in subs if s["id"] != subscription_id]
-            self.responses['api/v1/subscriptions'] = {
+            self.responses["api/v1/subscriptions"] = {
                 "response": subs,
-                "status_code": 200
+                "status_code": 200,
             }
             return {"status": "deleted"}
 
@@ -178,17 +176,14 @@ class UUDEXMockServer:
             """Publish a message"""
             data = await request.json()
             message = {
-                "message_id":
-                f"msg_{len(self.messages)}",
-                "subject_id":
-                subject_id,
-                "content": ({
-                    "message": data["message"]
-                } if "message" in data  # Integration test format
-                            else data["content"]  # Mock server test format
-                            ),
-                "timestamp":
-                datetime.now(timezone.utc).isoformat()
+                "message_id": f"msg_{len(self.messages)}",
+                "subject_id": subject_id,
+                "content": (
+                    {"message": data["message"]}
+                    if "message" in data  # Integration test format
+                    else data["content"]  # Mock server test format
+                ),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             if "metadata" in data:
                 message["metadata"] = data["metadata"]
@@ -199,38 +194,34 @@ class UUDEXMockServer:
         async def get_messages(subject_id: str):
             """Get messages for a subject"""
             # Ensure path matches with or without api/v1 prefix
-            parts = subject_id.split('/')
+            parts = subject_id.split("/")
             clean_subject = parts[-1] if len(parts) > 1 else subject_id
-            return [
-                msg for msg in self.messages
-                if msg["subject_id"] == clean_subject
-            ]
+            return [msg for msg in self.messages if msg["subject_id"] == clean_subject]
 
-        @self.app.api_route("/{path:path}",
-                            methods=["GET", "POST", "PUT", "DELETE"])
+        @self.app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
         async def handle_request(path: str, request: Request):
             """Handle all API requests"""
-            path = path.lstrip('/')
+            path = path.lstrip("/")
             # Try both with and without api/v1 prefix
             paths_to_try = [path]
-            if path.startswith('api/v1/'):
+            if path.startswith("api/v1/"):
                 paths_to_try.append(path[7:])  # Remove api/v1/
             else:
                 paths_to_try.append(f"api/v1/{path}")
 
             # Special handling for subscriptions and messages
             if request.method == "POST":
-                if path.endswith('subscriptions'):
+                if path.endswith("subscriptions"):
                     return await create_subscription(request)
-                elif 'messages' in path:
-                    parts = path.split('/')
-                    if len(parts) >= 4 and parts[-1] == 'messages':
+                elif "messages" in path:
+                    parts = path.split("/")
+                    if len(parts) >= 4 and parts[-1] == "messages":
                         return await publish_message(parts[-2], request)
 
             # Handle GET messages
-            if request.method == "GET" and 'messages' in path:
-                parts = path.split('/')
-                if len(parts) >= 4 and parts[-1] == 'messages':
+            if request.method == "GET" and "messages" in path:
+                parts = path.split("/")
+                if len(parts) >= 4 and parts[-1] == "messages":
                     return await get_messages(parts[-2])
 
             for try_path in paths_to_try:
@@ -238,11 +229,11 @@ class UUDEXMockServer:
                 if mock_response:
                     return JSONResponse(
                         content=mock_response["response"],
-                        status_code=mock_response["status_code"])
+                        status_code=mock_response["status_code"],
+                    )
 
             # Try OpenAPI spec next
-            spec_response = await self._generate_response_from_spec(
-                path, request)
+            spec_response = await self._generate_response_from_spec(path, request)
             if spec_response:
                 return spec_response
 
@@ -260,8 +251,7 @@ class UUDEXMockServer:
                 if method in path_item:
                     operation = path_item[method]
                     if "responses" in operation:
-                        success_response = operation["responses"].get(
-                            "200", {})
+                        success_response = operation["responses"].get("200", {})
                         if "content" in success_response:
                             content = success_response["content"]
                             if "application/json" in content:
@@ -272,14 +262,14 @@ class UUDEXMockServer:
 
     def _paths_match(self, request_path: str, spec_path: str):
         """Check if request path matches OpenAPI spec path pattern"""
-        request_parts = request_path.strip('/').split('/')
-        spec_parts = spec_path.strip('/').split('/')
+        request_parts = request_path.strip("/").split("/")
+        spec_parts = spec_path.strip("/").split("/")
 
         if len(request_parts) != len(spec_parts):
             return False
 
         for req_part, spec_part in zip(request_parts, spec_parts):
-            if spec_part.startswith('{') and spec_part.endswith('}'):
+            if spec_part.startswith("{") and spec_part.endswith("}"):
                 continue
             if req_part != spec_part:
                 return False
