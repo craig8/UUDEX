@@ -1,53 +1,48 @@
 from typing import Annotated
 
+from fastapi import Depends, FastAPI
+from fastapi.routing import APIRoute
 from sqlmodel import Session
 
-from uudex_server.services.database_service import get_db_session
-from uudex_server.services.authentication_service import get_request_user
 from uudex_server.models.authenticated_user import AuthenticatedUser
-
-from fastapi import FastAPI, Depends
-from fastapi.routing import APIRoute
+from uudex_server.services.authentication_service import get_request_user
+from uudex_server.services.database_service import get_db_session
 
 from ..core import get_settings
 from ..services.message_services import UUDEXBrokerService, create_broker_service
 
 
 class SessionAndUser:
-
-    def __init__(self, session: Annotated[Session, Depends(get_db_session)],
-                 user: Annotated[AuthenticatedUser, Depends(get_request_user)]):
-
+    def __init__(
+        self,
+        session: Annotated[Session, Depends(get_db_session)],
+        user: Annotated[AuthenticatedUser, Depends(get_request_user)],
+    ):
         self.session = session
         self.user = user
 
 
-from .participant_endpoints import participant_router, participants_router, v1_router as participant_v1_router
-from .subject_endpoints import subject_router, subjects_router, v1_router as subject_v1_router
-from .dataset_endpoints import dataset_router, datasets_router, v1_router as dataset_v1_router
-from .uudex_endpoints import endpoint_router, v1_router as endpoint_v1_router
-from .subscription_endpoints import subscription_router, subscriptions_router, v1_router as subscription_v1_router
 import uudex_server.repos as r
 
-tags_metadata = [{
-    "name": "v1",
-    "description": "API Version 1"
-}, {
-    "name": "participants",
-    "description": "Participants API"
-}, {
-    "name": "endpoints",
-    "description": "Endpoints API"
-}, {
-    "name": "subjects",
-    "description": "Subjects API"
-}, {
-    "name": "datasets",
-    "description": "Datasets API"
-}, {
-    "name": "subscriptions",
-    "description": "Subscriptions API"
-}]
+from .dataset_endpoints import dataset_router, datasets_router
+from .dataset_endpoints import v1_router as dataset_v1_router
+from .participant_endpoints import participant_router, participants_router
+from .participant_endpoints import v1_router as participant_v1_router
+from .subject_endpoints import subject_router, subjects_router
+from .subject_endpoints import v1_router as subject_v1_router
+from .subscription_endpoints import subscription_router, subscriptions_router
+from .subscription_endpoints import v1_router as subscription_v1_router
+from .uudex_endpoints import endpoint_router
+from .uudex_endpoints import v1_router as endpoint_v1_router
+
+tags_metadata = [
+    {"name": "v1", "description": "API Version 1"},
+    {"name": "participants", "description": "Participants API"},
+    {"name": "endpoints", "description": "Endpoints API"},
+    {"name": "subjects", "description": "Subjects API"},
+    {"name": "datasets", "description": "Datasets API"},
+    {"name": "subscriptions", "description": "Subscriptions API"},
+]
 
 
 def use_route_names_as_operation_ids(app: FastAPI) -> None:
@@ -63,7 +58,6 @@ def use_route_names_as_operation_ids(app: FastAPI) -> None:
 
 
 class BaseAPI:
-
     def __init__(self, session: Session = Depends(get_db_session), user=Depends(get_request_user)):
         self.session = session
         self.user = user

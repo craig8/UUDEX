@@ -1,8 +1,9 @@
-from typing import AsyncGenerator, AsyncContextManager
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
-from contextlib import asynccontextmanager
 
 from uudex_server.core.settings import get_settings
 
@@ -60,10 +61,11 @@ async def shutdown_db():
         _engine = None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from sqlmodel import select
+
     from uudex_server.models import Participant
-    #from uudex_server.app.model import Participant
+    # from uudex_server.app.model import Participant
 
     settings = get_settings(".env-develop")
     session = get_db_session()

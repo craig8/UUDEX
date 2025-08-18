@@ -6,5 +6,3 @@ Example:
 """
 
 # For backward compatibility, re-export the aliases
-from uudex_server.core.dependencies import (SessionDep, UserDep, CurrentUserDep, AdminUserDep,
-                                            ParticipantAdminUserDep)

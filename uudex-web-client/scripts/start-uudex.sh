@@ -42,5 +42,6 @@ echo "=== Mock server is running ==="
 
 echo "=== Starting Reflex app ==="
 
-# Start the reflex app in the foreground
-poetry run reflex run
+# Activate virtual environment and start the reflex app in the foreground
+source "$PROJECT_DIR/.venv/bin/activate"
+reflex run

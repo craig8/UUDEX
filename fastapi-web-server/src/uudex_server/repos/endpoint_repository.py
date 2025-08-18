@@ -1,11 +1,11 @@
-from sqlmodel import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+
 from uudex_server.models import EndPoint
 from uudex_server.repos import Repository
 
 
 class EndpointRepository(Repository[EndPoint]):
-
     def __init__(self, session: AsyncSession):
         super().__init__(EndPoint, session=session, id_field="endpoint_id")
 

@@ -22,4 +22,5 @@ sleep 1
 
 # Start the mock server
 echo "=== Starting mock server on port 8004 ==="
-poetry run python -m uvicorn uudex_api_mock_server.server:app --host 0.0.0.0 --port 8004
+source "$PROJECT_DIR/.venv/bin/activate"
+python -m uvicorn uudex_api_mock_server.server:app --host 0.0.0.0 --port 8004

@@ -19,25 +19,29 @@ class ReceiverState(rx.State):
     status_is_error: bool = False
     download_dir: str = "downloads"
 
+    # Certificate selection specific to receiver
+    selected_receiver_cert: str = ""
+
     # File list - specify the type with .to()
     received_files: List[Dict[str, str]] = [
         {
             "filename": "sample.pdf",
             "sender": "Entity A",
             "received": "2023-09-15 10:30",
-            "size": "2.4 MB"
+            "size": "2.4 MB",
         },
         {
             "filename": "test.csv",
             "sender": "Entity B",
             "received": "2023-09-15 09:45",
-            "size": "1.1 MB"
+            "size": "1.1 MB",
         },
     ]
 
     def set_entity(self, entity: str):
         """Set the entity to use for receiving files."""
         self.entity_name = entity
+        self.selected_receiver_cert = entity  # Track the selected certificate
         self.status_message = f"Selected {entity} as the receiving entity"
         self.show_status = True
         self.status_is_error = False
@@ -73,8 +77,7 @@ class ReceiverState(rx.State):
         """Poll for new files once."""
         try:
             # Get certificate path for this entity
-            cert_path = CertificateState.entity_cert_mapping.get(
-                self.entity_name)
+            cert_path = CertificateState.entity_cert_mapping.get(self.entity_name)
 
             # In a real implementation, we'd create an authenticated client and call the API
             # client = AuthenticatedClient(
@@ -102,7 +105,7 @@ class ReceiverState(rx.State):
                     "filename": f"data_{int(time.time())}.xlsx",
                     "sender": "Entity C",
                     "received": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                    "size": "3.2 MB"
+                    "size": "3.2 MB",
                 }
                 self.received_files = [new_file] + self.received_files
 
@@ -152,34 +155,42 @@ def receiver():
                             color="white",
                         ),
                         rx.vstack(
-                            rx.heading("UUDEX File Transfer",
-                                       size="8",
-                                       color="white",
-                                       font_weight="bold"),
-                            rx.text("Secure File Receiver",
-                                    color="rgba(255,255,255,0.9)",
-                                    font_size="lg"),
+                            rx.heading(
+                                "UUDEX File Transfer",
+                                size="8",
+                                color="white",
+                                font_weight="bold",
+                            ),
+                            rx.text(
+                                "Secure File Receiver",
+                                color="rgba(255,255,255,0.9)",
+                                font_size="lg",
+                            ),
                             align_items="start",
                             spacing="1",
                         ),
                         rx.spacer(),
                         rx.hstack(
-                            rx.link(rx.button(
-                                rx.icon("home", size=18, margin_right="8px"),
-                                "Home",
-                                variant="outline",
-                                color_scheme="gray",
-                                size="2",
+                            rx.link(
+                                rx.button(
+                                    rx.icon("home", size=18, margin_right="8px"),
+                                    "Home",
+                                    variant="outline",
+                                    color_scheme="gray",
+                                    size="2",
+                                ),
+                                href="/",
                             ),
-                                    href="/"),
-                            rx.link(rx.button(
-                                rx.icon("send", size=18, margin_right="8px"),
-                                "Switch to Sender",
-                                variant="outline",
-                                color_scheme="gray",
-                                size="2",
+                            rx.link(
+                                rx.button(
+                                    rx.icon("send", size=18, margin_right="8px"),
+                                    "Switch to Sender",
+                                    variant="outline",
+                                    color_scheme="gray",
+                                    size="2",
+                                ),
+                                href="/sender",
                             ),
-                                    href="/sender"),
                             spacing="2",
                         ),
                         align_items="center",
@@ -194,7 +205,6 @@ def receiver():
             width="100%",
             box_shadow="0 4px 20px rgba(0,0,0,0.1)",
         ),
-
         # Main content
         rx.container(
             rx.vstack(
@@ -204,17 +214,26 @@ def receiver():
                     rx.box(
                         rx.hstack(
                             rx.icon(
-                                rx.cond(ReceiverState.status_is_error,
-                                        "alert_circle", "check_circle_2"),
+                                rx.cond(
+                                    ReceiverState.status_is_error,
+                                    "alert_circle",
+                                    "check_circle_2",
+                                ),
                                 size=20,
-                                color=rx.cond(ReceiverState.status_is_error,
-                                              "red.500", "green.500"),
+                                color=rx.cond(
+                                    ReceiverState.status_is_error,
+                                    "red.500",
+                                    "green.500",
+                                ),
                             ),
                             rx.text(
                                 ReceiverState.status_message,
                                 font_weight="medium",
-                                color=rx.cond(ReceiverState.status_is_error,
-                                              "red.700", "green.700"),
+                                color=rx.cond(
+                                    ReceiverState.status_is_error,
+                                    "red.700",
+                                    "green.700",
+                                ),
                             ),
                             rx.spacer(),
                             rx.icon(
@@ -229,33 +248,32 @@ def receiver():
                             width="100%",
                         ),
                         padding="4",
-                        bg=rx.cond(ReceiverState.status_is_error, "red.50",
-                                   "green.50"),
+                        bg=rx.cond(ReceiverState.status_is_error, "red.50", "green.50"),
                         border="1px solid",
-                        border_color=rx.cond(ReceiverState.status_is_error,
-                                             "red.200", "green.200"),
+                        border_color=rx.cond(
+                            ReceiverState.status_is_error, "red.200", "green.200"
+                        ),
                         border_radius="lg",
                         margin_bottom="6",
                         box_shadow="0 2px 8px rgba(0,0,0,0.05)",
                     ),
                 ),
-
                 # Entity selection card
                 rx.box(
                     rx.vstack(
                         rx.hstack(
                             rx.icon("user", size=20, color="blue.500"),
-                            rx.heading("Entity Selection",
-                                       size="6",
-                                       color="gray.700"),
+                            rx.heading("Entity Selection", size="6", color="gray.700"),
                             align_items="center",
                             spacing="2",
                         ),
                         rx.divider(color="gray.200"),
                         rx.vstack(
-                            rx.text("Select your entity to receive files:",
-                                    font_weight="medium",
-                                    color="gray.600"),
+                            rx.text(
+                                "Select your entity to receive files:",
+                                font_weight="medium",
+                                color="gray.600",
+                            ),
                             rx.select(
                                 CertificateState.available_entities,
                                 placeholder="Select receiving entity",
@@ -279,15 +297,12 @@ def receiver():
                     box_shadow="0 2px 8px rgba(0,0,0,0.05)",
                     margin_bottom="6",
                 ),
-
                 # Control panel card
                 rx.box(
                     rx.vstack(
                         rx.hstack(
                             rx.icon("radio", size=20, color="green.500"),
-                            rx.heading("Listening Control",
-                                       size="6",
-                                       color="gray.700"),
+                            rx.heading("Listening Control", size="6", color="gray.700"),
                             align_items="center",
                             spacing="2",
                         ),
@@ -301,8 +316,8 @@ def receiver():
                                     spacing="2",
                                 ),
                                 on_click=ReceiverState.start_polling,
-                                is_disabled=(ReceiverState.is_polling) |
-                                (ReceiverState.entity_name == ""),
+                                is_disabled=(ReceiverState.is_polling)
+                                | (ReceiverState.entity_name == ""),
                                 color_scheme="green",
                                 size="2",
                                 border_radius="lg",
@@ -361,47 +376,57 @@ def receiver():
                     rx.vstack(
                         rx.hstack(
                             rx.icon("inbox", size=20, color="purple.500"),
-                            rx.heading("Received Files",
-                                       size="6",
-                                       color="gray.700"),
+                            rx.heading("Received Files", size="6", color="gray.700"),
                             align_items="center",
                             spacing="2",
                         ),
                         rx.divider(color="gray.200"),
                         rx.cond(
                             ReceiverState.received_files.to(
-                                List[Dict[str, str]]).length() > 0,
+                                List[Dict[str, str]]
+                            ).length()
+                            > 0,
                             rx.vstack(
                                 rx.foreach(
                                     ReceiverState.received_files.to(
-                                        List[Dict[str, str]]),
+                                        List[Dict[str, str]]
+                                    ),
                                     lambda file, idx: rx.box(
                                         rx.hstack(
-                                            rx.icon("file",
-                                                    size=24,
-                                                    color="blue.500"),
+                                            rx.icon("file", size=24, color="blue.500"),
                                             rx.vstack(
-                                                rx.text(file["filename"],
-                                                        font_weight="bold",
-                                                        font_size="lg",
-                                                        color="gray.800"),
+                                                rx.text(
+                                                    file["filename"],
+                                                    font_weight="bold",
+                                                    font_size="lg",
+                                                    color="gray.800",
+                                                ),
                                                 rx.hstack(
                                                     rx.text(
                                                         f"From: {file['sender']}",
                                                         color="gray.600",
-                                                        font_size="sm"),
-                                                    rx.text("•",
-                                                            color="gray.400",
-                                                            font_size="sm"),
-                                                    rx.text(file["received"],
-                                                            color="gray.600",
-                                                            font_size="sm"),
-                                                    rx.text("•",
-                                                            color="gray.400",
-                                                            font_size="sm"),
-                                                    rx.text(file["size"],
-                                                            color="gray.600",
-                                                            font_size="sm"),
+                                                        font_size="sm",
+                                                    ),
+                                                    rx.text(
+                                                        "•",
+                                                        color="gray.400",
+                                                        font_size="sm",
+                                                    ),
+                                                    rx.text(
+                                                        file["received"],
+                                                        color="gray.600",
+                                                        font_size="sm",
+                                                    ),
+                                                    rx.text(
+                                                        "•",
+                                                        color="gray.400",
+                                                        font_size="sm",
+                                                    ),
+                                                    rx.text(
+                                                        file["size"],
+                                                        color="gray.600",
+                                                        font_size="sm",
+                                                    ),
                                                     spacing="2",
                                                 ),
                                                 align_items="start",
@@ -410,25 +435,21 @@ def receiver():
                                             rx.spacer(),
                                             rx.button(
                                                 rx.hstack(
-                                                    rx.icon("download",
-                                                            size=16),
+                                                    rx.icon("download", size=16),
                                                     rx.text("Download"),
                                                     align_items="center",
                                                     spacing="2",
                                                 ),
-                                                on_click=ReceiverState.
-                                                download_file(file["filename"]
-                                                              ),
+                                                on_click=ReceiverState.download_file(
+                                                    file["filename"]
+                                                ),
                                                 color_scheme="blue",
                                                 size="2",
                                                 border_radius="lg",
-                                                box_shadow=
-                                                "0 2px 8px rgba(59, 130, 246, 0.2)",
+                                                box_shadow="0 2px 8px rgba(59, 130, 246, 0.2)",
                                                 _hover={
-                                                    "transform":
-                                                    "translateY(-1px)",
-                                                    "box_shadow":
-                                                    "0 4px 12px rgba(59, 130, 246, 0.3)"
+                                                    "transform": "translateY(-1px)",
+                                                    "box_shadow": "0 4px 12px rgba(59, 130, 246, 0.3)",
                                                 },
                                                 transition="all 0.2s",
                                             ),
@@ -441,13 +462,10 @@ def receiver():
                                         border_color="gray.200",
                                         border_radius="lg",
                                         background="white",
-                                        box_shadow=
-                                        "0 1px 3px rgba(0,0,0,0.05)",
+                                        box_shadow="0 1px 3px rgba(0,0,0,0.05)",
                                         _hover={
-                                            "border_color":
-                                            "blue.300",
-                                            "box_shadow":
-                                            "0 2px 8px rgba(0,0,0,0.1)"
+                                            "border_color": "blue.300",
+                                            "box_shadow": "0 2px 8px rgba(0,0,0,0.1)",
                                         },
                                         transition="all 0.2s",
                                         margin_bottom="3",
@@ -458,8 +476,7 @@ def receiver():
                             ),
                             rx.box(
                                 rx.vstack(
-                                    rx.icon("inbox", size=48,
-                                            color="gray.300"),
+                                    rx.icon("inbox", size=48, color="gray.300"),
                                     rx.text(
                                         "No files received yet",
                                         font_size="xl",
@@ -502,7 +519,8 @@ def receiver():
                         rx.text(
                             f"Download directory: {ReceiverState.download_dir}",
                             color="gray.500",
-                            font_size="sm"),
+                            font_size="sm",
+                        ),
                         align_items="center",
                         spacing="2",
                     ),
@@ -520,7 +538,6 @@ def receiver():
             padding="8",
             margin_top="8",
         ),
-
         # Background
         background="linear-gradient(to bottom, #f8fafc, #e2e8f0)",
         min_height="100vh",

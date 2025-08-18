@@ -1,10 +1,10 @@
 from datetime import datetime
-from typing import Optional
 
 from sqlmodel import Field, Relationship
 
-from .base import BaseModel, TimeStampMixin
 from uudex_server.models.attached_data_type_models import AttachedDataType
+
+from .base import BaseModel, TimeStampMixin
 
 
 class DataTypeBase(BaseModel):
@@ -16,11 +16,12 @@ class DataTypeBase(BaseModel):
 
 
 class DataType(DataTypeBase, TimeStampMixin, table=True):
-    __tablename__ = 'data_type'
+    __tablename__ = "data_type"
 
-    data_type_id: Optional[int] = Field(default=None, primary_key=True)
-    dataset_definitions: list["DatasetDefinition"] = Relationship(    # type: ignore
-        back_populates="data_types", link_model=AttachedDataType)
+    data_type_id: int | None = Field(default=None, primary_key=True)
+    dataset_definitions: list["DatasetDefinition"] = Relationship(  # type: ignore
+        back_populates="data_types", link_model=AttachedDataType
+    )
     # subject_uuid: str = Field(unique=True)
     # subject_short_name: str
     # subject_long_name: str

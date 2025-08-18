@@ -1,11 +1,8 @@
-from datetime import datetime
-from typing import Optional
-
 from sqlmodel import Field, Relationship
 
-from .base import BaseModel, TimeStampMixin
-
 from uudex_server.models.subscription_subject_models import SubscriptionSubject
+
+from .base import BaseModel, TimeStampMixin
 
 
 class SubjectBase(BaseModel):
@@ -26,14 +23,14 @@ class SubjectBase(BaseModel):
 class Subject(SubjectBase, TimeStampMixin, table=True):
     subject_id: int | None = Field(default=None, primary_key=True)
     owner_participant_id: int = Field(foreign_key="participant.participant_id", index=True)
-    dataset_definition_id: int = Field(foreign_key="dataset_definition.dataset_definition_id",
-                                       index=True)
+    dataset_definition_id: int = Field(
+        foreign_key="dataset_definition.dataset_definition_id", index=True
+    )
 
-    subscription_links: list[SubscriptionSubject] = Relationship(
-        back_populates="subject")    # type: ignore
+    subscription_links: list[SubscriptionSubject] = Relationship(back_populates="subject")  # type: ignore
 
     # Relationship to datasets
-    datasets: list["Dataset"] = Relationship(back_populates="subject")    # type: ignore
+    datasets: list["Dataset"] = Relationship(back_populates="subject")  # type: ignore
 
 
 class SubjectCreate(SubjectBase):

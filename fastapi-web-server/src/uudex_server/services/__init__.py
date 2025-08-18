@@ -1,14 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Dict, List
-
 from uudex_server.core.settings import Settings
-from uudex_server.services.authentication_service import AuthenticationService
-from uudex_server.services.authorization_service import AuthorizationService
-#from uudex_server.services.database_service import DatabaseService
-from uudex_server.services.database_service import get_db_session
+
+# from uudex_server.services.database_service import DatabaseService
 
 __services__: Services = None
 
@@ -28,8 +22,10 @@ class Services:
         :type config: Dict
         """
         ...
-        #self.db_service: DatabaseService = DatabaseService.create(settings)
-        #self.auth_service: AuthenticationService = AuthenticationService.create(settings)
+        # self.db_service: DatabaseService = DatabaseService.create(settings)
+        # self.auth_service: AuthenticationService = AuthenticationService.create(settings)
+
+
 #        self.authz_service: AuthorizationService = AuthorizationService.create(config, self.auth_service)
 
 
@@ -41,12 +37,11 @@ def get_services() -> Services:
     :rtype: Services
     """
     if not __services__:
-        raise RuntimeError(
-            f"Services have not be initialized call create_services first!")
+        raise RuntimeError("Services have not be initialized call create_services first!")
     return __services__
 
 
-def create_services(config: Dict) -> Services:
+def create_services(config: dict) -> Services:
     """Create a services object and returns it
 
     :param config: A configuration dictionary of key/value pairs.
@@ -60,4 +55,4 @@ def create_services(config: Dict) -> Services:
     return get_services()
 
 
-__all__: List[str] = ["get_services", "create_services"]
+__all__: list[str] = ["get_services", "create_services"]

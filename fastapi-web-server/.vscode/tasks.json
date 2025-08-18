@@ -1,0 +1,100 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ruff-check",
+            "type": "shell",
+            "command": "poetry",
+            "args": ["run", "ruff", "check", "src/", "tests/"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Run ruff linter"
+        },
+        {
+            "label": "ruff-fix",
+            "type": "shell",
+            "command": "poetry",
+            "args": ["run", "ruff", "check", "src/", "tests/", "--fix"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Run ruff linter with auto-fix"
+        },
+        {
+            "label": "ruff-format",
+            "type": "shell",
+            "command": "poetry",
+            "args": ["run", "ruff", "format", "src/", "tests/"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Run ruff formatter"
+        },
+        {
+            "label": "mypy-check",
+            "type": "shell", 
+            "command": "poetry",
+            "args": ["run", "mypy", "src/"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Run mypy type checking"
+        },
+        {
+            "label": "lint-all",
+            "dependsOrder": "sequence",
+            "dependsOn": ["ruff-fix", "ruff-format", "mypy-check"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Run all linting tools"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "poetry",
+            "args": ["run", "pytest", "tests/", "-v"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "detail": "Run tests with pytest"
+        }
+    ]
+}

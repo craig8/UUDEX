@@ -1,0 +1,82 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debugpy: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "producer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "rb_producer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "consumer",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "rb_consumer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "server main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/uudex_server/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Configure",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/uudex_server/core/settings.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "uvicorn",
+            "type": "debugpy",
+            "request": "launch",
+            "program": ".venv/bin/uvicorn",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "uudex_server.main:app",
+                "--reload",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8004"
+            ],
+            "env":{"UUDEX_SETTINGS":".env-develop"},
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "${file}",
+                "-s"
+            ],
+        }
+    ]
+}

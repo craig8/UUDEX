@@ -38,6 +38,7 @@ from urllib import parse
 
 from kafka import KafkaConsumer, KafkaProducer
 from kafka.admin import KafkaAdminClient, NewTopic
+
 #
 from services.message_services.base import MessageBrokerServiceBase
 
@@ -48,20 +49,19 @@ from services.message_services.base import MessageBrokerServiceBase
 
 
 class KafkaService(MessageBrokerServiceBase):
-
     def __init__(self, url, **kwargs):
-
         hostname, username, password = self._parse_url(url)
-        self._producer = KafkaProducer(bootstrap_servers=hostname) # Sends Kafka messages
-        self._consumer = KafkaConsumer(bootstrap_servers=hostname) #  Receives Kafka messages
-        self._admin = KafkaAdminClient(bootstrap_servers=hostname, client_id='uudex') # Used to create and delete kafka topics 
+        self._producer = KafkaProducer(bootstrap_servers=hostname)  # Sends Kafka messages
+        self._consumer = KafkaConsumer(bootstrap_servers=hostname)  #  Receives Kafka messages
+        self._admin = KafkaAdminClient(
+            bootstrap_servers=hostname, client_id="uudex"
+        )  # Used to create and delete kafka topics
         super().__init__(**kwargs)
 
     @staticmethod
     def _parse_url(url):
-
         res = parse.urlparse(url, allow_fragments=False)
-        hostname = res.hostname + ':' + str(res.port)
+        hostname = res.hostname + ":" + str(res.port)
         parms = parse.parse_qs(res.query)
 
         if "username" not in parms or "password" not in parms:
@@ -69,7 +69,9 @@ class KafkaService(MessageBrokerServiceBase):
 
         return hostname, parms.get("username")[0], parms.get("password")[0]
 
-    def create_subscription_subject(self, subscription_uuid, subject_uuid, subject_name, tag): # Add a topic to the subscription list
+    def create_subscription_subject(
+        self, subscription_uuid, subject_uuid, subject_name, tag
+    ):  # Add a topic to the subscription list
         try:
             subscriptions = self._consumer.subscription()
             subscriptions.add(subject_name)
@@ -78,7 +80,9 @@ class KafkaService(MessageBrokerServiceBase):
             return None
         return tag + subject_name + subject_uuid
 
-    def delete_subscription_subject(self, subscription_uuid, subject_name, tag): # Remove a topic from the subscription list
+    def delete_subscription_subject(
+        self, subscription_uuid, subject_name, tag
+    ):  # Remove a topic from the subscription list
         try:
             subscriptions = self._consumer.subscription()
             subscriptions.remove(subject_name)
@@ -87,7 +91,7 @@ class KafkaService(MessageBrokerServiceBase):
             return 0
         return 1
 
-    def create_subject(self, subject_name, subject_uuid): # Create a Kafka topic
+    def create_subject(self, subject_name, subject_uuid):  # Create a Kafka topic
         try:
             topic_list = [NewTopic(name=str(subject_name), num_partitions=1, replication_factor=1)]
             self._admin.create_topics(new_topics=topic_list, validate_only=False)
@@ -96,7 +100,7 @@ class KafkaService(MessageBrokerServiceBase):
         return 1
 
     def delete_queue(self, queue_name):
-        return 1 # not implemented for Kafka
+        return 1  # not implemented for Kafka
 
     def publish_message(self, subject_exchange, routing_key, payload, payload_enc="string"):
         try:

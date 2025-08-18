@@ -1,6 +1,7 @@
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from httpx import AsyncClient
-from unittest.mock import patch, AsyncMock
 
 
 @pytest.mark.asyncio
@@ -26,17 +27,18 @@ async def test_discover_subjects_with_mock_auth(client: AsyncClient):
     headers = {
         "X-Client-Cert-Subject": "CN=testuser,O=Test Org,C=US",
         "X-Client-Cert-Issuer": "CN=Test CA",
-        "X-Client-Cert-Serial": "12345"
+        "X-Client-Cert-Serial": "12345",
     }
 
     # Mock the authentication service and repositories
-    with patch('uudex_server.services.authentication_service.get_request_user') as mock_auth:
-        with patch('uudex_server.repos.subscription_and_subject_repositories.SubjectRepository'
-                   ) as mock_repo:
+    with patch("uudex_server.services.authentication_service.get_request_user") as mock_auth:
+        with patch(
+            "uudex_server.repos.subscription_and_subject_repositories.SubjectRepository"
+        ) as mock_repo:
             # Setup mock user (non-admin)
             mock_endpoint = AsyncMock()
             mock_endpoint.participant_id = 1
-            mock_endpoint.uudex_administrator_sw = 'N'
+            mock_endpoint.uudex_administrator_sw = "N"
 
             mock_user = AsyncMock()
             mock_user.endpoint = mock_endpoint
@@ -49,7 +51,7 @@ async def test_discover_subjects_with_mock_auth(client: AsyncClient):
 
             # Mock select_all_subjects function
             with patch(
-                    'uudex_server.repos.subscription_and_subject_repositories.select_all_subjects'
+                "uudex_server.repos.subscription_and_subject_repositories.select_all_subjects"
             ) as mock_select:
                 mock_select.return_value = []
 
@@ -66,17 +68,18 @@ async def test_discover_subjects_admin_with_mock_auth(client: AsyncClient):
     headers = {
         "X-Client-Cert-Subject": "CN=adminuser,O=Test Org,C=US",
         "X-Client-Cert-Issuer": "CN=Test CA",
-        "X-Client-Cert-Serial": "12345"
+        "X-Client-Cert-Serial": "12345",
     }
 
     # Mock the authentication service and repositories for admin user
-    with patch('uudex_server.services.authentication_service.get_request_user') as mock_auth:
-        with patch('uudex_server.repos.subscription_and_subject_repositories.SubjectRepository'
-                   ) as mock_repo:
+    with patch("uudex_server.services.authentication_service.get_request_user") as mock_auth:
+        with patch(
+            "uudex_server.repos.subscription_and_subject_repositories.SubjectRepository"
+        ) as mock_repo:
             # Setup mock admin user
             mock_endpoint = AsyncMock()
             mock_endpoint.participant_id = 1
-            mock_endpoint.uudex_administrator_sw = 'Y'
+            mock_endpoint.uudex_administrator_sw = "Y"
 
             mock_user = AsyncMock()
             mock_user.endpoint = mock_endpoint
@@ -98,9 +101,9 @@ async def test_discover_subjects_admin_with_mock_auth(client: AsyncClient):
 async def test_discover_subjects_invalid_cert(client: AsyncClient):
     """Test discover subjects endpoint with invalid certificate"""
     headers = {
-        "X-Client-Cert-Subject": "",    # Empty subject
+        "X-Client-Cert-Subject": "",  # Empty subject
         "X-Client-Cert-Issuer": "CN=Test CA",
-        "X-Client-Cert-Serial": "12345"
+        "X-Client-Cert-Serial": "12345",
     }
 
     response = await client.get("/subjects/discover", headers=headers)
@@ -112,9 +115,9 @@ async def test_discover_subjects_invalid_cert(client: AsyncClient):
 async def test_discover_subjects_missing_cn(client: AsyncClient):
     """Test discover subjects endpoint with certificate missing CN"""
     headers = {
-        "X-Client-Cert-Subject": "O=Test Org,C=US",    # No CN field
+        "X-Client-Cert-Subject": "O=Test Org,C=US",  # No CN field
         "X-Client-Cert-Issuer": "CN=Test CA",
-        "X-Client-Cert-Serial": "12345"
+        "X-Client-Cert-Serial": "12345",
     }
 
     response = await client.get("/subjects/discover", headers=headers)

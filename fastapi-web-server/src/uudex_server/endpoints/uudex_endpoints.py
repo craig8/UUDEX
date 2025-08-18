@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, Request
-from uudex_server.services.database_service import get_db_session
-from uudex_server.models import EndPoint
+from fastapi import APIRouter
+
 from uudex_server.core.dependencies import CurrentUserDep
-import uudex_server.repos.endpoint_repository as ep
+from uudex_server.models import EndPoint
 
 endpoint_router = APIRouter(prefix="/endpoint")
 

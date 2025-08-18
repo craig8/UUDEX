@@ -1,7 +1,5 @@
-from typing import Optional
-
-from sqlalchemy import Column as sacolumn, ForeignKey, Integer, Column
-from sqlmodel import Field, Relationship
+from sqlalchemy import Column, ForeignKey
+from sqlmodel import Field
 
 from .base import BaseModel
 
@@ -14,9 +12,11 @@ class ParticipantVisibility(ParticipantVisibilityBase, table=True):
     __tablename__ = "participant_visibility"
 
     exposed_by_participant_id: int = Field(
-        sa_column=Column(ForeignKey("participant.participant_id"), primary_key=True))
+        sa_column=Column(ForeignKey("participant.participant_id"), primary_key=True)
+    )
     exposed_to_participant_id: int = Field(
-        sa_column=Column(ForeignKey("participant.participant_id"), primary_key=True))
+        sa_column=Column(ForeignKey("participant.participant_id"), primary_key=True)
+    )
 
     # exposed_by_participant: Optional[Participant] = Relationship(
     #     back_populates="participant_visibility_exposed_by",

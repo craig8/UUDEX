@@ -34,14 +34,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
-from services.message_services.rabbit_mq import RabbitMqService
 from services.message_services.kafka_mq import KafkaService
+from services.message_services.rabbit_mq import RabbitMqService
 
 
 # TODO: make this a shared resource pool, where the objects persist their connections and states
 def message_broker_factory(url: str, **kwargs):
-
-    provider = url.partition(':')[0]
+    provider = url.partition(":")[0]
 
     if provider in ("rabbitmq", "amqp"):
         url = url.replace("rabbitmq://", "amqp://")

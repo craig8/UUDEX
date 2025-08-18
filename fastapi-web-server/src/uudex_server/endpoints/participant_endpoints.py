@@ -1,11 +1,8 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from uudex_server.models.participant_models import Participant, ParticipantCreate
-from uudex_server.services.database_service import get_db
-from uudex_server.repos import participant_repositories as pr
-from uudex_server.models.common_types import YNSwitch
+from fastapi import APIRouter
+
 from uudex_server.core.dependencies import SessionDep
+from uudex_server.models.participant_models import Participant, ParticipantCreate
+from uudex_server.repos import participant_repositories as pr
 
 participants_router = APIRouter(prefix="/participants")
 participant_router = APIRouter(prefix="/participant")
@@ -24,9 +21,11 @@ async def get_all_participants(session: SessionDep) -> list[Participant]:
 
 
 @participants_router.post("/", operation_id="create_participant")
-async def create_participant(participant_create: ParticipantCreate,
-                             session: SessionDep) -> Participant:
+async def create_participant(
+    participant_create: ParticipantCreate, session: SessionDep
+) -> Participant:
     # Use the standalone function for async operations
-    created_participant = await pr.create_participant(session=session,
-                                                      participant=participant_create)
+    created_participant = await pr.create_participant(
+        session=session, participant=participant_create
+    )
     return created_participant

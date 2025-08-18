@@ -1,17 +1,11 @@
-from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from uudex_server.models.subject_models import Subject, SubjectCreate
-from uudex_server.services.database_service import get_db
-from uudex_server.services.authentication_service import get_request_user
-from uudex_server.models.authenticated_user import AuthenticatedUser
-from uudex_server.repos import subscription_and_subject_repositories as pr
-from uudex_server.core import Settings, get_settings
-from uudex_server.services.message_services.base import UUDEXBrokerService
-from uudex_server.services.message_services import create_broker_service
-from uudex_server.models.core_datatypes import Message
+from uudex_server.core import get_settings
 from uudex_server.core.dependencies import SessionDep, UserDep
+from uudex_server.models.subject_models import Subject, SubjectCreate
+from uudex_server.repos import subscription_and_subject_repositories as pr
+from uudex_server.services.message_services import create_broker_service
+from uudex_server.services.message_services.base import UUDEXBrokerService
 
 subjects_router = APIRouter(prefix="/subjects")
 subject_router = APIRouter(prefix="/subject")
@@ -40,7 +34,8 @@ async def create_subject(
     session: SessionDep,
     user: UserDep,
     broker: UUDEXBrokerService = Depends(
-        lambda: create_broker_service(get_settings().messagebus_connection))
+        lambda: create_broker_service(get_settings().messagebus_connection)
+    ),
 ) -> Subject:
     subject.owner_participant_id = user.endpoint.participant_id
     subject.dataset_definition_id = 1
@@ -89,8 +84,9 @@ async def discover_subjects(session: SessionDep, user: UserDep) -> list[Subject]
 
 
 @subjects_router.post("/{subject_uuid}/publish", operation_id="publish_messages_to_subject")
-async def publish_messages_to_subject(subject_uuid: str, messages: list[str], session: SessionDep,
-                                      user: UserDep) -> None:
+async def publish_messages_to_subject(
+    subject_uuid: str, messages: list[str], session: SessionDep, user: UserDep
+) -> None:
     # TODO: Implement message publishing logic
     pass
 

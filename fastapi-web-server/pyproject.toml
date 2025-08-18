@@ -35,6 +35,8 @@ pytest = "^8.3.3"
 openapi-python-client = "^0.17.2"
 pytest-asyncio = "^0.24.0"
 aiosqlite = "^0.21.0"
+mypy = "^1.8.0"
+types-pytz = "^2024.1.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -51,10 +53,72 @@ ignore_patterns = [
 [tool.yapf]
 based_on_style = "pep8"
 spaces_before_comment = 4
-column_limit = 99
+column_limit = 100
 split_before_logical_operator = true
 
+# Ruff configuration
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "ARG",  # flake8-unused-arguments
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
+]
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Do not perform function calls in argument defaults
+    "B904",   # Within `except` clause, raise exceptions with `raise ... from err`
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "ARG",      # Unused function args -> fixtures nevertheless are functionally relevant
+    "S101",     # Use of assert detected
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
 [tool.mypy]
+python_version = "3.10"
 show_error_context = true
 pretty = true
 show_column_numbers = true
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+extra_checks = true
+
+[[tool.mypy.overrides]]
+module = [
+    "casbin.*",
+    "pyrabbit2.*",
+    "kafka.*",
+    "benedict.*",
+]
+ignore_missing_imports = true

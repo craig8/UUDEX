@@ -1,19 +1,17 @@
 from __future__ import annotations
 
+import logging
 import threading
 import time
-from typing import Callable, Optional
+from collections.abc import Callable
 from functools import wraps
-from fastapi import Request
-from fastapi import Depends
 from typing import Annotated
-import os
 
-from uudex_server.core.settings import get_settings, Settings
+from fastapi import Request
+
+from uudex_server.core.settings import Settings
 from uudex_server.models.authenticated_user import AuthenticatedUser
 from uudex_server.models.endpoint_models import EndPoint
-
-import logging
 
 _log = logging.getLogger(__name__)
 
@@ -43,7 +41,8 @@ class EndpointCache:
         """Remove expired entries"""
         current_time = time.time()
         expired_keys = [
-            key for key, timestamp in self.timestamps.items()
+            key
+            for key, timestamp in self.timestamps.items()
             if current_time - timestamp > self.ttl_seconds
         ]
         for key in expired_keys:
@@ -57,7 +56,7 @@ class EndpointCache:
             self._cache.pop(oldest_key, None)
             self.timestamps.pop(oldest_key, None)
 
-    def get(self, key: str) -> Optional[EndPoint]:
+    def get(self, key: str) -> EndPoint | None:
         with self._lock:
             if key in self._cache and not self._is_expired(key):
                 return self._cache[key]
@@ -88,7 +87,7 @@ async def get_request_user(request: Annotated[Request, Request]) -> Authenticate
     """
     Get authenticated user from request state, using the certificate CN stored by middleware.
     """
-    cert_cn = getattr(request.state, 'cert_cn', None)
+    cert_cn = getattr(request.state, "cert_cn", None)
 
     if not cert_cn:
         return None
@@ -99,7 +98,6 @@ async def get_request_user(request: Annotated[Request, Request]) -> Authenticate
 
 
 def authenticate(func: Callable) -> Callable:
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
@@ -108,13 +106,13 @@ def authenticate(func: Callable) -> Callable:
 
 
 class AuthenticationService:
-
     @staticmethod
     def create(settings: Settings) -> AuthenticationService:
         return AuthenticationService()
 
-    async def get_endpoint_by_certificate_dn(self, certificate_dn: str,
-                                             db_session) -> Optional[EndPoint]:
+    async def get_endpoint_by_certificate_dn(
+        self, certificate_dn: str, db_session
+    ) -> EndPoint | None:
         """
         Get endpoint by certificate DN, using cache first, then database lookup.
         """

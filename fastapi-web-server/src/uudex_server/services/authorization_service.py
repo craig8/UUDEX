@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Dict
 from enum import Enum
 
 
@@ -30,7 +29,7 @@ class AuthorizationService:
     pass
 
     @staticmethod
-    def create(config: Dict) -> AuthorizationService:
+    def create(config: dict) -> AuthorizationService:
         return AuthorizationService()
 
 

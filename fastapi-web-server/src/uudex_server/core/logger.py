@@ -1,6 +1,5 @@
 import logging
 import sys
-from logging.handlers import HTTPHandler
 
 logger = logging.getLogger()
 
@@ -8,9 +7,9 @@ formatter = logging.Formatter(fmt="(asctime)s %(levelno)s %(module)s(%(lineno)d)
 
 stream_handler = logging.StreamHandler(sys.stdout)
 # For http handler of logging
-#http_handler = HTTPHandler(host="localhost:9000", url="/log/uudex", method="POST")
-#http_handler.setFormatter(formatter)
-#logger.addHandler(http_handler)
+# http_handler = HTTPHandler(host="localhost:9000", url="/log/uudex", method="POST")
+# http_handler.setFormatter(formatter)
+# logger.addHandler(http_handler)
 
 logger.addHandler(stream_handler)
 logger.setLevel(logging.DEBUG)

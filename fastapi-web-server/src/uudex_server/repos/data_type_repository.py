@@ -1,13 +1,11 @@
-from typing import Awaitable
-from sqlmodel import Session, select as _select, delete as _delete
-from uudex_server.models import DataType, DataTypeCreate, DataTypeDelete
+from sqlmodel import Session
 
+from uudex_server.models import DataType
 from uudex_server.models.data_type_models import DataType
 from uudex_server.repos import Repository
 
 
 class DataTypeRepository(Repository[DataType]):
-
     def __init__(self, session: Session):
         super().__init__(DataType, session=session, id_field="data_type_id")
 
@@ -57,10 +55,9 @@ class DataTypeRepository(Repository[DataType]):
 #     session.exec(statement)
 #     session.commit()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     async def main():
-
         from uudex_server.core.settings import get_settings
         from uudex_server.services.database_service import get_db_session
 
@@ -78,8 +75,7 @@ if __name__ == '__main__':
         # print(item)
         # print("END SINGLE SELECT")
 
-        item = await select_by_data_type_id(session=session,
-                                            data_type_id=endpoints[0].data_type_id)
+        item = await select_by_data_type_id(session=session, data_type_id=endpoints[0].data_type_id)
 
         print("SINGLE SELECT")
         print(item)
@@ -92,4 +88,5 @@ if __name__ == '__main__':
         print("END SINGLE SELECT")
 
     import asyncio
+
     asyncio.run(main())

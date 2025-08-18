@@ -1,9 +1,11 @@
 from enum import Enum
+
 from sqlalchemy import Enum as SQLEnum
 
 
 class YNSwitch(str, Enum):
     """Enum for Y/N fields in database"""
+
     Y = "Y"
     N = "N"
 

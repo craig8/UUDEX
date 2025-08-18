@@ -1,18 +1,11 @@
-import logging
-import os
-from pathlib import Path
-import time
 import sys
+import time
 
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from uudex_server.core.settings import get_settings, Settings
 from uudex_server.core import get_logger
-from uudex_server.repos.participant_repositories import ParticipantRepository
-from uudex_server.services import get_services, create_services
-from uudex_server.services.database_service import get_db_session
+from uudex_server.core.settings import Settings, get_settings
 
 logger = get_logger("uudex_server.main")
 logger.debug("Starting UUDEX Server")
@@ -42,10 +35,12 @@ except Exception as e:
 from uudex_server.endpoints import add_routers
 
 # Create FastAPI app, don't define docs url here, we are going to use our own endpoint.
-app = FastAPI(title="UUDEX API",
-              version="1.0.0",
-              description="UUDEX Data Exchange API - Version 1",
-              docs_url=None)
+app = FastAPI(
+    title="UUDEX API",
+    version="1.0.0",
+    description="UUDEX Data Exchange API - Version 1",
+    docs_url=None,
+)
 
 # Adds the endpoint routers to the FastAPI apphe FastAPI app
 add_routers(app)
@@ -66,11 +61,11 @@ async def check_ssl_cert(request: Request, call_next):
     logger.debug("Checking SSL Cert")
 
     # Check for Caddy's client certificate headers
-    cert_subject = request.headers.get('X-Client-Cert-Subject')
-    cert_issuer = request.headers.get('X-Client-Cert-Issuer')
-    cert_serial = request.headers.get('X-Client-Cert-Serial')
+    cert_subject = request.headers.get("X-Client-Cert-Subject")
+    cert_issuer = request.headers.get("X-Client-Cert-Issuer")
+    cert_serial = request.headers.get("X-Client-Cert-Serial")
     # Check if this is a public endpoint
-    public_paths = ['/docs', '/openapi.json', '/health', '/status']
+    public_paths = ["/docs", "/openapi.json", "/health", "/status"]
     if any(request.url.path.startswith(path) for path in public_paths):
         logger.debug("Public endpoint accessed, skipping certificate check.")
         return await call_next(request)
@@ -83,9 +78,9 @@ async def check_ssl_cert(request: Request, call_next):
 
     # Extract CN from subject DN (format: CN=alice,O=Acme Corp,C=US)
     cn = None
-    for part in cert_subject.split(','):
-        if part.strip().startswith('CN='):
-            cn = part.strip()[3:]    # Remove 'CN=' prefix
+    for part in cert_subject.split(","):
+        if part.strip().startswith("CN="):
+            cn = part.strip()[3:]  # Remove 'CN=' prefix
             break
 
     if not cn:
@@ -137,6 +132,7 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     from fastapi.openapi.docs import get_swagger_ui_html
+
     return get_swagger_ui_html(openapi_url="/openapi.json", title="API Documentation")
 
 
@@ -149,14 +145,14 @@ async def openapi():
 async def root(request: Request):
     # Get certificate info from request state
     cert_info = {
-        "subject": getattr(request.state, 'cert_subject', 'Not available'),
-        "issuer": getattr(request.state, 'cert_issuer', 'Not available'),
-        "serial": getattr(request.state, 'cert_serial', 'Not available'),
-        "cn": getattr(request.state, 'cert_cn', 'Not available')
+        "subject": getattr(request.state, "cert_subject", "Not available"),
+        "issuer": getattr(request.state, "cert_issuer", "Not available"),
+        "serial": getattr(request.state, "cert_serial", "Not available"),
+        "cn": getattr(request.state, "cert_cn", "Not available"),
     }
 
     return {
         "message": "Hello World",
         "certificate_info": cert_info,
-        "headers": dict(request.headers)
+        "headers": dict(request.headers),
     }
