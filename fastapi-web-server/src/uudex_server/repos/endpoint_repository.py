@@ -30,6 +30,18 @@ class EndpointRepository(Repository[EndPoint]):
         result = await self.session.execute(statement)
         return result.scalars().all()
 
+    async def count_endpoints(self) -> int:
+        """Count total number of endpoints in the system"""
+        statement = select(EndPoint)
+        result = await self.session.execute(statement)
+        return len(result.scalars().all())
+
+    async def has_any_admin_endpoints(self) -> bool:
+        """Check if there are any admin endpoints in the system"""
+        statement = select(EndPoint).where(EndPoint.uudex_administrator_sw == "Y")
+        result = await self.session.execute(statement)
+        return result.scalar_one_or_none() is not None
+
     async def create_endpoint(self, endpoint: EndPoint) -> EndPoint:
         self.session.add(endpoint)
         await self.session.commit()

@@ -1,6 +1,6 @@
-import uuid
-import subprocess
 import os
+import subprocess
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -9,15 +9,14 @@ from fastapi.responses import FileResponse
 
 from uudex_server.core.dependencies import CurrentUserDep, SessionDep, UserDep
 from uudex_server.models import (
+    BulkCertificateOperation,
+    BulkCertificateResult,
+    CertificateCreateRequest,
+    CertificateFileInfo,
+    CertificateResponse,
     EndPoint,
     EndPointCreate,
     EndPointUpdate,
-    CertificateCreateRequest,
-    CertificateResponse,
-    BulkCertificateOperation,
-    BulkCertificateResult,
-    CertificateDownloadRequest,
-    CertificateFileInfo
 )
 from uudex_server.models.common_types import YNSwitch
 from uudex_server.repos.endpoint_repository import EndpointRepository
@@ -86,6 +85,66 @@ async def get_endpoint_by_id(endpoint_id: int, session: SessionDep, user: UserDe
             )
 
     return endpoint
+
+
+@endpoint_router.post("/", operation_id="create_endpoint")
+async def create_endpoint(
+    endpoint_create: EndPointCreate,
+    session: SessionDep,
+    user: UserDep | None = Depends(lambda: None),
+) -> EndPoint:
+    """
+    Create a new endpoint.
+
+    Authorization rules:
+    - If no endpoints exist in the system, the first endpoint automatically becomes a UUDEX administrator
+    - If endpoints exist but no admins exist, the new endpoint becomes a UUDEX administrator
+    - Otherwise, only UUDEX administrators can create new endpoints
+    """
+    repo = EndpointRepository(session)
+
+    # Check if this is the first endpoint or if no admins exist
+    endpoint_count = await repo.count_endpoints()
+    has_admin = await repo.has_any_admin_endpoints()
+
+    is_first_endpoint = endpoint_count == 0
+    needs_admin = not has_admin
+
+    # Authorization check - allow creation if:
+    # 1. This is the first endpoint (bootstrap case)
+    # 2. No admin exists (recovery case)
+    # 3. User is an authenticated admin
+    if not (is_first_endpoint or needs_admin) and (user is None or not user.is_admin()):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only UUDEX administrators can create endpoints",
+        )
+
+    # Check if certificate DN already exists
+    if endpoint_create.certificate_dn:
+        existing_endpoint = await repo.select_endpoint_by_certificate_dn(
+            endpoint_create.certificate_dn
+        )
+        if existing_endpoint:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Endpoint with certificate DN '{endpoint_create.certificate_dn}' already exists",
+            )
+
+    # Auto-generate UUID if not provided
+    if not endpoint_create.endpoint_uuid:
+        endpoint_create.endpoint_uuid = str(uuid.uuid4())
+
+    # If this is the first endpoint or no admin exists, make it a UUDEX administrator
+    if is_first_endpoint or needs_admin:
+        endpoint_create.uudex_administrator_sw = "Y"
+        endpoint_create.participant_administrator_sw = "Y"
+
+    # Convert to database model and create
+    db_endpoint = EndPoint(**endpoint_create.model_dump())
+    created_endpoint = await repo.create_endpoint(db_endpoint)
+
+    return created_endpoint
 
 
 # =====================================================
@@ -330,30 +389,31 @@ async def delete_certificate(
 # CERTIFICATE DOWNLOAD
 # =====================================================
 
+
 def get_certificate_files(client_name: str, cert_dir: Path) -> dict[str, str]:
     """Get available certificate files for a client"""
     files = {}
-    
+
     # Certificate file (.crt)
     cert_file = cert_dir / f"{client_name}.crt"
     if cert_file.exists():
         files["crt"] = str(cert_file)
-    
+
     # Private key file (.key)
     key_file = cert_dir / f"{client_name}.key"
     if key_file.exists():
         files["key"] = str(key_file)
-    
+
     # PKCS#12 file (.p12)
     p12_file = cert_dir / f"{client_name}.p12"
     if p12_file.exists():
         files["p12"] = str(p12_file)
-    
+
     # CA certificate
     ca_file = cert_dir / "ca.crt"
     if ca_file.exists():
         files["ca"] = str(ca_file)
-    
+
     return files
 
 
@@ -361,58 +421,60 @@ def get_certificate_creation_date(cert_file_path: str) -> datetime | None:
     """Get certificate creation date from the certificate file"""
     try:
         import subprocess
-        result = subprocess.run([
-            "openssl", "x509", "-in", cert_file_path, 
-            "-noout", "-dates"
-        ], capture_output=True, text=True, timeout=10)
-        
+
+        result = subprocess.run(
+            ["openssl", "x509", "-in", cert_file_path, "-noout", "-dates"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+
         if result.returncode == 0:
             # Parse the output to get the "notBefore" date
-            for line in result.stdout.split('\n'):
-                if line.startswith('notBefore='):
-                    date_str = line.replace('notBefore=', '')
+            for line in result.stdout.split("\n"):
+                if line.startswith("notBefore="):
+                    date_str = line.replace("notBefore=", "")
                     # Parse the date format: "Dec 19 10:30:00 2024 GMT"
                     from datetime import datetime
+
                     return datetime.strptime(date_str.strip(), "%b %d %H:%M:%S %Y %Z")
     except Exception:
         pass  # Return None if parsing fails
-    
+
     return None
 
 
 @certificates_router.get("/{endpoint_id}/files", operation_id="get_certificate_files_info")
 async def get_certificate_files_info(
-    endpoint_id: int,
-    session: SessionDep,
-    user: UserDep
+    endpoint_id: int, session: SessionDep, user: UserDep
 ) -> CertificateFileInfo:
     """
     Get information about available certificate files for an endpoint.
-    
+
     Users can only access their own certificates unless they are admins.
     """
     repo = EndpointRepository(session)
     endpoint = await repo.select_participant_by_endpoint_id(endpoint_id)
-    
+
     if endpoint is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endpoint not found")
-    
+
     # Authorization check: users can only access their own certificates (unless admin)
     if not user.is_admin():
         user_endpoint = await session.merge(user.endpoint)
         if endpoint.endpoint_id != user_endpoint.endpoint_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to access this certificate"
+                detail="Not authorized to access this certificate",
             )
-    
+
     # Extract client name and get certificate directory
     client_name = extract_cn_from_dn(endpoint.certificate_dn)
     certs_dir = get_certs_directory()
-    
+
     # Get available files
     files = get_certificate_files(client_name, certs_dir)
-    
+
     # Determine available formats
     available_formats = []
     if "p12" in files:
@@ -421,135 +483,129 @@ async def get_certificate_files_info(
         available_formats.append("pem")
     if "crt" in files:
         available_formats.append("crt")
-    
+
     # Get creation date
     creation_date = None
     if "crt" in files:
         creation_date = get_certificate_creation_date(files["crt"])
-    
+
     return CertificateFileInfo(
         endpoint_id=endpoint.endpoint_id,
         certificate_dn=endpoint.certificate_dn,
         client_name=client_name,
         available_formats=available_formats,
         files={k: Path(v).name for k, v in files.items()},  # Return just filenames for security
-        created_date=creation_date
+        created_date=creation_date,
     )
 
 
 @certificates_router.get("/{endpoint_id}/download", operation_id="download_certificate")
 async def download_certificate(
-    endpoint_id: int,
-    session: SessionDep,
-    user: UserDep,
-    format: str = "p12"
+    endpoint_id: int, session: SessionDep, user: UserDep, format: str = "p12"
 ):
     """
     Download a certificate file for authentication.
-    
+
     Supported formats:
     - p12: PKCS#12 format (includes private key, password: changeme)
     - crt: Certificate only (PEM format)
     - pem: Certificate + private key in PEM format
     - ca: CA certificate for validation
-    
+
     Users can only download their own certificates unless they are admins.
     """
     repo = EndpointRepository(session)
     endpoint = await repo.select_participant_by_endpoint_id(endpoint_id)
-    
+
     if endpoint is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Endpoint not found")
-    
+
     # Authorization check: users can only download their own certificates (unless admin)
     if not user.is_admin():
         user_endpoint = await session.merge(user.endpoint)
         if endpoint.endpoint_id != user_endpoint.endpoint_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to download this certificate"
+                detail="Not authorized to download this certificate",
             )
-    
+
     # Extract client name and get certificate directory
     client_name = extract_cn_from_dn(endpoint.certificate_dn)
     certs_dir = get_certs_directory()
-    
+
     # Get available files
     files = get_certificate_files(client_name, certs_dir)
-    
+
     if format == "p12":
         if "p12" not in files:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="PKCS#12 certificate file not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="PKCS#12 certificate file not found"
             )
         file_path = files["p12"]
         media_type = "application/x-pkcs12"
         filename = f"{client_name}.p12"
-        
+
     elif format == "crt":
         if "crt" not in files:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Certificate file not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Certificate file not found"
             )
         file_path = files["crt"]
         media_type = "application/x-x509-ca-cert"
         filename = f"{client_name}.crt"
-        
+
     elif format == "pem":
         if "crt" not in files or "key" not in files:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Certificate or private key file not found"
+                detail="Certificate or private key file not found",
             )
-        
+
         # For PEM format, we need to combine cert and key into a single file
         # Create a temporary combined file
         import tempfile
-        
+
         try:
             # Read certificate and key files
-            with open(files["crt"], 'r') as cert_file:
+            with open(files["crt"]) as cert_file:
                 cert_content = cert_file.read()
-            
-            with open(files["key"], 'r') as key_file:
+
+            with open(files["key"]) as key_file:
                 key_content = key_file.read()
-            
+
             # Create temporary combined file
             combined_content = cert_content + "\n" + key_content
-            
+
             # Write to a temporary file that will be cleaned up automatically
-            temp_file = tempfile.NamedTemporaryFile(mode='w+', suffix='.pem', delete=False)
+            temp_file = tempfile.NamedTemporaryFile(mode="w+", suffix=".pem", delete=False)
             temp_file.write(combined_content)
             temp_file.close()
-            
+
             file_path = temp_file.name
             media_type = "application/x-pem-file"
             filename = f"{client_name}.pem"
-            
+
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to create PEM file: {str(e)}"
+                detail=f"Failed to create PEM file: {str(e)}",
             )
-    
+
     elif format == "ca":
         if "ca" not in files:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="CA certificate file not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="CA certificate file not found"
             )
         file_path = files["ca"]
         media_type = "application/x-x509-ca-cert"
         filename = "ca.crt"
-        
+
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Unsupported format. Use: p12, crt, pem, or ca"
+            detail="Unsupported format. Use: p12, crt, pem, or ca",
         )
-    
+
     # Return the file
     return FileResponse(
         path=file_path,
@@ -559,8 +615,8 @@ async def download_certificate(
             "Content-Disposition": f"attachment; filename={filename}",
             "Cache-Control": "no-cache, no-store, must-revalidate",
             "Pragma": "no-cache",
-            "Expires": "0"
-        }
+            "Expires": "0",
+        },
     )
 
 
