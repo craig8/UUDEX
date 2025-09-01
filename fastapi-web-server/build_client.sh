@@ -1,3 +1,6 @@
+# Also fix relative imports with two dots (..types) in both generated and final client directories
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from ..types import/from ..client_types import/g' {} \;
+find "${PROPER_CLIENT_DIR}/uudex_api_client" -name "*.py" -exec sed -i 's/from ..types import/from ..client_types import/g' {} \;
 #!/bin/bash
 set -e
 
@@ -90,15 +93,27 @@ rm -rf "${PROPER_CLIENT_DIR}"
 # Create proper structure
 mkdir -p "${PROPER_CLIENT_DIR}/uudex_api_client"
 
+
 # Fix naming conflict with Python's types module first
 if [ -f "${GENERATED_DIR}/types.py" ]; then
     echo "Renaming types.py to client_types.py to avoid conflicts..."
     mv "${GENERATED_DIR}/types.py" "${GENERATED_DIR}/client_types.py"
-    
-    # Update all imports of types to client_types
-    find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from types import/from client_types import/g' {} \;
-    find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/import types/import client_types as types/g' {} \;
 fi
+
+# Always update all imports of types to client_types (handles both absolute and relative imports)
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from types import/from client_types import/g' {} \;
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/import types/import client_types as types/g' {} \;
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from uudex_api_client.types import/from uudex_api_client.client_types import/g' {} \;
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from ...types import/from ...client_types import/g' {} \;
+find "${GENERATED_DIR}" -name "*.py" -exec sed -i 's/from ..types import/from ..client_types import/g' {} \;
+
+# Move source files to module directory
+cp -r "${GENERATED_DIR}/__init__.py" "${GENERATED_DIR}/api" "${GENERATED_DIR}/models" \
+    "${GENERATED_DIR}/client.py" "${GENERATED_DIR}/client_types.py" "${GENERATED_DIR}/errors.py" \
+    "${PROPER_CLIENT_DIR}/uudex_api_client/"
+
+# After copying, run sed again in the final client directory to catch any missed replacements
+find "${PROPER_CLIENT_DIR}/uudex_api_client" -name "*.py" -exec sed -i 's/from ..types import/from ..client_types import/g' {} \;
 
 # Move source files to module directory
 cp -r "${GENERATED_DIR}/__init__.py" "${GENERATED_DIR}/api" "${GENERATED_DIR}/models" \
