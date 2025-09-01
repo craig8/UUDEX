@@ -32,7 +32,7 @@ except Exception as e:
         sys.exit(1)
     raise
 
-from uudex_server.endpoints import add_routers
+from uudex_server.routes import add_routers
 
 # Create FastAPI app, don't define docs url here, we are going to use our own endpoint.
 app = FastAPI(

@@ -24,16 +24,16 @@ class SessionAndUser:
 
 import uudex_server.repos as r
 
-from .dataset_endpoints import dataset_router, datasets_router
-from .dataset_endpoints import v1_router as dataset_v1_router
-from .participant_endpoints import participant_router, participants_router
-from .participant_endpoints import v1_router as participant_v1_router
-from .subject_endpoints import subject_router, subjects_router
-from .subject_endpoints import v1_router as subject_v1_router
-from .subscription_endpoints import subscription_router, subscriptions_router
-from .subscription_endpoints import v1_router as subscription_v1_router
-from .uudex_endpoints import endpoint_router
-from .uudex_endpoints import v1_router as endpoint_v1_router
+from .dataset_routes import dataset_router, datasets_router
+from .dataset_routes import v1_router as dataset_v1_router
+from .participant_routes import participant_router, participants_router
+from .participant_routes import v1_router as participant_v1_router
+from .subject_routes import subject_router, subjects_router
+from .subject_routes import v1_router as subject_v1_router
+from .subscription_routes import subscription_router, subscriptions_router
+from .subscription_routes import v1_router as subscription_v1_router
+from .uudex_routes import endpoint_router
+from .uudex_routes import v1_router as endpoint_v1_router
 
 tags_metadata = [
     {"name": "v1", "description": "API Version 1"},
